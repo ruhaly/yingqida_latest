@@ -1,0 +1,39 @@
+/**
+ * 项目名：     rimi
+ * 文件名：     SuperLogic.java
+ * 文件描述： 
+ * 作者：         wjd
+ * 创建时间：  2011-11-25
+ * 版权声明 ： Copyright (C) 2008-2010 RichPeak
+ *
+ */
+package com.yingqida.richplay.logic;
+
+import com.lidroid.xutils.HttpUtils;
+import com.yingqida.richplay.baseapi.http.HttpResponseHanlder;
+
+import android.os.Handler;
+
+public abstract class SuperLogic implements HttpResponseHanlder {
+
+	public static final int LOGIN_SUCCESS_MSGWHAT = 100;
+	
+	public Handler handler;
+
+	public void setHandler(Handler handler) {
+		this.handler = handler;
+	}
+
+	public HttpUtils httpRequest;
+
+	public void setHttpRequest(HttpUtils httpRequest) {
+		this.httpRequest = httpRequest;
+	}
+
+	public void setDate(Handler handler, HttpUtils httpRequest) {
+		this.handler = handler;
+		this.httpRequest = httpRequest;
+	}
+
+	public abstract void clear();
+}

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/mi_white" >
+
+        <LinearLayout
+            android:id="@+id/frame_01"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center" 
+            android:background="@color/blue">
+
+            <ImageView
+                android:id="@+id/img_pic1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="matrix"
+                android:src="@drawable/list_item_bg" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_name1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/img_head1"
+            android:layout_toRightOf="@+id/img_head1"
+            android:text="姓名" />
+
+        <TextView
+            android:id="@+id/tv_msg1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_name1"
+            android:layout_toRightOf="@+id/img_head1"
+            android:text="喜欢" />
+
+        <com.yingqida.richplay.pubuliu.ScaleImageView
+            android:id="@+id/img_head1"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/frame_01"
+            android:layout_margin="3dp"
+            android:src="@drawable/icon" />
+    </RelativeLayout>
+
+</LinearLayout>

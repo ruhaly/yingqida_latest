@@ -1,0 +1,44 @@
+package com.yingqida.richplay.baseapi.http;
+
+import android.os.Handler;
+
+import com.lidroid.xutils.http.client.RequestParams;
+import com.yingqida.richplay.activity.common.HandleActivity.MewwHandler;
+import com.yingqida.richplay.packet.HttpAction;
+
+public class HttpSenderUtils implements HttpAction {
+	public static final String DEFAULT_HOST = "http://api.remark2/v1";
+	public static final byte METHOD_GET = 0;
+	public static final byte METHOD_POST = 1;
+
+	public static void sendMsgImpl(String action, RequestParams params,
+			int method, final MewwHandler mHandler) {
+		mHandler.sendEmptyMessage(1);
+		return;
+//		HttpUtils http = new HttpUtils();
+//		http.send(HttpMethod.POST, DEFAULT_HOST + action, params,
+//				new RequestCallBack<String>() {
+//
+//					@Override
+//					public void onStart() {
+//						showWaitingDialog(mHandler);
+//					}
+//
+//					@Override
+//					public void onLoading(long total, long current) {
+//					}
+//
+//					@Override
+//					public void onSuccess(String result) {
+//					}
+//
+//					@Override
+//					public void onFailure(HttpException error, String msg) {
+//					}
+//				});
+	}
+
+	public static void showWaitingDialog(Handler mHandler) {
+
+	}
+}

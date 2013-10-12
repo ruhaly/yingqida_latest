@@ -1,0 +1,61 @@
+package com.yingqida.richplay.activity;
+
+import android.content.Intent;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
+import com.yingqida.richplay.HomeActivity;
+import com.yingqida.richplay.R;
+import com.yingqida.richplay.activity.common.SuperActivity;
+
+public class LoginActivity extends SuperActivity {
+
+	@ViewInject(R.id.btn_login_facebook)
+	private TextView btn_login_facebook;
+
+	@ViewInject(R.id.btn_login_twitter)
+	private TextView btn_login_twitter;
+
+	@Override
+	public void initData() {
+
+	}
+
+	@Override
+	public void initLayout() {
+		setContentView(R.layout.login_layout);
+		ViewUtils.inject(this);
+	}
+
+	@Override
+	public void clearData() {
+
+	}
+
+	public void btnRegisterLis(View view) {
+		startActivity(new Intent(getBaseContext(), RegisterActivity.class));
+	}
+
+	public void btnLogin(View view) {
+		startActivity(new Intent(getBaseContext(), HomeActivity.class));
+	}
+
+	@OnClick(R.id.btn_login_facebook)
+	public void btnFacebookLogin(View view) {
+	}
+
+	@OnClick(R.id.btn_login_twitter)
+	public void btnTwitterLogin(View view) {
+		Toast.makeText(getBaseContext(), "btnTwitterLogin", Toast.LENGTH_SHORT)
+				.show();
+	}
+
+	/******************************** Facebook登录 begin **************************/
+	/******************************** Facebook登录 end **************************/
+	/******************************** Twitter登录 begin **************************/
+	/******************************** Twitter登录 end **************************/
+}

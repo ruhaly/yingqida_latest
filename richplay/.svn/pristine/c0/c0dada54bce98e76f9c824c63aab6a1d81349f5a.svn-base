@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_pcenter_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/title_layout" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/textView1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/corner0bg"
+            android:gravity="center_vertical"
+            android:onClick="btnEditUser"
+            android:paddingBottom="15dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="15dp"
+            android:text="@string/editUser"
+            android:textColor="@color/Color_Black" />
+
+        <Button
+            android:id="@+id/textView2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/corner1bg"
+            android:gravity="center_vertical"
+            android:paddingBottom="15dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="15dp"
+            android:text="@string/guanyu"
+            android:layout_marginBottom="1px"
+            android:textColor="@color/Color_Black" />
+
+        <Button
+            android:id="@+id/textView3"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/corner3bg"
+            android:gravity="center_vertical"
+            android:paddingBottom="15dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="15dp"
+            android:text="@string/banbengengxin"
+            android:textColor="@color/Color_Black" />
+
+        <Button
+            android:id="@+id/textView4"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/corner0bg"
+            android:gravity="center_vertical"
+            android:paddingBottom="15dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="15dp"
+            android:text="@string/zhuxiao"
+            android:textColor="@color/Color_Black" />
+    </LinearLayout>
+
+</LinearLayout>

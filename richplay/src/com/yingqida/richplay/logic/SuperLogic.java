@@ -18,6 +18,8 @@ public abstract class SuperLogic implements HttpResponseHanlder {
 
 	public static final int LOGIN_SUCCESS_MSGWHAT = 100;
 	public static final int LOGIN_ERROR_MSGWHAT = 200;
+	public static final int REGISTER_SUCCESS_MSGWHAT = 101;
+	public static final int REGISTER_ERROR_MSGWHAT = 201;
 
 	public Handler handler;
 

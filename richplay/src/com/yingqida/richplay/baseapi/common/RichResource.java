@@ -11,6 +11,7 @@ public class RichResource {
 
 	public class ShareKey {
 		public static final String SETTING_VOLUMN_VALUE = "SETTING_VOLUMN_VALUE";
+		public static final String REMARK_TOKEN = "REMARK_TOCKEN";
 		public static final String UID = "UID";
 		public static final String ACCOUNT = "ACCOUNT";
 		public static final String PWD = "PWD";

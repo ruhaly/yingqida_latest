@@ -35,7 +35,8 @@ public class GlobalVar {
 	 * @param share
 	 */
 	public void storeUser(SharedPreferences share, User user) {
-		share.edit().putString(ShareKey.UID, user.uid)
+		share.edit().putString(ShareKey.REMARK_TOKEN, user.remarkToken)
+				.putString(ShareKey.UID, user.uid)
 				.putString(ShareKey.ACCOUNT, user.account)
 				.putString(ShareKey.PWD, user.pwd)
 				.putString(ShareKey.NICKNAME, user.nickName)
@@ -50,6 +51,7 @@ public class GlobalVar {
 	 */
 	public User restoreUser(SharedPreferences share) {
 		User user = new User();
+		user.remarkToken = share.getString(ShareKey.REMARK_TOKEN, "");
 		user.uid = share.getString(ShareKey.UID, "");
 		user.account = share.getString(ShareKey.ACCOUNT, "");
 		user.pwd = share.getString(ShareKey.PWD, "");
@@ -64,10 +66,10 @@ public class GlobalVar {
 	 * @param share
 	 */
 	public void clearUserDate(SharedPreferences share) {
-		share.edit().putString(ShareKey.UID, "")
-				.putString(ShareKey.ACCOUNT, "").putString(ShareKey.PWD, "")
-				.putString(ShareKey.NICKNAME, "").putInt(ShareKey.SEX, 1)
-				.commit();
+		share.edit().putString(ShareKey.REMARK_TOKEN, "")
+				.putString(ShareKey.UID, "").putString(ShareKey.ACCOUNT, "")
+				.putString(ShareKey.PWD, "").putString(ShareKey.NICKNAME, "")
+				.putInt(ShareKey.SEX, 1).commit();
 	}
 
 	public void setUser(User user) {

@@ -13,6 +13,7 @@ import com.yingqida.richplay.packet.HttpAction;
 
 public class HttpSenderUtils implements HttpAction {
 	public static final String DEFAULT_HOST = "http://dev.remark2/api/v1";
+	public static final String DEFAULT_TYPE = ".json";
 	public static final byte METHOD_GET = 0;
 	public static final byte METHOD_POST = 1;
 
@@ -24,7 +25,7 @@ public class HttpSenderUtils implements HttpAction {
 				: HttpMethod.POST;
 
 		HttpHandler<String> httpHandler = http.send(httpMethod, DEFAULT_HOST
-				+ action, params, new RequestCallBack<String>() {
+				+ action + DEFAULT_TYPE, params, new RequestCallBack<String>() {
 
 			@Override
 			public void onStart() {

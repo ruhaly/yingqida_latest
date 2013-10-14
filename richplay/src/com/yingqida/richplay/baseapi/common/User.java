@@ -1,8 +1,5 @@
 package com.yingqida.richplay.baseapi.common;
 
-import com.yingqida.richplay.baseapi.common.RichResource.ShareKey;
-
-import android.content.SharedPreferences;
 
 /**
  * 用户
@@ -11,6 +8,8 @@ import android.content.SharedPreferences;
  * 
  */
 public class User {
+
+	public String remarkToken;
 
 	// 用户id
 	public String uid;
@@ -87,4 +86,13 @@ public class User {
 	public void setPwd(String pwd) {
 		this.pwd = pwd;
 	}
+
+	public String getRemarkToken() {
+		return remarkToken;
+	}
+
+	public void setRemarkToken(String remarkToken) {
+		this.remarkToken = remarkToken;
+	}
+
 }

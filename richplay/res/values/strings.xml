@@ -25,7 +25,7 @@
     <string name="bar_code_scan">掃描</string>
     <string name="account">電子郵件</string>
     <string name="password">密碼</string>
-    <string name="login">登录</string>
+    <string name="login">登錄</string>
     <string name="register">註冊Richplay賬戶</string>
     <string name="btn_register">註冊</string>
     <string name="nick_name">暱稱</string>
@@ -51,7 +51,6 @@
     <string name="banbengengxin">版本更新</string>
     <string name="zhuxiao">注銷</string>
     <string name="changehead">更換頭像</string>
-    <string name="nickname">昵稱</string>
     <string name="xingbie">性別</string>
     <string name="xiugaimima">修改密碼</string>
     <string name="geren">個人簡介</string>
@@ -196,9 +195,11 @@
     </string-array>
 
     <string name="facebookId">554919551222710</string>
-    <string name="account_pwd_not_empty">賬號或者密碼不能為空</string>
+    <string name="account_pwd_not_empty">请正确填写数据</string>
 	<string name="sned_tip_info">正在發送請求請稍後...</string>
 	<string name="tip">提示</string>
 	<string name="is_logout">確認退出？</string>
 	<string name="Loding">Loding...</string>
+	<string name="has_account">已經有一個賬戶?</string>
+	
 </resources>

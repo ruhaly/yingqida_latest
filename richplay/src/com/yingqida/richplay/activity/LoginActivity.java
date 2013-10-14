@@ -15,7 +15,9 @@ import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.facebook.Session;
@@ -48,18 +50,26 @@ public class LoginActivity extends SuperActivity {
 	@ViewInject(R.id.btn_login_twitter)
 	private TextView btn_login_twitter;
 
-	@ViewInject(R.id.btn_login)
+	@ViewInject(R.id.btn_to_login)
+	private TextView btn_to_login;
+
 	private TextView btn_login;
 
-	@ViewInject(R.id.text_account)
-	private TextView text_account;
+	private TextView btn_register;
 
-	@ViewInject(R.id.text_pwd)
-	private TextView text_pwd;
+	private EditText text_account_login;
+
+	private EditText text_pwd_login;
+
+	private EditText text_account_register;
+
+	private EditText text_pwd_register;
+
+	private EditText text_nickname_register;
 
 	public static final String HASH1 = "n0HVZZ3RXdM4KzR+FILGAc0Ak8c=";
 
-	private HttpUtils httpLogin;
+	private HttpUtils httpUtil;
 
 	@Override
 	public void initData() {
@@ -87,23 +97,11 @@ public class LoginActivity extends SuperActivity {
 						// 登录成功,更新界面
 					}
 				});
-		User user = GlobalVar.ins.getUser(getAppShare());
-		if (null != user) {
-			text_account.setText(user.getAccount());
-		}
 	}
 
 	@Override
 	public void clearData() {
 
-	}
-
-	public void btnRegisterLis(View view) {
-		startActivity(new Intent(getBaseContext(), RegisterActivity.class));
-	}
-
-	public void btnLogin(View view) {
-		startActivity(new Intent(getBaseContext(), HomeActivity.class));
 	}
 
 	@OnClick(R.id.btn_login_twitter)
@@ -292,33 +290,115 @@ public class LoginActivity extends SuperActivity {
 	DialogInterface.OnDismissListener dismiss = new DialogInterface.OnDismissListener() {
 		@Override
 		public void onDismiss(DialogInterface dialog) {
-			httpLogin.getHttpClient().getConnectionManager().shutdown();
+			httpUtil.getHttpClient().getConnectionManager().shutdown();
 		}
 	};
 
-	@OnClick(R.id.btn_login)
-	public void login(View view) {
-		if (checkDataEmpty()) {
-			showToast(getString(R.string.account_pwd_not_empty));
-			return;
+	@SuppressLint("NewApi")
+	@OnClick(R.id.btn_to_login)
+	public void toLogin(View view) {
+		showLoginDialog();
+	}
+
+	public void showLoginDialog() {
+
+		View viewLogin = LayoutInflater.from(getBaseContext()).inflate(
+				R.layout.to_login_layout, null);
+		text_account_login = (EditText) viewLogin
+				.findViewById(R.id.text_account);
+		text_pwd_login = (EditText) viewLogin.findViewById(R.id.text_pwd);
+		btn_login = (TextView) viewLogin.findViewById(R.id.btn_login);
+		btn_login.setOnClickListener(this);
+		showDialog(viewLogin);
+		User user = GlobalVar.ins.getUser(getAppShare());
+		if (null != user) {
+			text_account_login.setText(user.getAccount());
 		}
-		httpLogin = new HttpUtils();
-		loginLogic.setDate(mHandler, httpLogin);
-		showProcessDialog(dismiss);
-		loginLogic.sendLoginRequest(text_account.getText().toString(), text_pwd
-				.getText().toString());
+
+	}
+
+	@OnClick(R.id.btn_to_register)
+	public void toRegister(View view) {
+		showRegisterDialog();
+	}
+
+	public void showRegisterDialog() {
+		View viewRegister = LayoutInflater.from(getBaseContext()).inflate(
+				R.layout.register_layout, null);
+		text_account_register = (EditText) viewRegister
+				.findViewById(R.id.text_account_register);
+		text_pwd_register = (EditText) viewRegister
+				.findViewById(R.id.text_pwd_register);
+		text_nickname_register = (EditText) viewRegister
+				.findViewById(R.id.text_nickname_register);
+		btn_register = (TextView) viewRegister.findViewById(R.id.btn_register);
+		btn_register.setOnClickListener(this);
+		showDialog(viewRegister);
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.btn_login: {
+			if (checkLoginDataEmpty()) {
+				showToast(getString(R.string.account_pwd_not_empty));
+				return;
+			}
+			httpUtil = new HttpUtils();
+			loginLogic.setDate(mHandler, httpUtil);
+			showProcessDialog(dismiss);
+			loginLogic.sendLoginRequest(
+					text_account_login.getText().toString(), text_pwd_login
+							.getText().toString());
+			break;
+		}
+		case R.id.btn_register: {
+
+			if (checkRegisterDataEmpty()) {
+				showToast(getString(R.string.account_pwd_not_empty));
+				return;
+			}
+			httpUtil = new HttpUtils();
+			loginLogic.setDate(mHandler, httpUtil);
+			showProcessDialog(dismiss);
+			loginLogic.sendRegisterRequest(text_account_register.getText()
+					.toString(), text_pwd_register.getText().toString(),
+					text_nickname_register.getText().toString());
+			break;
+
+		}
+		default:
+			break;
+		}
 	}
 
 	@Override
 	public void handleMsg(Message msg) {
 		switch (msg.what) {
 		case SuperLogic.LOGIN_SUCCESS_MSGWHAT:
-			showToast("登录成功");
+			showToast("登录成功~");
 			saveUser();
 			toHomeActivity();
 			break;
 		case SuperLogic.LOGIN_ERROR_MSGWHAT: {
-			showToast("登录失败");
+			showToast("登录失败~");
+			dismissProgress();
+			return;
+		}
+		case SuperLogic.REGISTER_SUCCESS_MSGWHAT: {
+
+			showToast("注册成功,请登录~");
+			dismissProgress();
+			dismissDialog();
+			showLoginDialog();
+			text_account_login.setText(text_account_register.getText()
+					.toString());
+			return;
+		}
+		case SuperLogic.REGISTER_ERROR_MSGWHAT: {
+			showToast("注册失败~");
+			dismissProgress();
+			return;
 		}
 		default:
 			break;
@@ -335,8 +415,10 @@ public class LoginActivity extends SuperActivity {
 	public void saveUser() {
 		// GlobalVar.ins.clearUserDate(getAppShare());
 		User user = new User();
-		user.account = text_account.getText().toString().trim();
-		user.pwd = text_pwd.getText().toString().trim();
+		user.remarkToken = loginLogic.user.getRemarkToken();
+		user.uid = loginLogic.user.getUid();
+		user.account = text_account_login.getText().toString().trim();
+		user.pwd = text_pwd_login.getText().toString().trim();
 		GlobalVar.ins.storeUser(getAppShare(), user);
 	}
 
@@ -353,9 +435,17 @@ public class LoginActivity extends SuperActivity {
 	}
 
 	@SuppressLint("NewApi")
-	public boolean checkDataEmpty() {
-		return text_account.getText().toString().trim().isEmpty()
-				|| text_pwd.getText().toString().trim().isEmpty() ? true
+	public boolean checkLoginDataEmpty() {
+		return text_account_login.getText().toString().trim().isEmpty()
+				|| text_pwd_login.getText().toString().trim().isEmpty() ? true
+				: false;
+	}
+
+	@SuppressLint("NewApi")
+	public boolean checkRegisterDataEmpty() {
+		return text_account_register.getText().toString().trim().isEmpty()
+				|| text_pwd_register.getText().toString().trim().isEmpty()
+				|| text_nickname_register.getText().toString().trim().isEmpty() ? true
 				: false;
 	}
 

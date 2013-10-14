@@ -245,7 +245,7 @@ public class ReleasePicActivity extends SuperActivity implements
 					}
 				});
 		showAlertDialog(0, getString(R.string.selectAlbum), null, view, null,
-				DEFAULT_BTN, null, true);
+				DEFAULT_BTN, null, true, true);
 	}
 
 	public void addAlbum() {

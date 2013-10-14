@@ -60,10 +60,10 @@ public abstract class WheelActivity extends SuperActivity {
 
 		if (hascancel) {
 			showAlertDialog(0, title, null, singleWheel, click, DEFAULT_BTN,
-					null, true);
+					null, true, true);
 		} else {
 			showAlertDialog(0, title, null, singleWheel, click, null, null,
-					false);
+					false, true);
 		}
 	}
 
@@ -96,10 +96,10 @@ public abstract class WheelActivity extends SuperActivity {
 		wheel1.addChangingListener(wheelChange);
 		if (hascancel) {
 			showAlertDialog(0, title, null, doubleWheel, click, DEFAULT_BTN,
-					null, true);
+					null, true, true);
 		} else {
 			showAlertDialog(0, title, null, doubleWheel, click, null, null,
-					false);
+					false, true);
 		}
 	}
 
@@ -142,6 +142,6 @@ public abstract class WheelActivity extends SuperActivity {
 		}
 
 		showAlertDialog(0, title, null, threeWheel, click, DEFAULT_BTN, null,
-				true);
+				true, true);
 	}
 }

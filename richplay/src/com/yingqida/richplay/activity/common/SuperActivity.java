@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.net.ConnectivityManager;
@@ -20,15 +21,16 @@ import android.net.NetworkInfo.State;
 import android.os.Bundle;
 import android.os.Message;
 import android.telephony.TelephonyManager;
+import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.WindowManager.LayoutParams;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
-import com.lidroid.xutils.ViewUtils;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.RichPlayApplication;
 import com.yingqida.richplay.baseapi.AppLog;
@@ -152,7 +154,6 @@ public abstract class SuperActivity extends HandleActivity implements
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				dismissProgress();
 				Toast.makeText(getBaseContext(), str, Toast.LENGTH_SHORT)
 						.show();
 			}
@@ -468,10 +469,21 @@ public abstract class SuperActivity extends HandleActivity implements
 	public void showLogoutDialog() {
 		showAlertDialog(0, getString(R.string.tip),
 				getString(R.string.is_logout), null, ok, DEFAULT_BTN, null,
-				false);
+				true, true);
 	}
 
 	public void logoutDirect() {
 		RichPlayApplication.getIns().exitApp();
 	}
+
+	private void setParams(LayoutParams lay) {
+		DisplayMetrics dm = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(dm);
+		Rect rect = new Rect();
+		View view = getWindow().getDecorView();
+		view.getWindowVisibleDisplayFrame(rect);
+		lay.height = dm.heightPixels - rect.top;
+		lay.width = dm.widthPixels;
+	}
+
 }

@@ -1,5 +1,6 @@
 package com.yingqida.richplay.activity.common;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -52,6 +53,8 @@ public class DialogActivity extends NotificationActivity {
 	 */
 	private String cancelTitle;
 
+	private Dialog dialog;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -82,10 +85,14 @@ public class DialogActivity extends NotificationActivity {
 	 *            对话框取消事件
 	 * @param canback
 	 *            TODO
+	 * @param outsidecancacel
+	 *            TODO
 	 */
+	@SuppressLint("NewApi")
 	public void showAlertDialog(int icon, String title, String msg, View view,
 			OnClickListener ok, OnClickListener cancel,
-			OnDismissListener dismiss, final boolean canback) {
+			OnDismissListener dismiss, final boolean canback,
+			boolean outsidecancacel) {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		if (0 != icon) {
@@ -117,7 +124,7 @@ public class DialogActivity extends NotificationActivity {
 					WindowManager.LayoutParams.WRAP_CONTENT);
 			window.setGravity(Gravity.CLIP_HORIZONTAL);
 			alertDialog.setOnDismissListener(dismiss);
-			alertDialog.setCanceledOnTouchOutside(canback);
+			alertDialog.setCanceledOnTouchOutside(outsidecancacel);
 			alertDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
 				@Override
 				public boolean onKey(DialogInterface dialog, int keyCode,
@@ -227,6 +234,18 @@ public class DialogActivity extends NotificationActivity {
 			progressDialog.setMessage(msg);
 	}
 
+	public void showDialog(View view) {
+		dialog = new Dialog(this, R.style.MyDialog);
+		dialog.setContentView(view);
+		dialog.show();
+	}
+
+	public void dismissDialog() {
+		if (null != dialog) {
+			dialog.dismiss();
+			dialog = null;
+		}
+	}
 }
 
 /*

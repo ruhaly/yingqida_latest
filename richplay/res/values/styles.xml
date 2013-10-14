@@ -2,10 +2,8 @@
 <resources>
 
     <style name="MyDialog" parent="@android:Theme.Dialog">
-        <item name="android:windowFrame">@null</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@drawable/transdrawable</item>
     </style>
 
     <style name="MyDialog2" parent="@android:Theme.Dialog">
@@ -60,7 +58,7 @@
         <!--
 	<item name="android:layout_centerVertical">true</item>
 	<item name="android:singleLine">true</item>
-	<item name="android:ellipsize">marquee</item>
+	<item name="android:ellipsize">marquee</item>
         -->
     </style>
 
@@ -86,7 +84,7 @@
         <!--
 	<item name="android:layout_centerVertical">true</item>
 	<item name="android:singleLine">true</item>
-	<item name="android:ellipsize">marquee</item>
+	<item name="android:ellipsize">marquee</item>
         -->
     </style>
 
@@ -121,7 +119,7 @@
         <item name="android:gravity">right</item>
         <!--
 	<item name="android:layout_centerVertical">true</item>
-	<item name="android:ellipsize">marquee</item>
+	<item name="android:ellipsize">marquee</item>
         -->
     </style>
 
@@ -137,7 +135,7 @@
         <item name="android:layout_marginBottom">5dp</item>
         <!--
 	<item name="android:layout_centerInParent">true</item>
-	<item name="android:ellipsize">marquee</item>
+	<item name="android:ellipsize">marquee</item>
         -->
     </style>
 
@@ -151,7 +149,7 @@
         <item name="android:textSize">16dp</item>
         <!--
 	<item name="android:textStyle">bold</item>
-	<item name="android:ellipsize">marquee</item>
+	<item name="android:ellipsize">marquee</item>
         -->
     </style>
 

@@ -34,6 +34,7 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.twitter.WebsiteActivity;
 import com.yingqida.richplay.HomeActivity;
 import com.yingqida.richplay.R;
+import com.yingqida.richplay.RichPlayApplication;
 import com.yingqida.richplay.activity.common.SuperActivity;
 import com.yingqida.richplay.baseapi.common.GlobalVar;
 import com.yingqida.richplay.baseapi.common.User;
@@ -377,8 +378,11 @@ public class LoginActivity extends SuperActivity {
 		switch (msg.what) {
 		case SuperLogic.LOGIN_SUCCESS_MSGWHAT:
 			showToast("登录成功~");
+			dismissProgress();
+			dismissDialog();
 			saveUser();
 			toHomeActivity();
+			RichPlayApplication.getIns().LOGIN = true;
 			break;
 		case SuperLogic.LOGIN_ERROR_MSGWHAT: {
 			showToast("登录失败~");

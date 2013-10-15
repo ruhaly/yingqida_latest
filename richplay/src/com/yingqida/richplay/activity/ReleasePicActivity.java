@@ -35,11 +35,11 @@ import com.yingqida.richplay.activity.common.SuperActivity;
 import com.yingqida.richplay.baseapi.ActivityResultCode;
 import com.yingqida.richplay.baseapi.AppLog;
 import com.yingqida.richplay.baseapi.ImageUtil;
-import com.yingqida.richplay.baseapi.common.RequestId;
 import com.yingqida.richplay.baseapi.http.HttpRequest;
 import com.yingqida.richplay.entity.Album;
 import com.yingqida.richplay.entity.RleasePicEntity;
 import com.yingqida.richplay.packet.HttpSender;
+import com.yingqida.richplay.packet.RequestId;
 
 public class ReleasePicActivity extends SuperActivity implements
 		ActivityResultCode {

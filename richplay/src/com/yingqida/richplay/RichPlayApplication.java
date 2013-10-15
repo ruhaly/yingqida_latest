@@ -13,7 +13,8 @@ import com.yingqida.richplay.baseapi.map.LocManager;
 import com.yingqida.richplay.service.NetWorkProxy;
 
 public class RichPlayApplication extends Application {
-	public static boolean LOGIN = false;
+	//登录标识
+	public boolean LOGIN = false;
 
 	public static boolean CHECKVERSION = false;
 

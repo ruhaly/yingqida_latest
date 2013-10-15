@@ -6,6 +6,8 @@ import org.json.JSONObject;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.HttpHandler;
 import com.lidroid.xutils.http.client.RequestParams;
+import com.yingqida.richplay.RichPlayApplication;
+import com.yingqida.richplay.baseapi.common.GlobalVar;
 import com.yingqida.richplay.baseapi.common.User;
 import com.yingqida.richplay.baseapi.http.HttpSenderUtils;
 import com.yingqida.richplay.baseapi.http.ResponseCode;
@@ -13,6 +15,16 @@ import com.yingqida.richplay.packet.HttpAction;
 import com.yingqida.richplay.packet.JsonParse;
 import com.yingqida.richplay.packet.RequestId;
 
+/**
+ * 
+ *  Class Name: LoginLogic.java
+ *  Function:
+ *  
+ *     Modifications:   
+ *  
+ *  @author ruhaly  DateTime 2013-10-15 下午3:43:35    
+ *  @version 1.0
+ */
 public class LoginLogic extends SuperLogic implements HttpAction {
 
 	private static LoginLogic ins;
@@ -104,15 +116,16 @@ public class LoginLogic extends SuperLogic implements HttpAction {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
 		}
 	}
 
 	/**
 	 * 
-	 *  Function:解析返回响应json格式
+	 * Function:解析返回响应json格式
 	 * 
-	 *  @author ruhaly  DateTime 2013-10-14 下午3:31:43
-	 *  @param response
+	 * @author ruhaly DateTime 2013-10-14 下午3:31:43
+	 * @param response
 	 */
 	public void httpRegisterResponse(String response) {
 		try {
@@ -121,11 +134,22 @@ public class LoginLogic extends SuperLogic implements HttpAction {
 			if (code.equals(ResponseCode.SUCCESS)) {
 				handler.sendEmptyMessage(REGISTER_SUCCESS_MSGWHAT);
 			} else {
-				handler.sendEmptyMessage(REGISTER_ERROR_MSGWHAT); 
+				handler.sendEmptyMessage(REGISTER_ERROR_MSGWHAT);
 			}
 
 		} catch (JSONException e) {
+			handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
 			e.printStackTrace();
 		}
+	}
+
+	public void exitHttpSend() {
+		RequestParams params = new RequestParams();
+		String remark_token = GlobalVar.ins.getUser(RichPlayApplication
+				.getIns().getAppShare()).remarkToken;
+		params.addBodyParameter("remark_token", remark_token);
+		HttpSenderUtils.sendMsgImpl(ACTION_EXIT, params,
+				HttpSenderUtils.METHOD_GET, handler, httpRequest,
+				RequestId.EXIT_REQUESTID, this);
 	}
 }

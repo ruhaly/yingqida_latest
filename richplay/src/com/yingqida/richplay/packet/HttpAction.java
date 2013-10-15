@@ -6,4 +6,5 @@ public abstract interface HttpAction {
 	public static final String ACTION_WALL_PIC = "index.php?c=index&a=get_pic";
 	public static final String ACTION_LOGIN = "/auth/authorize";
 	public static final String ACTION_REGISTER = "/account/register";
+	public static final String ACTION_EXIT = "/account/end_session";
 }

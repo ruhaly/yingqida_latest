@@ -137,7 +137,7 @@ public class HomeActivity extends TabSuperActivity {
 	}
 
 	private void checkLoginStatus(int index) {
-		if (!RichPlayApplication.LOGIN) {
+		if (!RichPlayApplication.getIns().LOGIN) {
 		} else {
 			mTabHost.setCurrentTab(index);
 		}
@@ -336,12 +336,12 @@ public class HomeActivity extends TabSuperActivity {
 	@Override
 	public void handleHttpResponse(String response, int requestId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void handleHttpException(HttpException error, String msg) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

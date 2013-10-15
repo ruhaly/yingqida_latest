@@ -196,10 +196,12 @@
 
     <string name="facebookId">554919551222710</string>
     <string name="account_pwd_not_empty">请正确填写数据</string>
-	<string name="sned_tip_info">正在發送請求請稍後...</string>
-	<string name="tip">提示</string>
-	<string name="is_logout">確認退出？</string>
-	<string name="Loding">Loding...</string>
-	<string name="has_account">已經有一個賬戶?</string>
-	
+    <string name="sned_tip_info">正在發送請求請稍後...</string>
+    <string name="tip">提示</string>
+    <string name="is_logout">確認退出？</string>
+    <string name="Loding">Loding...</string>
+    <string name="has_account">已經有一個賬戶?</string>
+    <string name="captcha">驗證碼</string>
+    <string name="date_format_error">數據異常~</string>
+
 </resources>

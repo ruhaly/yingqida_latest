@@ -11,6 +11,15 @@ import com.lidroid.xutils.http.client.RequestParams;
 import com.yingqida.richplay.logic.SuperLogic;
 import com.yingqida.richplay.packet.HttpAction;
 
+/**
+ * 
+ * Class Name: HttpSenderUtils.java Function:
+ * 
+ * Modifications:
+ * 
+ * @author ruhaly DateTime 2013-10-15 下午3:43:43
+ * @version 1.0
+ */
 public class HttpSenderUtils implements HttpAction {
 	public static final String DEFAULT_HOST = "http://dev.remark2/api/v1";
 	public static final String DEFAULT_TYPE = ".json";

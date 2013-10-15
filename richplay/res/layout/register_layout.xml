@@ -93,6 +93,25 @@
         </EditText>
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical" >
+
+        <EditText
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/captcha">
+        </EditText>
+
+        <ImageView
+            android:id="@+id/img_captcha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_lock_lock" />
+    </LinearLayout>
+
     <TextView
         android:id="@+id/btn_register"
         android:layout_width="match_parent"

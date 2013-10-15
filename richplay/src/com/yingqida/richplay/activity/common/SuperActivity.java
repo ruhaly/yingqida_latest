@@ -31,6 +31,7 @@ import android.view.WindowManager.LayoutParams;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
+import com.lidroid.xutils.HttpUtils;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.RichPlayApplication;
 import com.yingqida.richplay.baseapi.AppLog;
@@ -43,6 +44,8 @@ import com.yingqida.richplay.baseapi.common.RichResource;
 import com.yingqida.richplay.baseapi.common.RichplayUtil;
 import com.yingqida.richplay.baseapi.http.HttpResponseHanlder;
 import com.yingqida.richplay.baseapi.http.HttpTimeoutHandler;
+import com.yingqida.richplay.logic.LoginLogic;
+import com.yingqida.richplay.logic.SuperLogic;
 import com.yingqida.richplay.pubuliu.ImageCache;
 import com.yingqida.richplay.pubuliu.ImageFetcher;
 import com.yingqida.richplay.pubuliu.ImageWorker.ICallBack;
@@ -175,6 +178,10 @@ public abstract class SuperActivity extends HandleActivity implements
 			showToast(getString(R.string.error_fwq));
 			break;
 		}
+		case SuperLogic.DATA_FORMAT_ERROR_MSGWHAT: {
+			showToast(getString(R.string.date_format_error));
+			break;
+		}
 		default:
 			break;
 		}
@@ -196,7 +203,7 @@ public abstract class SuperActivity extends HandleActivity implements
 		TAG = this.getClass().getName();
 		ActivityStack.getIns().pushActivity(this);
 
-		if (RichPlayApplication.LOGIN) {
+		if (RichPlayApplication.getIns().LOGIN) {
 			register();
 		}
 	}
@@ -474,6 +481,10 @@ public abstract class SuperActivity extends HandleActivity implements
 
 	public void logoutDirect() {
 		RichPlayApplication.getIns().exitApp();
+		LoginLogic.getInstance().setDate(mHandler, new HttpUtils());
+		if (RichPlayApplication.getIns().LOGIN) {
+			LoginLogic.getInstance().exitHttpSend();
+		}
 	}
 
 	private void setParams(LayoutParams lay) {

@@ -6,12 +6,11 @@
     android:background="@color/color_title" >
 
     <Button
-        android:id="@+id/btn_scan"
+        android:id="@+id/btnToggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="left|center_vertical"
-        android:text="@string/bar_code_scan"
-        android:visibility="gone" />
+        android:text="点击" />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -55,8 +54,8 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="5dp"
-        android:visibility="gone"
         android:background="@android:drawable/ic_menu_edit"
-        android:onClick="btnSettin"/>
+        android:onClick="btnSettin"
+        android:visibility="gone" />
 
 </RelativeLayout>

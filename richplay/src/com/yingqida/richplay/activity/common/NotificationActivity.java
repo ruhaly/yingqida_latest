@@ -6,13 +6,13 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v4.app.FragmentActivity;
 import android.widget.RemoteViews;
 
+import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.baseapi.common.RichResource;
 
-public class NotificationActivity extends FragmentActivity {
+public class NotificationActivity extends SlidingFragmentActivity {
 
 	/**
 	 * 消息通知ID

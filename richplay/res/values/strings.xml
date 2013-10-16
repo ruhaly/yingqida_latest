@@ -204,4 +204,13 @@
     <string name="captcha">驗證碼</string>
     <string name="date_format_error">數據異常~</string>
 
+    <string-array name="menus">
+        <item>首頁</item>
+        <item>搜索</item>
+        <item>個人中心</item>
+        <item>我關注</item>
+        <item>關注我</item>
+        <item>退出</item>
+    </string-array>
+
 </resources>

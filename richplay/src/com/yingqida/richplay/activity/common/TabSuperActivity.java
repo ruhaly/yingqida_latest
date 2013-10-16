@@ -48,7 +48,7 @@ public abstract class TabSuperActivity extends SuperActivity {
 	 * @see com.richpeak.rimi.ui.SuperActivity#onCreate(android.os.Bundle)
 	 */
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		Bundle states = savedInstanceState != null ? (Bundle) savedInstanceState
 				.getBundle(STATES_KEY) : null;
 		mLocalActivityManager.dispatchCreate(states);
@@ -182,7 +182,7 @@ public abstract class TabSuperActivity extends SuperActivity {
 	 * @see android.app.Activity#onPostCreate(android.os.Bundle) 备注：
 	 */
 	@Override
-	protected void onPostCreate(Bundle icicle) {
+	public void onPostCreate(Bundle icicle) {
 		super.onPostCreate(icicle);
 		ensureTabHost();
 		if (mTabHost.getCurrentTab() == -1) {

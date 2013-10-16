@@ -14,12 +14,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.activity.PicInfoActivity;
+import com.yingqida.richplay.activity.common.SuperActivity;
 import com.yingqida.richplay.baseapi.common.RichResource;
 import com.yingqida.richplay.pubuliu.DuitangInfo;
 import com.yingqida.richplay.pubuliu.ImageCache;
@@ -43,6 +48,8 @@ public class YuansuFragment extends SuperFragment implements IXListViewListener 
 
 		private Context mContext;
 		private int mType = 1;
+		@ViewInject(R.id.btnToggle)
+		private Button btnToggle;
 
 		public ContentTask(Context context, int type) {
 			super();
@@ -264,6 +271,7 @@ public class YuansuFragment extends SuperFragment implements IXListViewListener 
 
 		View convertView = inflater.inflate(R.layout.yuansu_layout, container,
 				false);
+		ViewUtils.inject(this, convertView);
 		mAdapterView = (XListView) convertView.findViewById(R.id.list);
 		mAdapterView.setPullLoadEnable(true);
 		mAdapterView.setXListViewListener(this);
@@ -328,4 +336,8 @@ public class YuansuFragment extends SuperFragment implements IXListViewListener 
 
 	}
 
+	@OnClick(R.id.btnToggle)
+	public void btnToggleClick(View view) {
+		((SuperActivity) getActivity()).getSlidingMenu().toggle();
+	}
 }

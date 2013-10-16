@@ -56,8 +56,7 @@ public class DialogActivity extends NotificationActivity {
 	private Dialog dialog;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		initTitle();
 	}

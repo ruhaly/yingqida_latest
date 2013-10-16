@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.lidroid.xutils.exception.HttpException;
 import com.yingqida.richplay.activity.LoginActivity;
+import com.yingqida.richplay.activity.MenuActivity;
 import com.yingqida.richplay.activity.common.SuperActivity;
 import com.yingqida.richplay.baseapi.AppUtil;
 import com.yingqida.richplay.baseapi.common.CrashHandler;
@@ -38,7 +39,6 @@ public class RichPlayActivity extends SuperActivity {
 
 	@Override
 	public void initLayout(Bundle paramBundle) {
-
 		setContentView(R.layout.main);
 		if (!AppUtil.isSdcardAviable()) {
 			runOnUiThread(new Runnable() {
@@ -72,7 +72,7 @@ public class RichPlayActivity extends SuperActivity {
 							HomeActivity.class));
 				} else {
 					startActivity(new Intent(getBaseContext(),
-							LoginActivity.class));
+							MenuActivity.class));
 				}
 				finish();
 			}
@@ -88,12 +88,12 @@ public class RichPlayActivity extends SuperActivity {
 	@Override
 	public void handleHttpResponse(String response, int requestId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void handleHttpException(HttpException error, String msg) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

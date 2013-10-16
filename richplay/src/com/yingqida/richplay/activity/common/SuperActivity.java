@@ -20,6 +20,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo.State;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.v4.app.FragmentTransaction;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -31,6 +32,7 @@ import android.view.WindowManager.LayoutParams;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.lidroid.xutils.HttpUtils;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.RichPlayApplication;
@@ -44,6 +46,8 @@ import com.yingqida.richplay.baseapi.common.RichResource;
 import com.yingqida.richplay.baseapi.common.RichplayUtil;
 import com.yingqida.richplay.baseapi.http.HttpResponseHanlder;
 import com.yingqida.richplay.baseapi.http.HttpTimeoutHandler;
+import com.yingqida.richplay.fragment.MenuFragment;
+import com.yingqida.richplay.fragment.SuperFragment;
 import com.yingqida.richplay.logic.LoginLogic;
 import com.yingqida.richplay.logic.SuperLogic;
 import com.yingqida.richplay.pubuliu.ImageCache;
@@ -195,9 +199,12 @@ public abstract class SuperActivity extends HandleActivity implements
 
 	}
 
-	protected void onCreate(Bundle paramBundle) {
+	protected SuperFragment mFrag;
+
+	public void onCreate(Bundle paramBundle) {
 		super.onCreate(paramBundle);
 		getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+		setBehindContentView(R.layout.menu_frame);
 		initData();
 		initLayout(paramBundle);
 		TAG = this.getClass().getName();

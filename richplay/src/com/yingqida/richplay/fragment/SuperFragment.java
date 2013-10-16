@@ -1,5 +1,7 @@
 package com.yingqida.richplay.fragment;
 
+import com.yingqida.richplay.activity.common.SuperActivity;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -34,5 +36,4 @@ public abstract class SuperFragment extends Fragment implements
 
 	public abstract View initLayout(LayoutInflater inflater,
 			ViewGroup container, Bundle savedInstanceState);
-
 }

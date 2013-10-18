@@ -5,6 +5,7 @@ public class RequestId {
 	public static final int LOGIN_REQUESTID = 10001;
 	public static final int REGISTER_REQUESTID = 10002;
 	public static final int EXIT_REQUESTID = 10003;
+	public static final int USER_TIMELINE = 10004;
 
 	/**
 	 * 发布图片

@@ -23,7 +23,7 @@ import android.widget.TextView;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.client.RequestParams;
 import com.yingqida.richplay.R;
-import com.yingqida.richplay.activity.common.SuperActivity;
+import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.baseapi.http.HttpSenderUtils;
 import com.yingqida.richplay.pubuliu.DuitangInfo;
 import com.yingqida.richplay.pubuliu.ImageFetcher;
@@ -32,7 +32,7 @@ import com.yingqida.richplay.pubuliu.PLA_AdapterView;
 import com.yingqida.richplay.pubuliu.XListView;
 import com.yingqida.richplay.pubuliu.XListView.IXListViewListener;
 
-public class WallPicActivity extends SuperActivity implements
+public class WallPicActivity extends SuperActivityForFragment implements
 		IXListViewListener {
 
 	private XListView mAdapterView = null;
@@ -329,7 +329,7 @@ public class WallPicActivity extends SuperActivity implements
 					public void onItemClick(PLA_AdapterView<?> parent,
 							View view, final int position, final long id) {
 						startActivity(new Intent(getBaseContext(),
-								PicInfoActivity.class).putExtra("PURL",
+								YuansuInfoActivity.class).putExtra("PURL",
 								mAdapter.getItem(Integer.valueOf(id + ""))
 										.getIsrc()));
 					}

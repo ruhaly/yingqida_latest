@@ -10,9 +10,9 @@ import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.yingqida.richplay.R;
-import com.yingqida.richplay.activity.common.SuperActivity;
+import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 
-public class SettingActivity extends SuperActivity {
+public class SettingActivity extends SuperActivityForFragment {
 
 	@ViewInject(R.id.btnLogout)
 	private Button btnLogout;

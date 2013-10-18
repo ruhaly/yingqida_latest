@@ -10,12 +10,12 @@ import android.view.View;
 
 import com.lidroid.xutils.exception.HttpException;
 import com.yingqida.richplay.R;
-import com.yingqida.richplay.activity.common.SuperActivity;
+import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.fragment.MyFragmentPagerAdapter;
 import com.yingqida.richplay.fragment.SuperFragment;
 import com.yingqida.richplay.fragment.YuansuFragment;
 
-public class SearchActivity extends SuperActivity {
+public class SearchActivity extends SuperActivityForFragment {
 
 	private ViewPager mPager;
 	private ArrayList<Fragment> fragmentsList;

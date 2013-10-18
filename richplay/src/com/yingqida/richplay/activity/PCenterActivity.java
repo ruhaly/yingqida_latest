@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.lidroid.xutils.exception.HttpException;
 import com.yingqida.richplay.R;
-import com.yingqida.richplay.activity.common.SuperActivity;
+import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.fragment.FayanFragment;
 import com.yingqida.richplay.fragment.MyFragmentPagerAdapter;
 import com.yingqida.richplay.fragment.SuperFragment;
@@ -21,7 +21,7 @@ import com.yingqida.richplay.fragment.WoguanzhuFragment;
 import com.yingqida.richplay.fragment.YonghuFragment;
 import com.yingqida.richplay.widget.MyViewPager;
 
-public class PCenterActivity extends SuperActivity {
+public class PCenterActivity extends SuperActivityForFragment {
 
 	private TextView textFy;
 	private TextView textWgz;

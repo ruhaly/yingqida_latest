@@ -9,10 +9,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.yingqida.richplay.R;
+import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.baseapi.common.User;
 
 public class YonghuFragment extends SuperFragment {
@@ -52,6 +58,7 @@ public class YonghuFragment extends SuperFragment {
 		convertView = inflater
 				.inflate(R.layout.yonghu_layout, container, false);
 		list_yonghu = (ListView) convertView.findViewById(R.id.list_yonghu);
+		ViewUtils.inject(this, convertView);
 		if (null == adapter) {
 			adapter = new Adapter();
 			list_yonghu.setAdapter(adapter);
@@ -92,6 +99,7 @@ public class YonghuFragment extends SuperFragment {
 				holder.text_bgz = (TextView) convertView
 						.findViewById(R.id.text_bgz);
 				convertView.setTag(holder);
+				ViewUtils.inject(this, convertView);
 			} else {
 				holder = (Holder) convertView.getTag();
 			}
@@ -118,4 +126,37 @@ public class YonghuFragment extends SuperFragment {
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	public void handleHttpResponse(String response, int rspCode, int requestId) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void handleHttpResponse(String response, int requestId) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void handleHttpException(HttpException error, String msg) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void handleHttpTimeout(int paramInt) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@ViewInject(R.id.btnToggle)
+	private Button btnToggle;
+
+	@OnClick(R.id.btnToggle)
+	public void btnToggleClick(View view) {
+		((SuperActivityForFragment) getActivity()).toggle();
+	}
+
 }

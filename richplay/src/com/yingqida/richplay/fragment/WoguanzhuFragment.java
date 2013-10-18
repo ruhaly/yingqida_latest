@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.lidroid.xutils.exception.HttpException;
 import com.yingqida.richplay.R;
 
 public class WoguanzhuFragment extends SuperFragment {
@@ -118,5 +119,29 @@ public class WoguanzhuFragment extends SuperFragment {
 			break;
 		}
 
+	}
+
+	@Override
+	public void handleHttpResponse(String response, int rspCode, int requestId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleHttpResponse(String response, int requestId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleHttpException(HttpException error, String msg) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleHttpTimeout(int paramInt) {
+		// TODO Auto-generated method stub
+		
 	}
 }

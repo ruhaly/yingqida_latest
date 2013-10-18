@@ -15,14 +15,14 @@ import android.widget.TextView;
 
 import com.lidroid.xutils.exception.HttpException;
 import com.yingqida.richplay.R;
-import com.yingqida.richplay.activity.common.SuperActivity;
+import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.baseapi.common.RichResource;
 import com.yingqida.richplay.pubuliu.DuitangInfo;
 import com.yingqida.richplay.pubuliu.ImageCache;
 import com.yingqida.richplay.pubuliu.ImageFetcher;
 import com.yingqida.richplay.pubuliu.ImageWorker.ICallBack;
 
-public class WallPicActivityOld extends SuperActivity {
+public class WallPicActivityOld extends SuperActivityForFragment {
 	private List<DuitangInfo> mInfos = new ArrayList<DuitangInfo>();
 	private ImageFetcher mImageFetcher;
 	private ListView list_wall;

@@ -9,7 +9,7 @@ import com.yingqida.richplay.widget.ArrayWheelAdapter;
 import com.yingqida.richplay.widget.OnWheelChangedListener;
 import com.yingqida.richplay.widget.WheelView;
 
-public abstract class WheelActivity extends SuperActivity {
+public abstract class WheelActivity extends SuperActivityForFragment {
 	/**
 	 * 单滚轮布局
 	 */

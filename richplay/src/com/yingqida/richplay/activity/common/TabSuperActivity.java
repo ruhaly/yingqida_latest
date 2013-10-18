@@ -27,7 +27,7 @@ import com.yingqida.richplay.R;
  * (C) 2008-2010 RichPeak 修改时间： 2011-12-13 上午11:07:21
  * 
  */
-public abstract class TabSuperActivity extends SuperActivity {
+public abstract class TabSuperActivity extends SuperActivityForFragment {
 
 	private static final String STATES_KEY = "android:states";
 

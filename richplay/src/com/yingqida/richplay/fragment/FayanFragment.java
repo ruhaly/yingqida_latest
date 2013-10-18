@@ -18,8 +18,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.lidroid.xutils.exception.HttpException;
 import com.yingqida.richplay.R;
-import com.yingqida.richplay.activity.PicInfoActivity;
+import com.yingqida.richplay.activity.YuansuInfoActivity;
 import com.yingqida.richplay.baseapi.common.RichResource;
 import com.yingqida.richplay.pubuliu.DuitangInfo;
 import com.yingqida.richplay.pubuliu.ImageCache;
@@ -293,7 +294,7 @@ public class FayanFragment extends SuperFragment implements IXListViewListener {
 							View view, int position, long id) {
 						startActivity(new Intent(
 								getActivity().getBaseContext(),
-								PicInfoActivity.class));
+								YuansuInfoActivity.class));
 					}
 				});
 		return convertView;
@@ -324,6 +325,30 @@ public class FayanFragment extends SuperFragment implements IXListViewListener {
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void handleHttpResponse(String response, int rspCode, int requestId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleHttpResponse(String response, int requestId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleHttpException(HttpException error, String msg) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleHttpTimeout(int paramInt) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

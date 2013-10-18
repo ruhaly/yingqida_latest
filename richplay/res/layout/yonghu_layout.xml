@@ -4,13 +4,20 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    <Button
+        android:id="@+id/btnToggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|center_vertical"
+        android:text="点击" />
+
     <ListView
         android:id="@+id/list_yonghu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:cacheColorHint="#00000000" 
+        android:cacheColorHint="#00000000"
         android:divider="@color/splid"
-        android:dividerHeight="0.5dp">
+        android:dividerHeight="0.5dp" >
     </ListView>
 
 </LinearLayout>

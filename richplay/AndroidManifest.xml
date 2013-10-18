@@ -65,7 +65,7 @@
         <activity android:name=".activity.SettingActivity" />
         <activity android:name=".activity.PCenterActivity" />
         <activity
-            android:name=".activity.PicInfoActivity"
+            android:name=".activity.YuansuInfoActivity"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
         <activity android:name=".activity.UserEditActivity" />
         <activity

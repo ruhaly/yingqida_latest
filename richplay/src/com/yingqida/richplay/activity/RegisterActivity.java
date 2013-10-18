@@ -4,9 +4,9 @@ import android.os.Bundle;
 
 import com.lidroid.xutils.exception.HttpException;
 import com.yingqida.richplay.R;
-import com.yingqida.richplay.activity.common.SuperActivity;
+import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 
-public class RegisterActivity extends SuperActivity {
+public class RegisterActivity extends SuperActivityForFragment {
 
 	@Override
 	public void initData() {

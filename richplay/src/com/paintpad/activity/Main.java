@@ -53,7 +53,7 @@ import com.paintpad.view.OkDialog;
 import com.paintpad.view.PaintView;
 import com.paintpad.view.SaveDialog;
 import com.yingqida.richplay.R;
-import com.yingqida.richplay.activity.common.SuperActivity;
+import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.pubuliu.ImageFetcher;
 import com.yingqida.richplay.pubuliu.ImageWorker.ICallBack;
 
@@ -63,7 +63,7 @@ import com.yingqida.richplay.pubuliu.ImageWorker.ICallBack;
  * @author tf
  * 
  */
-public class Main extends SuperActivity implements OnClickListener {
+public class Main extends SuperActivityForFragment implements OnClickListener {
 	// PaintView
 	private PaintView mPaintView = null;
 

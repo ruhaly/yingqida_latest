@@ -14,9 +14,9 @@ import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.activity.LoginActivity;
-import com.yingqida.richplay.activity.common.SuperActivity;
+import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 
-public class WebsiteActivity extends SuperActivity {
+public class WebsiteActivity extends SuperActivityForFragment {
 
 	@ViewInject(R.id.webView)
 	private WebView webView;

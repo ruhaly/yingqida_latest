@@ -1,6 +1,5 @@
 package com.yingqida.richplay.baseapi.common;
 
-
 /**
  * 用户
  * 
@@ -30,6 +29,26 @@ public class User {
 	public int sex;
 
 	public String address;
+
+	public String headUrl;
+
+	private String content;
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getHeadUrl() {
+		return headUrl;
+	}
+
+	public void setHeadUrl(String headUrl) {
+		this.headUrl = headUrl;
+	}
 
 	public String getUid() {
 		return uid;

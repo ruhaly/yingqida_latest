@@ -31,7 +31,7 @@ import com.baidu.location.LocationClientOption;
 import com.lidroid.xutils.exception.HttpException;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.activity.common.PhotoActivity;
-import com.yingqida.richplay.activity.common.SuperActivity;
+import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.baseapi.ActivityResultCode;
 import com.yingqida.richplay.baseapi.AppLog;
 import com.yingqida.richplay.baseapi.ImageUtil;
@@ -41,7 +41,7 @@ import com.yingqida.richplay.entity.RleasePicEntity;
 import com.yingqida.richplay.packet.HttpSender;
 import com.yingqida.richplay.packet.RequestId;
 
-public class ReleasePicActivity extends SuperActivity implements
+public class ReleasePicActivity extends SuperActivityForFragment implements
 		ActivityResultCode {
 
 	private ImageView imgView;

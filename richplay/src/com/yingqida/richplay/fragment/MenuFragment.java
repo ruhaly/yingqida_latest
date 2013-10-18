@@ -7,20 +7,21 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
-import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.yingqida.richplay.R;
-import com.yingqida.richplay.activity.MenuActivity;
-import com.yingqida.richplay.activity.common.SuperActivity;
+import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.entity.Menu;
 
-public class MenuFragment extends SuperFragment {
+public class MenuFragment extends SuperFragment implements OnItemClickListener {
 
 	@ViewInject(R.id.listViewMenu)
 	private ListView listViewMenu;
@@ -71,8 +72,10 @@ public class MenuFragment extends SuperFragment {
 	@Override
 	public View initLayout(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		convertView = inflater.inflate(R.layout.menu_fragment_layout, null);
+		if (convertView == null)
+			convertView = inflater.inflate(R.layout.menu_fragment_layout, null);
 		ViewUtils.inject(this, convertView);
+		listViewMenu.setOnItemClickListener(this);
 		if (null == adapter) {
 			adapter = new Adapter();
 			listViewMenu.setAdapter(adapter);
@@ -119,6 +122,48 @@ public class MenuFragment extends SuperFragment {
 		class Holder {
 			TextView menuName;
 		}
+	}
+
+	@Override
+	public void handleHttpResponse(String response, int rspCode, int requestId) {
+
+	}
+
+	@Override
+	public void handleHttpResponse(String response, int requestId) {
+
+	}
+
+	@Override
+	public void handleHttpException(HttpException error, String msg) {
+
+	}
+
+	@Override
+	public void handleHttpTimeout(int paramInt) {
+
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		SuperFragment fragment = null;
+		switch (position) {
+		case 0: {
+			fragment = new PageHomeFragment();
+			break;
+		}
+		case 1: {
+			fragment = new YonghuFragment();
+			break;
+		}
+		case 5: {
+			((SuperActivityForFragment) getActivity()).showLogoutDialog();
+			break;
+		}
+		}
+		if (fragment != null)
+			switchFragment(fragment);
 	}
 
 }

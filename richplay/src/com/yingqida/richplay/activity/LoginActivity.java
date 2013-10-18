@@ -35,13 +35,13 @@ import com.twitter.WebsiteActivity;
 import com.yingqida.richplay.HomeActivity;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.RichPlayApplication;
-import com.yingqida.richplay.activity.common.SuperActivity;
+import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.baseapi.common.GlobalVar;
 import com.yingqida.richplay.baseapi.common.User;
 import com.yingqida.richplay.logic.LoginLogic;
 import com.yingqida.richplay.logic.SuperLogic;
 
-public class LoginActivity extends SuperActivity {
+public class LoginActivity extends SuperActivityForFragment {
 
 	public LoginLogic loginLogic;
 

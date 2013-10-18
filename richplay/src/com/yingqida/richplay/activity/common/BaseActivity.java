@@ -10,7 +10,7 @@ import com.yingqida.richplay.R;
 import com.yingqida.richplay.fragment.MenuFragment;
 import com.yingqida.richplay.fragment.SuperFragment;
 
-public class BaseActivity extends SuperActivity {
+public class BaseActivity extends SuperActivityForFragment {
 
 	private int mTitleRes;
 	protected SuperFragment mFrag;

@@ -22,7 +22,7 @@ import android.widget.Button;
 import com.lidroid.xutils.exception.HttpException;
 import com.yingqida.richplay.HomeActivity;
 import com.yingqida.richplay.R;
-import com.yingqida.richplay.activity.common.SuperActivity;
+import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.baseapi.ActivityResultCode;
 import com.yingqida.richplay.baseapi.AppLog;
 import com.yingqida.richplay.baseapi.http.HttpRequest;
@@ -43,7 +43,7 @@ import com.yingqida.richplay.packet.RequestId;
  * @version 1.0.0
  * 
  */
-public class SampleWallPicActivity extends SuperActivity implements
+public class SampleWallPicActivity extends SuperActivityForFragment implements
 		ActivityResultCode {
 
 	private Button btn_take;

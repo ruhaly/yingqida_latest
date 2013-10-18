@@ -17,13 +17,12 @@ import com.yingqida.richplay.packet.RequestId;
 
 /**
  * 
- *  Class Name: LoginLogic.java
- *  Function:
- *  
- *     Modifications:   
- *  
- *  @author ruhaly  DateTime 2013-10-15 下午3:43:35    
- *  @version 1.0
+ * Class Name: LoginLogic.java Function:
+ * 
+ * Modifications:
+ * 
+ * @author ruhaly DateTime 2013-10-15 下午3:43:35
+ * @version 1.0
  */
 public class LoginLogic extends SuperLogic implements HttpAction {
 
@@ -43,7 +42,7 @@ public class LoginLogic extends SuperLogic implements HttpAction {
 		params.addBodyParameter("email", account);
 		params.addBodyParameter("password", pwd);
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_LOGIN, params,
-				HttpSenderUtils.METHOD_POST, handler, httpRequest,
+				HttpSenderUtils.METHOD_POST, httpRequest,
 				RequestId.LOGIN_REQUESTID, this);
 	}
 
@@ -53,7 +52,7 @@ public class LoginLogic extends SuperLogic implements HttpAction {
 		params.addBodyParameter("password", pwd);
 		params.addBodyParameter("username", nickName);
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_REGISTER, params,
-				HttpSenderUtils.METHOD_POST, handler, httpRequest,
+				HttpSenderUtils.METHOD_POST, httpRequest,
 				RequestId.REGISTER_REQUESTID, this);
 	}
 
@@ -149,7 +148,7 @@ public class LoginLogic extends SuperLogic implements HttpAction {
 				.getIns().getAppShare()).remarkToken;
 		params.addBodyParameter("remark_token", remark_token);
 		HttpSenderUtils.sendMsgImpl(ACTION_EXIT, params,
-				HttpSenderUtils.METHOD_GET, handler, httpRequest,
+				HttpSenderUtils.METHOD_GET, httpRequest,
 				RequestId.EXIT_REQUESTID, this);
 	}
 }

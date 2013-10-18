@@ -21,14 +21,14 @@ import com.yingqida.richplay.packet.HttpAction;
  * @version 1.0
  */
 public class HttpSenderUtils implements HttpAction {
-	public static final String DEFAULT_HOST = "http://dev.remark2/api/v1";
+	public static final String DEFAULT_HOST = "http://hdev.remark2/api/v1";
 	public static final String DEFAULT_TYPE = ".json";
 	public static final byte METHOD_GET = 0;
 	public static final byte METHOD_POST = 1;
 
 	public static HttpHandler<String> sendMsgImpl(String action,
-			RequestParams params, int method, final Handler mHandler,
-			HttpUtils http, final int requestId, final SuperLogic logic) {
+			RequestParams params, int method, HttpUtils http,
+			final int requestId, final SuperLogic logic) {
 
 		HttpMethod httpMethod = method == METHOD_GET ? HttpMethod.GET
 				: HttpMethod.POST;

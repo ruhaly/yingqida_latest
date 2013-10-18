@@ -12,6 +12,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.lidroid.xutils.exception.HttpException;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.baseapi.common.User;
 
@@ -117,5 +118,29 @@ public class GuanzhuwoFragment extends SuperFragment {
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void handleHttpResponse(String response, int rspCode, int requestId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleHttpResponse(String response, int requestId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleHttpException(HttpException error, String msg) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleHttpTimeout(int paramInt) {
+		// TODO Auto-generated method stub
+		
 	}
 }

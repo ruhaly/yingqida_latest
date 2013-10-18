@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.lidroid.xutils.exception.HttpException;
 import com.yingqida.richplay.R;
-import com.yingqida.richplay.activity.common.SuperActivity;
+import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.baseapi.AppLog;
 import com.yingqida.richplay.baseapi.ImageUtil;
 import com.yingqida.richplay.baseapi.common.DownloadEntity;
@@ -23,7 +23,7 @@ import com.yingqida.richplay.packet.HttpSender;
 import com.yingqida.richplay.packet.HttpXml;
 import com.yingqida.richplay.packet.RequestId;
 
-public class WallInfoActivity extends SuperActivity {
+public class WallInfoActivity extends SuperActivityForFragment {
 	private WallPicInfoLogic logic;
 	public static final int WALLPICINFO = 2;
 	public static final int UPDATE_LAYOUT = 1;

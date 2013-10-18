@@ -20,11 +20,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lidroid.xutils.ViewUtils;
-import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.yingqida.richplay.R;
-import com.yingqida.richplay.activity.PicInfoActivity;
-import com.yingqida.richplay.activity.common.SuperActivity;
+import com.yingqida.richplay.activity.MenuActivity;
+import com.yingqida.richplay.activity.YuansuInfoActivity;
+import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.baseapi.common.RichResource;
 import com.yingqida.richplay.pubuliu.DuitangInfo;
 import com.yingqida.richplay.pubuliu.ImageCache;
@@ -42,14 +43,13 @@ public class YuansuFragment extends SuperFragment implements IXListViewListener 
 	private int currentPage = 0;
 	private static final int HEADWIDTH = 40;
 	ContentTask task = new ContentTask(getActivity(), 2);
+	private Button btnToggle;
 
 	private class ContentTask extends
 			AsyncTask<String, Integer, List<DuitangInfo>> {
 
 		private Context mContext;
 		private int mType = 1;
-		@ViewInject(R.id.btnToggle)
-		private Button btnToggle;
 
 		public ContentTask(Context context, int type) {
 			super();
@@ -300,7 +300,7 @@ public class YuansuFragment extends SuperFragment implements IXListViewListener 
 
 						startActivity(new Intent(
 								getActivity().getBaseContext(),
-								PicInfoActivity.class).putExtra("PURL",
+								YuansuInfoActivity.class).putExtra("PURL",
 								mAdapter.getItem(Integer.valueOf(id + ""))
 										.getIsrc()));
 
@@ -338,6 +338,30 @@ public class YuansuFragment extends SuperFragment implements IXListViewListener 
 
 	@OnClick(R.id.btnToggle)
 	public void btnToggleClick(View view) {
-		((SuperActivity) getActivity()).getSlidingMenu().toggle();
+		((SuperActivityForFragment) getActivity()).getSlidingMenu().toggle();
+	}
+
+	@Override
+	public void handleHttpResponse(String response, int rspCode, int requestId) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void handleHttpResponse(String response, int requestId) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void handleHttpException(HttpException error, String msg) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void handleHttpTimeout(int paramInt) {
+		// TODO Auto-generated method stub
+
 	}
 }

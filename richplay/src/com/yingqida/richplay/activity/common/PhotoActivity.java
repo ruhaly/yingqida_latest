@@ -10,7 +10,7 @@ import com.lidroid.xutils.exception.HttpException;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.baseapi.ImageUtil;
 
-public class PhotoActivity extends SuperActivity {
+public class PhotoActivity extends SuperActivityForFragment {
 
 	public static final String EXTRA_URL = "EXTRA_URL";
 	public static final String ISDOWNPIC = "ISDOWNPIC";

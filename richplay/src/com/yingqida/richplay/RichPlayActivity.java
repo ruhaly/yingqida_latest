@@ -10,14 +10,14 @@ import android.widget.Toast;
 import com.lidroid.xutils.exception.HttpException;
 import com.yingqida.richplay.activity.LoginActivity;
 import com.yingqida.richplay.activity.MenuActivity;
-import com.yingqida.richplay.activity.common.SuperActivity;
+import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.baseapi.AppUtil;
 import com.yingqida.richplay.baseapi.common.CrashHandler;
 import com.yingqida.richplay.baseapi.common.FileUtil;
 import com.yingqida.richplay.baseapi.map.LocManager;
 import com.yingqida.richplay.service.RichPlayService;
 
-public class RichPlayActivity extends SuperActivity {
+public class RichPlayActivity extends SuperActivityForFragment {
 
 	@Override
 	public void onClick(View v) {

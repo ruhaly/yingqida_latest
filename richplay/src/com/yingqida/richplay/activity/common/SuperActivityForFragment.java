@@ -52,7 +52,7 @@ import com.yingqida.richplay.pubuliu.ImageFetcher;
 import com.yingqida.richplay.pubuliu.ImageWorker.ICallBack;
 import com.yingqida.richplay.service.NetWorkProxy;
 
-public abstract class SuperActivity extends HandleActivity implements
+public abstract class SuperActivityForFragment extends HandleActivityForFragment implements
 		HttpResponseHanlder, HttpTimeoutHandler, View.OnClickListener {
 	/*
 	 * (non-Javadoc)
@@ -80,7 +80,7 @@ public abstract class SuperActivity extends HandleActivity implements
 	// 是否清除播放界面的数据
 	public static boolean isClearDate = false;
 
-	public SuperActivity() {
+	public SuperActivityForFragment() {
 	}
 
 	public abstract void initData();
@@ -201,6 +201,7 @@ public abstract class SuperActivity extends HandleActivity implements
 	public void onCreate(Bundle paramBundle) {
 		super.onCreate(paramBundle);
 		getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+		setBehindContentView(R.layout.menu_frame);
 		initData();
 		initLayout(paramBundle);
 		TAG = this.getClass().getName();
@@ -326,7 +327,7 @@ public abstract class SuperActivity extends HandleActivity implements
 	class AAMessageReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			if (!SuperActivity.this.getClass().getName()
+			if (!SuperActivityForFragment.this.getClass().getName()
 					.equals(ActivityStack.getIns().topActivityName()))
 				return;
 		}
@@ -397,7 +398,7 @@ public abstract class SuperActivity extends HandleActivity implements
 	public String parseXML(String xmlPath) {
 		StringBuffer sb = new StringBuffer();
 
-		ClassLoader cl = SuperActivity.class.getClassLoader();
+		ClassLoader cl = SuperActivityForFragment.class.getClassLoader();
 		InputStream stream = cl.getResourceAsStream(xmlPath);
 		int length = 0;
 		byte[] b = new byte[1024];

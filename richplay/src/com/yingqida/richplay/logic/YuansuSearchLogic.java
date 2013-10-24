@@ -16,23 +16,24 @@ import com.yingqida.richplay.packet.HttpAction;
 import com.yingqida.richplay.packet.JsonParse;
 import com.yingqida.richplay.packet.RequestId;
 
-public class PageHomeLogic extends SuperLogic implements HttpAction {
+public class YuansuSearchLogic extends SuperLogic implements HttpAction {
 
-	private static PageHomeLogic ins;
+	private static YuansuSearchLogic ins;
 
 	public List<Yuansu> list = new ArrayList<Yuansu>();
 
 	private HttpHandler<String> httpHanlder;
 
 	public int curPage = 1;
-	public String perPage = "50";
+	public String perPage = "20";
 	public int targetCurPage = 1;
+
 	// 0刷新；1加载更多
 	public int type = 0;
 
-	public synchronized static PageHomeLogic getInstance() {
+	public synchronized static YuansuSearchLogic getInstance() {
 		if (null == ins) {
-			ins = new PageHomeLogic();
+			ins = new YuansuSearchLogic();
 		}
 		return ins;
 	}
@@ -46,7 +47,7 @@ public class PageHomeLogic extends SuperLogic implements HttpAction {
 	public void handleHttpResponse(String response, int requestId) {
 
 		switch (requestId) {
-		case RequestId.HOME_TIMELINE: {
+		case RequestId.GET_YUANSU: {
 			httpPageHomeYuanSuResponse(response);
 			break;
 		}
@@ -70,8 +71,8 @@ public class PageHomeLogic extends SuperLogic implements HttpAction {
 		httpHanlder.stop();
 	}
 
-	public void sendPageHomeYuanSuRequest(String uid, String remark_token,
-			int type) {
+	public void sendPageHomeYuanSuRequest(String remark_token, int type,
+			String keyword) {
 		this.type = type;
 		if (type == 0) {
 			targetCurPage = 1;
@@ -82,9 +83,10 @@ public class PageHomeLogic extends SuperLogic implements HttpAction {
 		params.addQueryStringParameter("remark_token", remark_token);
 		params.addQueryStringParameter("cur_page", targetCurPage + "");
 		params.addQueryStringParameter("per_page", perPage);
-		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_HOME_TIMELINE, params,
-				HttpSenderUtils.METHOD_GET, httpUtils, RequestId.HOME_TIMELINE,
-				this);
+		params.addQueryStringParameter("keyword", keyword);
+		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_SEARCH_COMMENT,
+				params, HttpSenderUtils.METHOD_GET, httpUtils,
+				RequestId.GET_YUANSU, this);
 	}
 
 	/**
@@ -104,7 +106,7 @@ public class PageHomeLogic extends SuperLogic implements HttpAction {
 				if (tempList != null) {
 					if (type == 0)
 						list.clear();
-					list.addAll(tempList);
+					list.addAll(JsonParse.parsePageHomeYuansuRes(response));
 				}
 				if (null == list) {
 					list = new ArrayList<Yuansu>();
@@ -112,7 +114,7 @@ public class PageHomeLogic extends SuperLogic implements HttpAction {
 				if (!list.isEmpty()) {
 					curPage = targetCurPage;
 				}
-				handler.sendEmptyMessage(HOME_PAGE_YUANSU_SUCCESS_MSGWHAT);
+				handler.sendEmptyMessage(GET_SEARCH_YUANSU_SUCCESS_MSGWHAT);
 			} else {
 				handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
 			}

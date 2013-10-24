@@ -3,21 +3,30 @@ package com.yingqida.richplay.fragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.yingqida.richplay.R;
+import com.yingqida.richplay.activity.ModifyPWDActivity;
 import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.entity.Menu;
 
@@ -25,6 +34,9 @@ public class MenuFragment extends SuperFragment implements OnItemClickListener {
 
 	@ViewInject(R.id.listViewMenu)
 	private ListView listViewMenu;
+
+	@ViewInject(R.id.etSearch)
+	private EditText etSearch;
 
 	private Adapter adapter;
 
@@ -82,7 +94,46 @@ public class MenuFragment extends SuperFragment implements OnItemClickListener {
 		} else {
 			adapter.notifyDataSetChanged();
 		}
+		etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+			@SuppressLint("NewApi")
+			@Override
+			public boolean onEditorAction(TextView v, int actionId,
+					KeyEvent event) {
+
+				if (etSearch.getText().toString().trim().isEmpty()) {
+					return false;
+				} else if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+					InputMethodManager imm = (InputMethodManager) v
+							.getContext().getSystemService(
+									Context.INPUT_METHOD_SERVICE);
+					imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+					etSearch.setFocusable(true);
+					etSearch.setFocusableInTouchMode(true);
+					etSearch.requestFocus();
+					requestSearch();
+					return true;
+				}
+				return false;
+
+			}
+		});
 		return convertView;
+	}
+
+	SuperFragment fragment;
+
+	/**
+	 * 
+	 * Function:跳转到搜索界面
+	 * 
+	 * @author ruhaly DateTime 2013-10-21 下午7:15:53
+	 */
+	public void requestSearch() {
+		toggle();
+		fragment = SearchFragment.getIns(etSearch.getText().toString().trim());
+		etSearch.setText("");
+		switchFragment(fragment);
 	}
 
 	class Adapter extends BaseAdapter {
@@ -150,14 +201,20 @@ public class MenuFragment extends SuperFragment implements OnItemClickListener {
 		SuperFragment fragment = null;
 		switch (position) {
 		case 0: {
-			fragment = new PageHomeFragment();
+			fragment = PageHomeFragment.getIns();
 			break;
 		}
 		case 1: {
-			fragment = new YonghuFragment();
 			break;
 		}
 		case 5: {
+			toggle();
+			getActivity().startActivity(
+					new Intent(getActivity().getBaseContext(),
+							ModifyPWDActivity.class));
+			break;
+		}
+		case 6: {
 			((SuperActivityForFragment) getActivity()).showLogoutDialog();
 			break;
 		}
@@ -166,4 +223,50 @@ public class MenuFragment extends SuperFragment implements OnItemClickListener {
 			switchFragment(fragment);
 	}
 
+	@OnClick(R.id.tvMain)
+	public void tvMainClick(View view) {
+		SuperFragment fragment = PageHomeFragment.getIns();
+		if (fragment != null)
+			switchFragment(fragment);
+	}
+
+	@OnClick(R.id.framePcenter)
+	public void framePcenterClick(View view) {
+		SuperFragment fragment = PageHomeFragment.getIns();
+		if (fragment != null)
+			switchFragment(fragment);
+	}
+
+	@OnClick(R.id.tvPersoninfo)
+	public void tvPersoninfoClick(View view) {
+		SuperFragment fragment = PageHomeFragment.getIns();
+		if (fragment != null)
+			switchFragment(fragment);
+	}
+
+	@OnClick(R.id.tvGuanyu)
+	public void tvGuanyuClick(View view) {
+		SuperFragment fragment = GuanyuFragment.getIns();
+		if (fragment != null)
+			switchFragment(fragment);
+	}
+
+	@OnClick(R.id.tvUpdate)
+	public void tvUpdateClick(View view) {
+		SuperFragment fragment = PageHomeFragment.getIns();
+		if (fragment != null)
+			switchFragment(fragment);
+	}
+
+	@OnClick(R.id.tvClearCache)
+	public void tvClearCacheClick(View view) {
+		SuperFragment fragment = PageHomeFragment.getIns();
+		if (fragment != null)
+			switchFragment(fragment);
+	}
+
+	@OnClick(R.id.tvZhuxiao)
+	public void tvZhuxiaoClick(View view) {
+		((SuperActivityForFragment) getActivity()).showLogoutDialog();
+	}
 }

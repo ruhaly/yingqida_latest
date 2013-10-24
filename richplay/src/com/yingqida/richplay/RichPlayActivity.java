@@ -72,7 +72,7 @@ public class RichPlayActivity extends SuperActivityForFragment {
 							HomeActivity.class));
 				} else {
 					startActivity(new Intent(getBaseContext(),
-							MenuActivity.class));
+							LoginActivity.class));
 				}
 				finish();
 			}

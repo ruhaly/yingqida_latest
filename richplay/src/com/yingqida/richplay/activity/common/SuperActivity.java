@@ -40,8 +40,10 @@ import com.yingqida.richplay.baseapi.Constant;
 import com.yingqida.richplay.baseapi.ImageUtil;
 import com.yingqida.richplay.baseapi.common.ActivityStack;
 import com.yingqida.richplay.baseapi.common.FileUtil;
+import com.yingqida.richplay.baseapi.common.GlobalVar;
 import com.yingqida.richplay.baseapi.common.RichResource;
 import com.yingqida.richplay.baseapi.common.RichplayUtil;
+import com.yingqida.richplay.baseapi.common.User;
 import com.yingqida.richplay.baseapi.http.HttpResponseHanlder;
 import com.yingqida.richplay.baseapi.http.HttpTimeoutHandler;
 import com.yingqida.richplay.fragment.SuperFragment;
@@ -500,5 +502,7 @@ public abstract class SuperActivity extends HandleActivity implements
 		lay.width = dm.widthPixels;
 	}
 
-
+	public User getUser() {
+		return GlobalVar.ins.getUser(getAppShare());
+	}
 }

@@ -13,7 +13,6 @@ public class MyViewPager extends ViewPager {
 
 	public MyViewPager(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -21,4 +20,8 @@ public class MyViewPager extends ViewPager {
 		return false;
 	}
 
+	@Override
+	public boolean onTouchEvent(MotionEvent arg0) {
+		return false;
+	}
 }

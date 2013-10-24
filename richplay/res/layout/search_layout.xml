@@ -6,12 +6,15 @@
     android:gravity="center_horizontal"
     android:orientation="vertical" >
 
+    <include layout="@layout/title_layout" />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:background="@drawable/sousuo_frame_bg"
-        android:gravity="center" >
+        android:gravity="center"
+        android:visibility="gone" >
 
         <EditText
             android:layout_width="wrap_content"
@@ -67,15 +70,58 @@
                 android:textColor="@color/Color_Black" />
         </LinearLayout>
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/vPager"
-            android:layout_width="wrap_content"
-            android:layout_height="0dip"
-            android:layout_gravity="center"
-            android:layout_weight="1.0"
-            android:background="@color/mi_white"
-            android:flipInterval="30"
-            android:persistentDrawingCache="animation" />
+        <LinearLayout
+            android:id="@+id/frameYs"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingTop="3dp" >
+
+            <com.yingqida.richplay.widget.PullToRefreshView
+                android:id="@+id/pullToRefreshViewYs"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="3dp" >
+
+                <ListView
+                    android:id="@+id/listviewYs"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:verticalSpacing="2dp" >
+                </ListView>
+            </com.yingqida.richplay.widget.PullToRefreshView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/frameYh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <com.yingqida.richplay.widget.PullToRefreshView
+                android:id="@+id/pullToRefreshViewYh"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="3dp" >
+
+                <GridView
+                    android:id="@+id/gridviewYh"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:horizontalSpacing="2dp"
+                    android:listSelector="@color/transparent"
+                    android:numColumns="2"
+                    android:verticalSpacing="2dp" >
+                </GridView>
+            </com.yingqida.richplay.widget.PullToRefreshView>
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

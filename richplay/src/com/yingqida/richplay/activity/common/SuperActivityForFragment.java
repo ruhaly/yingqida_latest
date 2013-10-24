@@ -40,8 +40,10 @@ import com.yingqida.richplay.baseapi.Constant;
 import com.yingqida.richplay.baseapi.ImageUtil;
 import com.yingqida.richplay.baseapi.common.ActivityStack;
 import com.yingqida.richplay.baseapi.common.FileUtil;
+import com.yingqida.richplay.baseapi.common.GlobalVar;
 import com.yingqida.richplay.baseapi.common.RichResource;
 import com.yingqida.richplay.baseapi.common.RichplayUtil;
+import com.yingqida.richplay.baseapi.common.User;
 import com.yingqida.richplay.baseapi.http.HttpResponseHanlder;
 import com.yingqida.richplay.baseapi.http.HttpTimeoutHandler;
 import com.yingqida.richplay.fragment.SuperFragment;
@@ -52,8 +54,9 @@ import com.yingqida.richplay.pubuliu.ImageFetcher;
 import com.yingqida.richplay.pubuliu.ImageWorker.ICallBack;
 import com.yingqida.richplay.service.NetWorkProxy;
 
-public abstract class SuperActivityForFragment extends HandleActivityForFragment implements
-		HttpResponseHanlder, HttpTimeoutHandler, View.OnClickListener {
+public abstract class SuperActivityForFragment extends
+		HandleActivityForFragment implements HttpResponseHanlder,
+		HttpTimeoutHandler, View.OnClickListener {
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -491,7 +494,7 @@ public abstract class SuperActivityForFragment extends HandleActivityForFragment
 		}
 	}
 
-	private void setParams(LayoutParams lay) {
+	public void setParams(LayoutParams lay) {
 		DisplayMetrics dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		Rect rect = new Rect();
@@ -501,5 +504,7 @@ public abstract class SuperActivityForFragment extends HandleActivityForFragment
 		lay.width = dm.widthPixels;
 	}
 
-
+	public User getUser() {
+		return GlobalVar.ins.getUser(getAppShare());
+	}
 }

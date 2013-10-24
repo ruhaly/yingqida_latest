@@ -32,16 +32,15 @@ import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.twitter.WebsiteActivity;
-import com.yingqida.richplay.HomeActivity;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.RichPlayApplication;
-import com.yingqida.richplay.activity.common.SuperActivityForFragment;
+import com.yingqida.richplay.activity.common.SuperActivity;
 import com.yingqida.richplay.baseapi.common.GlobalVar;
 import com.yingqida.richplay.baseapi.common.User;
 import com.yingqida.richplay.logic.LoginLogic;
 import com.yingqida.richplay.logic.SuperLogic;
 
-public class LoginActivity extends SuperActivityForFragment {
+public class LoginActivity extends SuperActivity {
 
 	public LoginLogic loginLogic;
 
@@ -301,6 +300,7 @@ public class LoginActivity extends SuperActivityForFragment {
 		showLoginDialog();
 	}
 
+	@SuppressLint("NewApi")
 	public void showLoginDialog() {
 
 		View viewLogin = LayoutInflater.from(getBaseContext()).inflate(
@@ -312,7 +312,7 @@ public class LoginActivity extends SuperActivityForFragment {
 		btn_login.setOnClickListener(this);
 		showDialog(viewLogin);
 		User user = GlobalVar.ins.getUser(getAppShare());
-		if (null != user) {
+		if (null != user && !user.getAccount().isEmpty()) {
 			text_account_login.setText(user.getAccount());
 		}
 
@@ -433,7 +433,7 @@ public class LoginActivity extends SuperActivityForFragment {
 	 * @author ruhaly DateTime 2013-10-11 上午10:32:57
 	 */
 	public void toHomeActivity() {
-		Intent intent = new Intent(getBaseContext(), HomeActivity.class);
+		Intent intent = new Intent(getBaseContext(), MenuActivity.class);
 		startActivity(intent);
 		finish();
 	}

@@ -3,123 +3,138 @@ package com.yingqida.richplay.activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Message;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.lidroid.xutils.BitmapUtils;
+import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
-import com.paintpad.activity.Main;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.activity.common.SuperActivity;
-import com.yingqida.richplay.baseapi.http.HttpSenderUtils;
+import com.yingqida.richplay.baseapi.Constant;
 import com.yingqida.richplay.entity.Comment;
-import com.yingqida.richplay.pubuliu.ImageFetcher;
-import com.yingqida.richplay.pubuliu.ImageWorker.ICallBack;
-import com.yingqida.richplay.widget.XListView;
-import com.yingqida.richplay.widget.XListView.IXListViewListener;
+import com.yingqida.richplay.logic.SuperLogic;
+import com.yingqida.richplay.logic.YuansuCommentLogic;
+import com.yingqida.richplay.widget.PullToRefreshView;
 
-public class YuansuInfoActivity extends SuperActivity implements
-		IXListViewListener {
+public class YuansuInfoActivity extends SuperActivity {
+
+	@ViewInject(R.id.pullToRefreshView)
+	private PullToRefreshView pullToRefreshView;
+
 	@ViewInject(R.id.listComm)
-	private XListView listComm;
+	private ListView listComm;
 
 	Adapter adapter;
 
 	private List<Comment> list = new ArrayList<Comment>();
 
-	private ImageView img;
-	public ImageFetcher mImageFetcher;
+	private HttpUtils httpUtil;
 
-	private HttpSenderUtils httputils;
+	private YuansuCommentLogic logic;
+	private BitmapUtils bitmapUtilsContent;
+	private BitmapUtils bitmapUtilsHead;
 
 	@Override
 	public void initData() {
-		for (int i = 0; i < 20; i++) {
-			Comment c = new Comment();
-			c.setUname("user" + i);
-			c.setCmsg("usermsg" + i);
-			list.add(c);
-		}
-	}
-
-	private ICallBack callback = new ICallBack() {
-
-		@Override
-		public void invoke(final String name, int code) {
-			if (200 == code) {
-				runOnUiThread(new Runnable() {
-
-					@Override
-					public void run() {
-						showToast("success");
-						updateView();
-					}
-				});
-			}
-		}
-	};
-
-	public void updateView() {
-		img.setOnLongClickListener(new View.OnLongClickListener() {
-
-			@Override
-			public boolean onLongClick(View v) {
-
-				startActivity(new Intent(getBaseContext(), Main.class)
-						.putExtra("PURL", purl));
-				showToast("setOnLongClickListener");
-				return false;
-			}
-		});
-		img.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-
-				startActivity(new Intent(getBaseContext(), Main.class)
-						.putExtra("PURL", purl));
-			}
-		});
+		logic = YuansuCommentLogic.getInstance();
 	}
 
 	String purl = "";
+	String remarkId = "";
+
+	View headerView;
+	ImageView imgGuanZhu;
+	ImageView imgShare;
+	ImageView imgPingLun;
+	ImageView imgContent;
+	TextView text_word_content;
+	TextView text_name;
+	TextView text_msg;
+	TextView text_share_count;
+	String yuansuType;
+	String content;
+	String shareCount;
 
 	@Override
 	public void initLayout(Bundle paramBundle) {
 		setContentView(R.layout.picinfo_layout);
 		ViewUtils.inject(this);
 		purl = getIntent().getStringExtra("PURL");
-		listComm = (XListView) findViewById(R.id.listComm);
-		listComm.setPullLoadEnable(true);
-		listComm.setPullRefreshEnable(false);
-		listComm.setXListViewListener(this);
-		img = (ImageView) findViewById(R.id.img);
-		img.setOnClickListener(new View.OnClickListener() {
+		remarkId = getIntent().getStringExtra("remarkId");
+		headerView = LayoutInflater.from(getBaseContext()).inflate(
+				R.layout.yuansu_top_layout, null);
+
+		listComm.addHeaderView(headerView);
+		text_name = (TextView) headerView.findViewById(R.id.text_name);
+		text_msg = (TextView) headerView.findViewById(R.id.text_msg);
+
+		imgGuanZhu = (ImageView) headerView.findViewById(R.id.imgGuanZhu);
+		imgShare = (ImageView) headerView.findViewById(R.id.imgShare);
+		imgPingLun = (ImageView) headerView.findViewById(R.id.imgPingLun);
+		text_word_content = (TextView) headerView.findViewById(R.id.content);
+		imgContent = (ImageView) headerView.findViewById(R.id.imgContent);
+		text_share_count = (TextView) headerView
+				.findViewById(R.id.text_share_count);
+		yuansuType = getIntent().getExtras().getString("yuansutype");
+		content = getIntent().getExtras().getString("content");
+		updateHeaderView(yuansuType);
+		imgGuanZhu.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				pingGuanZhuClick();
+			}
+		});
+		imgShare.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
+				pingShareClick();
 			}
 		});
-		mImageFetcher = initFetcher(mImageFetcher, callback);
-		mImageFetcher.loadImage(purl, img, getScreenW(), true);
-		if (null == adapter) {
-			adapter = new Adapter();
-			listComm.setAdapter(adapter);
-			// setListViewHeight(listComm);
+		imgPingLun.setOnClickListener(new View.OnClickListener() {
 
-		} else {
-			adapter.notifyDataSetChanged();
-		}
+			@Override
+			public void onClick(View v) {
+				pingLunClick();
+			}
+		});
+
+		pullToRefreshView.setEnablePullTorefresh(false);
+		pullToRefreshView
+				.setOnHeaderRefreshListener(new PullToRefreshView.OnHeaderRefreshListener() {
+
+					@Override
+					public void onHeaderRefresh(PullToRefreshView view) {
+						requestYuansuComment(0);
+					}
+				});
+		pullToRefreshView
+				.setOnFooterRefreshListener(new PullToRefreshView.OnFooterRefreshListener() {
+
+					@Override
+					public void onFooterRefresh(PullToRefreshView view) {
+						requestYuansuComment(1);
+					}
+				});
+
+		bitmapUtilsHead = new BitmapUtils(getBaseContext());
+		bitmapUtilsHead.configDefaultLoadingImage(R.drawable.ic_launcher);
+		bitmapUtilsHead.configDefaultLoadFailedImage(R.drawable.failed);
+		bitmapUtilsHead.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+		updateView();
+		requestYuansuComment(0);
 	}
 
 	class Adapter extends BaseAdapter {
@@ -150,94 +165,31 @@ public class YuansuInfoActivity extends SuperActivity implements
 						.findViewById(R.id.text_name);
 				holder.text_msg = (TextView) convertView
 						.findViewById(R.id.text_msg);
-				holder.frameTop = convertView.findViewById(R.id.frameTop);
-				holder.frameBottom = convertView.findViewById(R.id.frameBottom);
-				holder.imgGuanZhu = (ImageView) convertView
-						.findViewById(R.id.imgGuanZhu);
-				holder.imgShare = (ImageView) convertView
-						.findViewById(R.id.imgShare);
-				holder.imgPingLun = (ImageView) convertView
-						.findViewById(R.id.imgPingLun);
+				holder.imgHead = (ImageView) convertView
+						.findViewById(R.id.imgHead);
 				convertView.setTag(holder);
 			} else {
 				holder = (Holder) convertView.getTag();
 			}
-			if (0 == position) {
-				holder.frameTop.setVisibility(View.VISIBLE);
-				holder.frameBottom.setVisibility(View.GONE);
-				holder.imgGuanZhu
-						.setOnClickListener(new View.OnClickListener() {
-
-							@Override
-							public void onClick(View v) {
-								pingGuanZhuClick();
-							}
-						});
-				holder.imgShare.setOnClickListener(new View.OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						pingShareClick();
-					}
-				});
-				holder.imgPingLun
-						.setOnClickListener(new View.OnClickListener() {
-
-							@Override
-							public void onClick(View v) {
-								pingLunClick();
-							}
-						});
-			} else {
-				holder.frameTop.setVisibility(View.GONE);
-				holder.frameBottom.setVisibility(View.VISIBLE);
-				holder.text_name.setText(getItem(position).getUname());
-				holder.text_msg.setText(getItem(position).getCmsg());
-			}
+			holder.text_name.setText(getItem(position).getUname());
+			holder.text_msg.setText(getItem(position).getContent());
+			bitmapUtilsHead
+					.display(
+							holder.imgHead,
+							"http://imgtest.meiliworks.com/pic/_o/a2/68/53732042564a9248900de058832f_440_441.jpg?refer_type=&expr_alt=b&frm=out_pic");
 			return convertView;
 		}
 
 		class Holder {
+			ImageView imgHead;
 			TextView text_name;
 			TextView text_msg;
-			View frameTop;
-			View frameBottom;
-			ImageView imgGuanZhu;
-			ImageView imgShare;
-			ImageView imgPingLun;
 		}
 	}
 
 	@Override
 	public void clearData() {
 
-	}
-
-	/**
-	 * 重新计算ListView的高度，解决ScrollView和ListView两个View都有滚动的效果，在嵌套使用时起冲突的问题
-	 * 
-	 * @param listView
-	 */
-	public void setListViewHeight(ListView listView) {
-
-		// 获取ListView对应的Adapter
-
-		ListAdapter listAdapter = listView.getAdapter();
-
-		if (listAdapter == null) {
-			return;
-		}
-		int totalHeight = 0;
-		for (int i = 0, len = listAdapter.getCount(); i < len; i++) { // listAdapter.getCount()返回数据项的数目
-			View listItem = listAdapter.getView(i, null, listView);
-			listItem.measure(0, 0); // 计算子项View 的宽高
-			totalHeight += listItem.getMeasuredHeight(); // 统计所有子项的总高度
-		}
-
-		ViewGroup.LayoutParams params = listView.getLayoutParams();
-		params.height = totalHeight
-				+ (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-		listView.setLayoutParams(params);
 	}
 
 	@Override
@@ -250,30 +202,12 @@ public class YuansuInfoActivity extends SuperActivity implements
 
 	}
 
-	@Override
-	public void onRefresh() {
-		listComm.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				onLoad();
-			}
-		}, 2000);
-	}
-
-	@Override
-	public void onLoadMore() {
-		listComm.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				onLoad();
-			}
-		}, 2000);
-	}
-
 	private void onLoad() {
-		listComm.stopRefresh();
-		listComm.stopLoadMore();
-		listComm.setRefreshTime("刚刚");
+		if (actionType == 0) {
+			pullToRefreshView.onHeaderRefreshComplete();
+		} else {
+			pullToRefreshView.onFooterRefreshComplete();
+		}
 	}
 
 	public void pingGuanZhuClick() {
@@ -290,6 +224,62 @@ public class YuansuInfoActivity extends SuperActivity implements
 
 	@Override
 	public void handleMsg(Message msg) {
+		onLoad();
+		switch (msg.what) {
+		case SuperLogic.YUANSU_COMMENT_SUCCESS_MSGWHAT: {
+			updateView();
+			break;
+		}
+		}
 		super.handleMsg(msg);
+	}
+
+	public void updateHeaderView(String type) {
+		if (type.equals(Constant.TYPE_YUANSU_WORD)) {
+			imgContent.setVisibility(View.GONE);
+			text_word_content.setVisibility(View.VISIBLE);
+			text_word_content.setText(content);
+			if (text_word_content.getLineCount() <= 1) {
+				text_word_content.setGravity(Gravity.CENTER);
+			} else {
+				text_word_content.setGravity(Gravity.LEFT
+						| Gravity.CENTER_VERTICAL);
+			}
+		} else {
+			imgContent.setVisibility(View.VISIBLE);
+			text_word_content.setVisibility(View.GONE);
+			if (null == bitmapUtilsContent) {
+				bitmapUtilsContent = new BitmapUtils(getBaseContext());
+				bitmapUtilsContent
+						.configDefaultLoadingImage(R.drawable.ic_launcher);
+				bitmapUtilsContent
+						.configDefaultLoadFailedImage(R.drawable.list_item_bg);
+				bitmapUtilsContent
+						.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+			}
+			bitmapUtilsContent.display(imgContent, content);
+		}
+	}
+
+	public int actionType = 0;
+
+	public void requestYuansuComment(int type) {
+		actionType = type;
+		httpUtil = new HttpUtils();
+		logic.setDate(mHandler, httpUtil);
+		// ((SuperActivityForFragment)
+		// getActivity()).showProcessDialog(dismiss);
+		logic.sendYuansuCommentRequest(getUser().getRemarkToken(), remarkId,
+				type);
+	}
+
+	public void updateView() {
+		if (null == adapter) {
+			adapter = new Adapter();
+			listComm.setAdapter(adapter);
+
+		} else {
+			adapter.notifyDataSetChanged();
+		}
 	}
 }

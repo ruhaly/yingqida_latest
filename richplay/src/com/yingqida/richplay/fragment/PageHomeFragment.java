@@ -3,6 +3,8 @@ package com.yingqida.richplay.fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.lidroid.xutils.HttpUtils;
@@ -21,17 +24,20 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.activity.YuansuInfoActivity;
 import com.yingqida.richplay.activity.common.SuperActivityForFragment;
-import com.yingqida.richplay.baseapi.common.User;
+import com.yingqida.richplay.baseapi.Constant;
 import com.yingqida.richplay.entity.Yuansu;
 import com.yingqida.richplay.logic.PageHomeLogic;
-import com.yingqida.richplay.widget.XListView;
-import com.yingqida.richplay.widget.XListView.IXListViewListener;
+import com.yingqida.richplay.logic.SuperLogic;
+import com.yingqida.richplay.widget.PullToRefreshView;
 
 public class PageHomeFragment extends SuperFragment implements
-		OnItemClickListener, IXListViewListener {
+		OnItemClickListener {
+
+	@ViewInject(R.id.pullToRefreshView)
+	private PullToRefreshView pullToRefreshView;
 
 	@ViewInject(R.id.listViewYs)
-	private XListView listViewYs;
+	private ListView listViewYs;
 
 	private Adapter adapter;
 
@@ -41,6 +47,15 @@ public class PageHomeFragment extends SuperFragment implements
 
 	@ViewInject(R.id.btnToggle)
 	private Button btnToggle;
+
+	private static PageHomeFragment ins;
+
+	public synchronized static PageHomeFragment getIns() {
+		if (null == ins) {
+			ins = new PageHomeFragment();
+		}
+		return ins;
+	}
 
 	@OnClick(R.id.btnToggle)
 	public void btnToggleClick(View view) {
@@ -54,20 +69,35 @@ public class PageHomeFragment extends SuperFragment implements
 
 	@Override
 	public void updateView() {
+		if (null == adapter) {
+			adapter = new Adapter();
+			listViewYs.setAdapter(adapter);
+			listViewYs.setOnItemClickListener(this);
+			pullToRefreshView
+					.setOnHeaderRefreshListener(new PullToRefreshView.OnHeaderRefreshListener() {
 
+						@Override
+						public void onHeaderRefresh(PullToRefreshView view) {
+							requestYuansu(0);
+						}
+					});
+			pullToRefreshView
+					.setOnFooterRefreshListener(new PullToRefreshView.OnFooterRefreshListener() {
+
+						@Override
+						public void onFooterRefresh(PullToRefreshView view) {
+							requestYuansu(1);
+
+						}
+					});
+		} else {
+			adapter.notifyDataSetChanged();
+		}
 	}
 
 	@Override
 	public void initData() {
 		logic = PageHomeLogic.getInstance();
-		for (int i = 0; i < 20; i++) {
-			Yuansu ys = new Yuansu();
-			User user = new User();
-			user.setName("用户" + i);
-			user.setContent("用户" + i);
-			ys.setUser(user);
-			logic.list.add(ys);
-		}
 	}
 
 	View convertView;
@@ -79,16 +109,8 @@ public class PageHomeFragment extends SuperFragment implements
 		if (convertView == null)
 			convertView = inflater.inflate(R.layout.page_home_layout, null);
 		ViewUtils.inject(this, convertView);
-		listViewYs.setPullLoadEnable(true);
-		listViewYs.setPullRefreshEnable(true);
-		listViewYs.setXListViewListener(this);
-		if (null == adapter) {
-			adapter = new Adapter();
-			listViewYs.setAdapter(adapter);
-			listViewYs.setOnItemClickListener(this);
-		} else {
-			adapter.notifyDataSetChanged();
-		}
+		updateView();
+		requestYuansu(0);
 		return convertView;
 	}
 
@@ -118,14 +140,18 @@ public class PageHomeFragment extends SuperFragment implements
 						R.layout.yuansu_item_layout, null);
 				holder.tvName = (TextView) convertView
 						.findViewById(R.id.tvName);
-				holder.tvContent = (TextView) convertView
-						.findViewById(R.id.tvContent);
+				holder.tvCommentContent = (TextView) convertView
+						.findViewById(R.id.tvCommentContent);
 				holder.imgGuanZhu = (ImageView) convertView
 						.findViewById(R.id.imgGuanZhu);
 				holder.imgShare = (ImageView) convertView
 						.findViewById(R.id.imgShare);
 				holder.imgPingLun = (ImageView) convertView
 						.findViewById(R.id.imgPingLun);
+				holder.imgContent = (ImageView) convertView
+						.findViewById(R.id.imgContent);
+				holder.content = (TextView) convertView
+						.findViewById(R.id.content);
 				convertView.setTag(holder);
 			} else {
 				holder = (Holder) convertView.getTag();
@@ -151,24 +177,35 @@ public class PageHomeFragment extends SuperFragment implements
 					pingLunClick();
 				}
 			});
+			holder.content.setText(getItem(position).getRemarkContent());
+			if (holder.content.getLineCount() <= 1) {
+				holder.content.setGravity(Gravity.CENTER);
+			} else {
+				holder.content.setGravity(Gravity.LEFT
+						| Gravity.CENTER_VERTICAL);
+			}
 			holder.tvName.setText(getItem(position).getUser().getName());
-			holder.tvContent.setText(getItem(position).getUser().getContent());
+			holder.tvCommentContent.setText(getItem(position).getUser()
+					.getComment_content());
 			return convertView;
 		}
 
 		class Holder {
 			TextView tvName;
-			TextView tvContent;
+			TextView tvCommentContent;
 			ImageView imgGuanZhu;
 			ImageView imgShare;
 			ImageView imgPingLun;
+			ImageView imgContent;
+			TextView content;
 		}
 	}
 
 	DialogInterface.OnDismissListener dismiss = new DialogInterface.OnDismissListener() {
 		@Override
 		public void onDismiss(DialogInterface dialog) {
-			httpUtil.getHttpClient().getConnectionManager().shutdown();
+			// httpUtil.getHttpClient().getConnectionManager().shutdown();
+			logic.realseYuanSuRequest();
 		}
 	};
 
@@ -178,10 +215,14 @@ public class PageHomeFragment extends SuperFragment implements
 	 * 
 	 * @author ruhaly DateTime 2013-10-17 上午10:34:17
 	 */
-	public void requestYuansu() {
+	public void requestYuansu(int type) {
+		actionType = type;
 		httpUtil = new HttpUtils();
 		logic.setDate(fHandler, httpUtil);
-		((SuperActivityForFragment) getActivity()).showProcessDialog(dismiss);
+		// ((SuperActivityForFragment)
+		// getActivity()).showProcessDialog(dismiss);
+		logic.sendPageHomeYuanSuRequest(getUser().getUid(), getUser()
+				.getRemarkToken(), type);
 	}
 
 	@Override
@@ -209,35 +250,31 @@ public class PageHomeFragment extends SuperFragment implements
 			long id) {
 		startActivity(new Intent(getActivity().getBaseContext(),
 				YuansuInfoActivity.class)
-				.putExtra(
-						"PURL",
-						"http://d.hiphotos.baidu.com/album/w%3D2048/sign=709a42c779f0f736d8fe4b013e6db119/1e30e924b899a90197f62f8e1c950a7b0308f543.jpg"));
+				.putExtra("content",
+						adapter.getItem(position).getRemarkContent())
+				.putExtra("yuansutype", Constant.TYPE_YUANSU_WORD)
+				.putExtra("remarkId", adapter.getItem(position).getId()));
 	}
 
-	@Override
-	public void onRefresh() {
-		listViewYs.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				onLoad();
-			}
-		}, 2000);
-	}
-
-	@Override
-	public void onLoadMore() {
-		listViewYs.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				onLoad();
-			}
-		}, 2000);
-	}
+	public int actionType = 0;
 
 	private void onLoad() {
-		listViewYs.stopRefresh();
-		listViewYs.stopLoadMore();
-		listViewYs.setRefreshTime("刚刚");
+
+		if (actionType == 0)
+			pullToRefreshView.onHeaderRefreshComplete();
+		pullToRefreshView.onFooterRefreshComplete();
+	}
+
+	@Override
+	public void handleMsg(Message msg) {
+		switch (msg.what) {
+		case SuperLogic.HOME_PAGE_YUANSU_SUCCESS_MSGWHAT: {
+			updateView();
+			onLoad();
+			break;
+		}
+		}
+		super.handleMsg(msg);
 	}
 
 	public void pingGuanZhuClick() {
@@ -250,5 +287,9 @@ public class PageHomeFragment extends SuperFragment implements
 
 	public void pingLunClick() {
 		((SuperActivityForFragment) getActivity()).showToast("评论");
+	}
+
+	public void clearData() {
+		logic.clear();
 	}
 }

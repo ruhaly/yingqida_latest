@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
@@ -15,8 +16,8 @@ import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.baseapi.common.RichResource;
 import com.yingqida.richplay.fragment.MenuFragment;
 import com.yingqida.richplay.fragment.PageHomeFragment;
+import com.yingqida.richplay.fragment.SearchFragment;
 import com.yingqida.richplay.fragment.SuperFragment;
-import com.yingqida.richplay.fragment.YuansuFragment;
 
 public class MenuActivity extends SuperActivityForFragment {
 
@@ -59,7 +60,7 @@ public class MenuActivity extends SuperActivityForFragment {
 			fragment = (SuperFragment) getSupportFragmentManager().getFragment(
 					paramBundle, "mContent");
 		if (fragment == null)
-			fragment = new PageHomeFragment();
+			fragment = PageHomeFragment.getIns();
 
 		// set the Above View
 		setContentView(R.layout.content_frame);
@@ -73,12 +74,11 @@ public class MenuActivity extends SuperActivityForFragment {
 
 		// customize the SlidingMenu
 		SlidingMenu sm = getSlidingMenu();
-		sm.setShadowWidthRes(R.dimen.shadow_width);
-		sm.setShadowDrawable(R.drawable.shadow);
+		// sm.setShadowWidthRes(R.dimen.shadow_width);
+		sm.setShadowDrawable(null);// (R.drawable.shadow);
 		sm.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-		sm.setFadeDegree(0.35f);
+		sm.setFadeDegree(0f);
 		sm.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-
 	}
 
 	@Override
@@ -92,11 +92,30 @@ public class MenuActivity extends SuperActivityForFragment {
 		}
 	}
 
-	public void switchContent(Fragment fragment) {
-		this.fragment = (SuperFragment) fragment;
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.content_frame, fragment).commit();
-		getSlidingMenu().showContent();
+	public void switchContent(final Fragment to) {
+		if (fragment != to) {
+			FragmentTransaction transaction = getSupportFragmentManager()
+					.beginTransaction();
+			if (!to.isAdded()) { // 先判断是否被add过
+				transaction.hide(fragment).add(R.id.content_frame, to).commit(); // 隐藏当前的fragment，add下一个到Activity中
+			} else {
+				transaction.hide(fragment).show(to).commit(); // 隐藏当前的fragment，显示下一个
+			}
+			this.fragment = (SuperFragment) to;
+		}
+		// getSupportFragmentManager().beginTransaction()
+		// .replace(R.id.content_frame, fragment).commit();
+		showContent();
+		if (to instanceof SearchFragment) {
+			mHandler.postDelayed(new Runnable() {
+
+				@Override
+				public void run() {
+					((SearchFragment) to)
+							.reqeustDate(((SearchFragment) to).keyword);
+				}
+			}, 100);
+		}
 	}
 
 	@Override

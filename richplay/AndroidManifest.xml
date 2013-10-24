@@ -190,6 +190,9 @@
         <activity
             android:name=".activity.MenuActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ModifyPWDActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

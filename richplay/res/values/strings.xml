@@ -45,7 +45,8 @@
     <string name="xlistview_header_last_time">上次更新時間：</string>
     <string name="xlistview_footer_hint_normal">查看更多</string>
     <string name="xlistview_footer_hint_ready">松開載入更多</string>
-    <string name="guanzhu">關註</string>
+    <string name="isguanzhu">正在關註</string>
+    <string name="beiguanzhu">被關註</string>
     <string name="fayan">%1$s髮言</string>
     <string name="guanzhu2">%1$s關註</string>
     <string name="woguanzhu">%1$s我關註</string>
@@ -53,9 +54,6 @@
     <string name="fanyan2">發言</string>
     <string name="yonghu">用戶</string>
     <string name="editUser">編輯個人資料</string>
-    <string name="guanyu">關于</string>
-    <string name="banbengengxin">版本更新</string>
-    <string name="zhuxiao">注銷</string>
     <string name="changehead">更換頭像</string>
     <string name="xingbie">性別</string>
     <string name="xiugaimima">修改密碼</string>
@@ -209,6 +207,12 @@
     <string name="has_account">已經有一個賬戶?</string>
     <string name="captcha">驗證碼</string>
     <string name="date_format_error">數據異常~</string>
+    <string name="oldPwd">原密碼</string>
+    <string name="newPwd">新密碼</string>
+    <string name="mod_pwd_success">密碼修改成功</string>
+    <string name="mod_pwd_failed">密碼发修改失败</string>
+    <string name="pwd_not_empty">密碼不能為空</string>
+    <string name="search">搜索</string>
 
     <string-array name="menus">
         <item>首頁</item>
@@ -216,7 +220,19 @@
         <item>個人中心</item>
         <item>我關注</item>
         <item>關注我</item>
+        <item>修改密碼</item>
         <item>退出</item>
     </string-array>
+
+    <string name="share">分享</string>
+    <string name="has_follow">關注成功</string>
+    <string name="unfollow">取消關注</string>
+    <string name="follow">關註</string>
+    <string name="main_page">主頁</string>
+    <string name="person_info">個人資料</string>
+    <string name="guanyu">關于</string>
+    <string name="banbengengxin">版本更新</string>
+    <string name="clear_cache">清楚緩存</string>
+    <string name="zhuxiao">注銷</string>
 
 </resources>

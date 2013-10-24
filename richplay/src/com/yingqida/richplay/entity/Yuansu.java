@@ -1,5 +1,6 @@
 package com.yingqida.richplay.entity;
 
+import com.yingqida.richplay.baseapi.Constant;
 import com.yingqida.richplay.baseapi.common.User;
 
 public class Yuansu {
@@ -11,22 +12,33 @@ public class Yuansu {
 	private String pUrl;
 
 	// 1图片2文字
-	private String type;
+	private String type = Constant.TYPE_YUANSU_WORD;
 
 	private String shareCount;
 
 	private User user;
 
-	private String content;
+	private String remarkContent;
 
 	private String time;
 
-	public String getContent() {
-		return content;
+	// 关注状态1:已关注2:未关注
+	private int followState;
+
+	public int getFollowState() {
+		return followState;
 	}
 
-	public void setContent(String content) {
-		this.content = content;
+	public void setFollowState(int followState) {
+		this.followState = followState;
+	}
+
+	public String getRemarkContent() {
+		return remarkContent;
+	}
+
+	public void setRemarkContent(String remarkContent) {
+		this.remarkContent = remarkContent;
 	}
 
 	public String getTime() {

@@ -1,53 +1,79 @@
 package com.yingqida.richplay.fragment;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ListView;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.yingqida.richplay.R;
+import com.yingqida.richplay.activity.YuansuInfoActivity;
 import com.yingqida.richplay.activity.common.SuperActivityForFragment;
+import com.yingqida.richplay.baseapi.Constant;
 import com.yingqida.richplay.baseapi.common.User;
+import com.yingqida.richplay.logic.SuperLogic;
+import com.yingqida.richplay.logic.UserSearchLogic;
+import com.yingqida.richplay.widget.XListView;
+import com.yingqida.richplay.widget.XListView.IXListViewListener;
 
-public class YonghuFragment extends SuperFragment {
+public class YonghuFragment extends SuperFragment implements
+		OnItemClickListener, IXListViewListener {
 
-	private ListView list_yonghu;
-	Adapter adapter;
+	public String keyword = "";
 
-	private List<User> list = new ArrayList<User>();
+	@ViewInject(R.id.frameTitle)
+	private RelativeLayout frameTitle;
 
-	public static SuperFragment getInstance(String name) {
-		return new YonghuFragment();
+	@ViewInject(R.id.listViewYs)
+	private XListView listViewYs;
+
+	private Adapter adapter;
+
+	private UserSearchLogic logic;
+
+	private HttpUtils httpUtil;
+
+	@ViewInject(R.id.btnToggle)
+	private Button btnToggle;
+
+	@OnClick(R.id.btnToggle)
+	public void btnToggleClick(View view) {
+		((SuperActivityForFragment) getActivity()).toggle();
+	}
+
+	@Override
+	public void onClick(View v) {
+
 	}
 
 	@Override
 	public void updateView() {
-		if (null != adapter) {
+		if (null == adapter) {
+			adapter = new Adapter();
+			listViewYs.setAdapter(adapter);
+			listViewYs.setOnItemClickListener(this);
+		} else {
 			adapter.notifyDataSetChanged();
 		}
 	}
 
 	@Override
 	public void initData() {
-		for (int i = 0; i < 20; i++) {
-			User c = new User();
-			c.setNickName("user" + i);
-			// c.setFayan_num("" + i);
-			// c.setBeiguanzhu("" + i * 2);
-			list.add(c);
-		}
+		logic = UserSearchLogic.getInstance();
 	}
 
 	View convertView;
@@ -55,16 +81,16 @@ public class YonghuFragment extends SuperFragment {
 	@Override
 	public View initLayout(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		convertView = inflater
-				.inflate(R.layout.yonghu_layout, container, false);
-		list_yonghu = (ListView) convertView.findViewById(R.id.list_yonghu);
+
+		if (convertView == null)
+			convertView = inflater.inflate(R.layout.yonghu_layout, null);
 		ViewUtils.inject(this, convertView);
-		if (null == adapter) {
-			adapter = new Adapter();
-			list_yonghu.setAdapter(adapter);
-		} else {
-			adapter.notifyDataSetChanged();
-		}
+		frameTitle.setVisibility(View.GONE);
+		listViewYs.setPullLoadEnable(true);
+		listViewYs.setPullRefreshEnable(true);
+		listViewYs.setXListViewListener(this);
+		updateView();
+		refreshYonghu(0);
 		return convertView;
 	}
 
@@ -72,12 +98,12 @@ public class YonghuFragment extends SuperFragment {
 
 		@Override
 		public int getCount() {
-			return list.size();
+			return logic.list.size();
 		}
 
 		@Override
 		public User getItem(int arg0) {
-			return list.get(arg0);
+			return logic.list.get(arg0);
 		}
 
 		@Override
@@ -92,71 +118,131 @@ public class YonghuFragment extends SuperFragment {
 				holder = new Holder();
 				convertView = LayoutInflater.from(getActivity()).inflate(
 						R.layout.user_item_layout, null);
-				holder.text_name = (TextView) convertView
-						.findViewById(R.id.text_name);
-				holder.text_fy = (TextView) convertView
-						.findViewById(R.id.text_fy);
-				holder.text_bgz = (TextView) convertView
-						.findViewById(R.id.text_bgz);
+				holder.imgHeader = (ImageView) convertView
+						.findViewById(R.id.imgHeader);
+				holder.tvName = (TextView) convertView
+						.findViewById(R.id.tvName);
+				// holder.tvBgz = (TextView)
+				// convertView.findViewById(R.id.tvBgz);
+				// holder.btnGz = (Button) convertView.findViewById(R.id.btnGz);
 				convertView.setTag(holder);
-				ViewUtils.inject(this, convertView);
 			} else {
 				holder = (Holder) convertView.getTag();
 			}
-			holder.text_name.setText(getItem(position).getNickName());
-			// holder.text_fy.setText(Html.fromHtml(String.format(
-			// getString(R.string.fayan), "<font color=\"#000000\">"
-			// + getItem(position).getFayan_num() + "</font>")));
-			// holder.text_bgz.setText(Html.fromHtml(String.format(
-			// getString(R.string.guanzhu2), "<font color=\"#000000\">"
-			// + getItem(position).getBeiguanzhu() + "</font>")));
 			return convertView;
 		}
 
 		class Holder {
-			TextView text_name;
-			TextView text_fy;
-			TextView text_bgz;
-
+			ImageView imgHeader;
+			TextView tvName;
+			TextView tvBgz;
+			Button btnGz;
 		}
 	}
 
-	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
+	DialogInterface.OnDismissListener dismiss = new DialogInterface.OnDismissListener() {
+		@Override
+		public void onDismiss(DialogInterface dialog) {
+			httpUtil.getHttpClient().getConnectionManager().shutdown();
+		}
+	};
 
+	/**
+	 * 
+	 * Function:获取元素
+	 * 
+	 * @author ruhaly DateTime 2013-10-17 上午10:34:17
+	 */
+	public void refreshYonghu(int type) {
+		clearData();
+		httpUtil = new HttpUtils();
+		logic.setDate(fHandler, httpUtil);
+		logic.sendGetUserRequest(getUser().getRemarkToken(), keyword, type);
 	}
 
 	@Override
 	public void handleHttpResponse(String response, int rspCode, int requestId) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void handleHttpResponse(String response, int requestId) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void handleHttpException(HttpException error, String msg) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void handleHttpTimeout(int paramInt) {
-		// TODO Auto-generated method stub
 
 	}
 
-	@ViewInject(R.id.btnToggle)
-	private Button btnToggle;
-
-	@OnClick(R.id.btnToggle)
-	public void btnToggleClick(View view) {
-		((SuperActivityForFragment) getActivity()).toggle();
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		startActivity(new Intent(getActivity().getBaseContext(),
+				YuansuInfoActivity.class).putExtra("content",
+				adapter.getItem(position - 1).getComment_content()).putExtra(
+				"yuansutype", Constant.TYPE_YUANSU_WORD));
 	}
 
+	@Override
+	public void onRefresh() {
+		refreshYonghu(0);
+	}
+
+	@Override
+	public void onLoadMore() {
+		listViewYs.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				onLoad();
+			}
+		}, 2000);
+	}
+
+	private void onLoad() {
+		listViewYs.stopRefresh();
+		listViewYs.stopLoadMore();
+		listViewYs.setRefreshTime("刚刚");
+	}
+
+	@Override
+	public void handleMsg(Message msg) {
+		switch (msg.what) {
+		case SuperLogic.GET_SEARCH_USER_SUCCESS_MSGWHAT: {
+			onLoad();
+			updateView();
+			break;
+		}
+
+		default:
+			break;
+		}
+		super.handleMsg(msg);
+	}
+
+	public void pingGuanZhuClick() {
+		((SuperActivityForFragment) getActivity()).showToast("添加关注");
+	}
+
+	public void pingShareClick() {
+		((SuperActivityForFragment) getActivity()).showToast("分享");
+	}
+
+	public void pingLunClick() {
+		((SuperActivityForFragment) getActivity()).showToast("评论");
+	}
+
+	public void clearData() {
+		logic.clear();
+	}
+
+	@Override
+	public void reqeustDate(String keyword) {
+		showToast("yonghu:" + keyword);
+	}
 }

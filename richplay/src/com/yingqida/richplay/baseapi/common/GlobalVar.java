@@ -24,8 +24,7 @@ public class GlobalVar {
 	}
 
 	public User getUser(SharedPreferences share) {
-		if (null == user && null != share)
-			user = restoreUser(share);
+		user = restoreUser(share);
 		return user;
 	}
 

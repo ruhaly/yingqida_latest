@@ -42,7 +42,7 @@ public class LoginLogic extends SuperLogic implements HttpAction {
 		params.addBodyParameter("email", account);
 		params.addBodyParameter("password", pwd);
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_LOGIN, params,
-				HttpSenderUtils.METHOD_POST, httpRequest,
+				HttpSenderUtils.METHOD_POST, httpUtils,
 				RequestId.LOGIN_REQUESTID, this);
 	}
 
@@ -52,8 +52,19 @@ public class LoginLogic extends SuperLogic implements HttpAction {
 		params.addBodyParameter("password", pwd);
 		params.addBodyParameter("username", nickName);
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_REGISTER, params,
-				HttpSenderUtils.METHOD_POST, httpRequest,
+				HttpSenderUtils.METHOD_POST, httpUtils,
 				RequestId.REGISTER_REQUESTID, this);
+	}
+
+	public void sendModPWDRequest(String remarkToken, String oldPwd,
+			String newPwd) {
+		RequestParams params = new RequestParams();
+		params.addBodyParameter("remark_token", remarkToken);
+		params.addBodyParameter("old_password", oldPwd);
+		params.addBodyParameter("new_password", newPwd);
+		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_MODIFY_PWD, params,
+				HttpSenderUtils.METHOD_POST, httpUtils, RequestId.MODIFY_PWD,
+				this);
 	}
 
 	@Override
@@ -81,6 +92,10 @@ public class LoginLogic extends SuperLogic implements HttpAction {
 		}
 		case RequestId.REGISTER_REQUESTID: {
 			httpRegisterResponse(response);
+			break;
+		}
+		case RequestId.MODIFY_PWD: {
+			httpModPwdResponse(response);
 			break;
 		}
 		default:
@@ -148,7 +163,25 @@ public class LoginLogic extends SuperLogic implements HttpAction {
 				.getIns().getAppShare()).remarkToken;
 		params.addBodyParameter("remark_token", remark_token);
 		HttpSenderUtils.sendMsgImpl(ACTION_EXIT, params,
-				HttpSenderUtils.METHOD_GET, httpRequest,
+				HttpSenderUtils.METHOD_GET, httpUtils,
 				RequestId.EXIT_REQUESTID, this);
+	}
+
+	public void httpModPwdResponse(String response) {
+
+		try {
+			JSONObject json = new JSONObject(response);
+			String code = String.valueOf(json.get("code"));
+			if (code.equals(ResponseCode.SUCCESS)) {
+				handler.sendEmptyMessage(MODIFY_PWD_SUCCESS_MSGWHAT);
+			} else {
+				handler.sendEmptyMessage(MODIFY_PWD_ERROR_MSGWHAT);
+			}
+
+		} catch (JSONException e) {
+			handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+			e.printStackTrace();
+		}
+
 	}
 }

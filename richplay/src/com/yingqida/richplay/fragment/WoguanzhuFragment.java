@@ -50,10 +50,9 @@ public class WoguanzhuFragment extends SuperFragment {
 		convertView.findViewById(R.id.btnYonghu).setOnClickListener(this);
 		vPager = (ViewPager) convertView.findViewById(R.id.vPager);
 		fragmentList = new ArrayList<Fragment>();
-		SuperFragment fragment_yuansu = YuansuFragment
+		SuperFragment fragment_yuansu = YuansuFragmentOld
 				.getInstance("YuansuFragment");
-		SuperFragment fragment_yonghu = YonghuFragment
-				.getInstance("YonghuFragment");
+		SuperFragment fragment_yonghu = new YonghuFragment();
 		fragmentList.add(fragment_yuansu);
 		fragmentList.add(fragment_yonghu);
 		if (null == adapter) {
@@ -124,24 +123,24 @@ public class WoguanzhuFragment extends SuperFragment {
 	@Override
 	public void handleHttpResponse(String response, int rspCode, int requestId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void handleHttpResponse(String response, int requestId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void handleHttpException(HttpException error, String msg) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void handleHttpTimeout(int paramInt) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

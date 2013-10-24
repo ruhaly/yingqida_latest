@@ -601,7 +601,7 @@ public class PullToRefreshView extends LinearLayout {
 	 * @description
 	 * @return hylin 2012-7-31上午11:22:50
 	 */
-	private int getHeaderTopMargin() {
+	public int getHeaderTopMargin() {
 		LayoutParams params = (LayoutParams) mHeaderView.getLayoutParams();
 		return params.topMargin;
 	}

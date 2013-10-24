@@ -1,5 +1,7 @@
 package com.yingqida.richplay.baseapi.common;
 
+import com.yingqida.richplay.baseapi.Constant;
+
 /**
  * 用户
  * 
@@ -32,14 +34,46 @@ public class User {
 
 	public String headUrl;
 
-	private String content;
+	private String comment_content;
 
-	public String getContent() {
-		return content;
+	// 正在关注
+	private String isGuanzhu;
+	// 被关注
+	private String beiGuanzhu;
+
+	// 关注状态 1:已经关注2:未关注
+	private String stateGuanzhu = Constant.UN_FOLLOW;
+
+	public String getIsGuanzhu() {
+		return isGuanzhu;
 	}
 
-	public void setContent(String content) {
-		this.content = content;
+	public void setIsGuanzhu(String isGuanzhu) {
+		this.isGuanzhu = isGuanzhu;
+	}
+
+	public String getBeiGuanzhu() {
+		return beiGuanzhu;
+	}
+
+	public void setBeiGuanzhu(String beiGuanzhu) {
+		this.beiGuanzhu = beiGuanzhu;
+	}
+
+	public String getStateGuanzhu() {
+		return stateGuanzhu;
+	}
+
+	public void setStateGuanzhu(String stateGuanzhu) {
+		this.stateGuanzhu = stateGuanzhu;
+	}
+
+	public String getComment_content() {
+		return comment_content;
+	}
+
+	public void setComment_content(String comment_content) {
+		this.comment_content = comment_content;
 	}
 
 	public String getHeadUrl() {

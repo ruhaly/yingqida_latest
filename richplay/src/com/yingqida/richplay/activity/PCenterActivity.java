@@ -82,8 +82,7 @@ public class PCenterActivity extends SuperActivityForFragment {
 				.getInstance("FayanFragment");
 		SuperFragment fragment_woguanzhu = WoguanzhuFragment
 				.getInstance("WoguanzhuFragment");
-		SuperFragment fragment_guanzhuwo = YonghuFragment
-				.getInstance("YonghuFragment");
+		SuperFragment fragment_guanzhuwo = new YonghuFragment();
 		fragmentsList.add(fragment_fayan);
 		fragmentsList.add(fragment_woguanzhu);
 		fragmentsList.add(fragment_guanzhuwo);
@@ -181,12 +180,12 @@ public class PCenterActivity extends SuperActivityForFragment {
 	@Override
 	public void handleHttpResponse(String response, int requestId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void handleHttpException(HttpException error, String msg) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

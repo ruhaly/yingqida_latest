@@ -13,7 +13,7 @@ import com.yingqida.richplay.R;
 import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.fragment.MyFragmentPagerAdapter;
 import com.yingqida.richplay.fragment.SuperFragment;
-import com.yingqida.richplay.fragment.YuansuFragment;
+import com.yingqida.richplay.fragment.YuansuFragmentOld;
 
 public class SearchActivity extends SuperActivityForFragment {
 
@@ -39,9 +39,9 @@ public class SearchActivity extends SuperActivityForFragment {
 		mPager = (ViewPager) findViewById(R.id.vPager);
 		fragmentsList = new ArrayList<Fragment>();
 
-		SuperFragment yuansufragment = YuansuFragment
+		SuperFragment yuansufragment = YuansuFragmentOld
 				.getInstance("yuansufragment");
-		SuperFragment userFragment = YuansuFragment.getInstance("userFragment");
+		SuperFragment userFragment = YuansuFragmentOld.getInstance("userFragment");
 		if (null == adapter) {
 			adapter = new MyFragmentPagerAdapter(getSupportFragmentManager(),
 					fragmentsList);

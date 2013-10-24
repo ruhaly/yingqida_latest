@@ -1,6 +1,7 @@
 package com.yingqida.richplay.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,6 +14,7 @@ import com.yingqida.richplay.R;
 import com.yingqida.richplay.activity.MenuActivity;
 import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.baseapi.common.RichResource;
+import com.yingqida.richplay.baseapi.common.User;
 import com.yingqida.richplay.baseapi.http.HttpResponseHanlder;
 import com.yingqida.richplay.baseapi.http.HttpTimeoutHandler;
 import com.yingqida.richplay.logic.SuperLogic;
@@ -54,6 +56,10 @@ public abstract class SuperFragment extends Fragment implements
 		}
 	}
 
+	public void reqeustDate(String keyword) {
+
+	}
+
 	/**
 	 * mHandler
 	 */
@@ -78,23 +84,38 @@ public abstract class SuperFragment extends Fragment implements
 	public void handleMsg(Message msg) {
 		switch (msg.what) {
 		case RichResource.ERROR_NET: {
-			((SuperActivityForFragment) getActivity())
-					.showToast(getString(R.string.error_net));
+			showToast(getString(R.string.error_net));
 			break;
 		}
 		case RichResource.ERROR_FWQ: {
-			((SuperActivityForFragment) getActivity())
-					.showToast(getString(R.string.error_fwq));
+			showToast(getString(R.string.error_fwq));
 			break;
 		}
 		case SuperLogic.DATA_FORMAT_ERROR_MSGWHAT: {
-			((SuperActivityForFragment) getActivity())
-					.showToast(getString(R.string.date_format_error));
+			showToast(getString(R.string.date_format_error));
 			break;
 		}
 		default:
 			break;
 		}
 		((SuperActivityForFragment) getActivity()).dismissProgress();
+	}
+
+	public void showToast(String str) {
+		if (str != null)
+			((SuperActivityForFragment) getActivity()).showToast(str);
+	}
+
+	public void showProcessDialog(DialogInterface.OnDismissListener dismiss) {
+		((SuperActivityForFragment) getActivity()).showProgressDialog("",
+				getString(R.string.loading), true, dismiss);
+	}
+
+	public User getUser() {
+		return ((SuperActivityForFragment) getActivity()).getUser();
+	}
+
+	public void toggle() {
+		((SuperActivityForFragment) getActivity()).toggle();
 	}
 }

@@ -6,20 +6,17 @@ public class Comment {
 	// 发表评论的用户id
 	private String uid = "";
 	private String uname = "";
-	// 回复评论的用户id
-	private String rpUid = "";
-	private String reName = "";
-	private String uurl = "";
+	private String headerUrl = "";
 	private String time = "";
 	// 评论内容
-	private String cmsg = "";
+	private String content = "";
 
-	public String getCmsg() {
-		return cmsg;
+	public String getContent() {
+		return content;
 	}
 
-	public void setCmsg(String cmsg) {
-		this.cmsg = cmsg;
+	public void setContent(String content) {
+		this.content = content;
 	}
 
 	public String getTime() {
@@ -54,28 +51,12 @@ public class Comment {
 		this.uname = uname;
 	}
 
-	public String getRpUid() {
-		return rpUid;
+	public String getHeaderUrl() {
+		return headerUrl;
 	}
 
-	public void setRpUid(String rpUid) {
-		this.rpUid = rpUid;
-	}
-
-	public String getReName() {
-		return reName;
-	}
-
-	public void setReName(String reName) {
-		this.reName = reName;
-	}
-
-	public String getUurl() {
-		return uurl;
-	}
-
-	public void setUurl(String uurl) {
-		this.uurl = uurl;
+	public void setHeaderUrl(String headerUrl) {
+		this.headerUrl = headerUrl;
 	}
 
 }

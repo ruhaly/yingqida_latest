@@ -52,7 +52,7 @@ public class GuanzhuwoFragment extends SuperFragment {
 			Bundle savedInstanceState) {
 		convertView = inflater
 				.inflate(R.layout.yonghu_layout, container, false);
-		list_yonghu = (ListView) convertView.findViewById(R.id.list_yonghu);
+		list_yonghu = (ListView) convertView.findViewById(R.id.listViewYs);
 		if (null == adapter) {
 			adapter = new Adapter();
 			list_yonghu.setAdapter(adapter);
@@ -90,8 +90,8 @@ public class GuanzhuwoFragment extends SuperFragment {
 						.findViewById(R.id.text_name);
 				holder.text_fy = (TextView) convertView
 						.findViewById(R.id.text_fy);
-				holder.text_bgz = (TextView) convertView
-						.findViewById(R.id.text_bgz);
+				// holder.text_bgz = (TextView) convertView
+				// .findViewById(R.id.tvBgz);
 				convertView.setTag(holder);
 			} else {
 				holder = (Holder) convertView.getTag();
@@ -123,24 +123,24 @@ public class GuanzhuwoFragment extends SuperFragment {
 	@Override
 	public void handleHttpResponse(String response, int rspCode, int requestId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void handleHttpResponse(String response, int requestId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void handleHttpException(HttpException error, String msg) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void handleHttpTimeout(int paramInt) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

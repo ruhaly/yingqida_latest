@@ -28,6 +28,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
@@ -173,7 +175,7 @@ public abstract class SuperActivity extends HandleActivity implements
 
 	public void handleMsg(Message msg) {
 		switch (msg.what) {
-		case RichResource.ERROR_NET: {
+		case SuperLogic.CONNECT_ERROR_MSGWHAT: {
 			showToast(getString(R.string.error_net));
 			break;
 		}
@@ -504,5 +506,13 @@ public abstract class SuperActivity extends HandleActivity implements
 
 	public User getUser() {
 		return GlobalVar.ins.getUser(getAppShare());
+	}
+
+	public void hiddenSoft(EditText view) {
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		boolean isOpen = imm.isActive();// isOpen若返回true，则表示输入法打开
+		if (isOpen) {
+			imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+		}
 	}
 }

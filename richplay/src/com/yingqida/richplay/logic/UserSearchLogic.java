@@ -70,7 +70,7 @@ public class UserSearchLogic extends SuperLogic implements HttpAction {
 		curPage = 0;
 	}
 
-	public void releaseRequest() {
+	public void stop() {
 		if (null != httpHanlder) {
 			httpHanlder.stop();
 		}
@@ -82,14 +82,6 @@ public class UserSearchLogic extends SuperLogic implements HttpAction {
 		switch (requestId) {
 		case RequestId.GET_USER: {
 			httpGetUserResponse(response);
-			break;
-		}
-		case RequestId.FOLLOW_USER: {
-			httpFollowUser(response);
-			break;
-		}
-		case RequestId.UNFOLLOW_USER: {
-			httpUnFollowUser(response);
 			break;
 		}
 		default:
@@ -134,78 +126,5 @@ public class UserSearchLogic extends SuperLogic implements HttpAction {
 			e.printStackTrace();
 			handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
 		}
-	}
-
-	/**
-	 * 
-	 * Function:关注用户
-	 * 
-	 * @author ruhaly DateTime 2013-10-23 下午3:06:13
-	 * @param remark_token
-	 * @param type
-	 * @param uid
-	 */
-	public void sendFollowUserRequest(String remark_token, String uid) {
-		RequestParams params = new RequestParams();
-		params.addBodyParameter("remark_token", remark_token);
-		params.addBodyParameter("type", "1");
-		params.addBodyParameter("uid", uid);
-		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_FOLLOW_USER, params,
-				HttpSenderUtils.METHOD_POST, httpUtils, RequestId.FOLLOW_USER,
-				this);
-	}
-
-	public void httpFollowUser(String response) {
-
-		try {
-			JSONObject json = new JSONObject(response);
-			String code = String.valueOf(json.get("code"));
-			if (code.equals(ResponseCode.SUCCESS)) {
-				handler.sendEmptyMessage(FOLLOW_USER_SUCCESS_MSGWHAT);
-			} else {
-				handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
-			}
-
-		} catch (JSONException e) {
-			e.printStackTrace();
-			handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
-		}
-
-	}
-
-	/**
-	 * 
-	 * Function:关注用户
-	 * 
-	 * @author ruhaly DateTime 2013-10-23 下午3:06:13
-	 * @param remark_token
-	 * @param type
-	 * @param uid
-	 */
-	public void sendUnFollowUserRequest(String remark_token, String uid) {
-		RequestParams params = new RequestParams();
-		params.addBodyParameter("remark_token", remark_token);
-		params.addBodyParameter("type", "1");
-		params.addBodyParameter("uid", uid);
-		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_UNFOLLOW_USER, params,
-				HttpSenderUtils.METHOD_POST, httpUtils,
-				RequestId.UNFOLLOW_USER, this);
-	}
-
-	public void httpUnFollowUser(String response) {
-		try {
-			JSONObject json = new JSONObject(response);
-			String code = String.valueOf(json.get("code"));
-			if (code.equals(ResponseCode.SUCCESS)) {
-				handler.sendEmptyMessage(UNFOLLOW_USER_SUCCESS_MSGWHAT);
-			} else {
-				handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
-			}
-
-		} catch (JSONException e) {
-			e.printStackTrace();
-			handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
-		}
-
 	}
 }

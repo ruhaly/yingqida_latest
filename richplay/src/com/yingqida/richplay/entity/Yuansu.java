@@ -11,9 +11,6 @@ public class Yuansu {
 
 	private String pUrl;
 
-	// 1图片2文字
-	private String type = Constant.TYPE_YUANSU_WORD;
-
 	private String shareCount;
 
 	private User user;
@@ -23,13 +20,23 @@ public class Yuansu {
 	private String time;
 
 	// 关注状态1:已关注2:未关注
-	private int followState;
+	private String followState;
 
-	public int getFollowState() {
+	private String label;
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	public String getFollowState() {
 		return followState;
 	}
 
-	public void setFollowState(int followState) {
+	public void setFollowState(String followState) {
 		this.followState = followState;
 	}
 
@@ -73,14 +80,6 @@ public class Yuansu {
 		this.pUrl = pUrl;
 	}
 
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
 	public String getShareCount() {
 		return shareCount;
 	}
@@ -100,4 +99,7 @@ public class Yuansu {
 		this.user = user;
 	}
 
+	public static enum Label {
+		img, p, a
+	}
 }

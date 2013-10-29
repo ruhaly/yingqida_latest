@@ -1,11 +1,10 @@
 package com.yingqida.richplay.baseapi.http;
 
-import android.os.Handler;
-
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.HttpHandler;
 import com.lidroid.xutils.http.RequestCallBack;
+import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.client.HttpRequest.HttpMethod;
 import com.lidroid.xutils.http.client.RequestParams;
 import com.yingqida.richplay.logic.SuperLogic;
@@ -41,17 +40,13 @@ public class HttpSenderUtils implements HttpAction {
 			}
 
 			@Override
-			public void onLoading(long total, long current) {
-			}
-
-			@Override
-			public void onSuccess(String result) {
-				logic.handleHttpResponse(result, requestId);
-			}
-
-			@Override
 			public void onFailure(HttpException error, String msg) {
 				logic.handleHttpException(error, msg);
+			}
+
+			@Override
+			public void onSuccess(ResponseInfo<String> arg0) {
+				logic.handleHttpResponse(arg0.result, requestId);
 			}
 		});
 		return httpHandler;

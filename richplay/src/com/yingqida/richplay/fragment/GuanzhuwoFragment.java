@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.lidroid.xutils.exception.HttpException;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.baseapi.common.User;
 
@@ -88,8 +86,8 @@ public class GuanzhuwoFragment extends SuperFragment {
 						R.layout.user_item_layout, null);
 				holder.text_name = (TextView) convertView
 						.findViewById(R.id.text_name);
-				holder.text_fy = (TextView) convertView
-						.findViewById(R.id.text_fy);
+				// holder.text_fy = (TextView) convertView
+				// .findViewById(R.id.text_fy);
 				// holder.text_bgz = (TextView) convertView
 				// .findViewById(R.id.tvBgz);
 				convertView.setTag(holder);
@@ -116,30 +114,6 @@ public class GuanzhuwoFragment extends SuperFragment {
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void handleHttpResponse(String response, int rspCode, int requestId) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void handleHttpResponse(String response, int requestId) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void handleHttpException(HttpException error, String msg) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void handleHttpTimeout(int paramInt) {
 		// TODO Auto-generated method stub
 
 	}

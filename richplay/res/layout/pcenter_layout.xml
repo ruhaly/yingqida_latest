@@ -7,108 +7,223 @@
 
     <include layout="@layout/title_layout" />
 
-    <LinearLayout
+    <com.yingqida.richplay.widget.PullToRefreshView
+        android:id="@+id/pullToRefreshView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="3dp" >
 
-        <com.yingqida.richplay.widget.RoundAngleImageView
-            android:id="@+id/img_head"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_margin="5dp"
-            android:src="@drawable/icon" />
-
-        <RelativeLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
 
-            <TextView
-                android:id="@+id/text_fayan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/Color_White"
+                android:orientation="vertical" >
 
-            <Button
-                android:id="@+id/btn_guanzhu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginBottom="5dp"
-                android:layout_marginRight="5dp"
-                android:background="@drawable/green_btn"
-                android:padding="3dp"
-                android:text="@string/follow"
-                android:textColor="@color/Color_White" />
-        </RelativeLayout>
-    </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/color_title" >
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" >
 
-        <TextView
-            android:id="@+id/text_fy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/fayan_g"
-            android:clickable="true"
-            android:gravity="center"
-            android:onClick="textClick"
-            android:paddingBottom="2dp"
-            android:paddingTop="2dp"
-            android:text="@string/fayan"
-            android:textColor="@color/color_pcenter_font" />
+                        <ImageView
+                            android:id="@+id/imageView1"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/com_facebook_profile_picture_blank_square" />
+                    </LinearLayout>
 
-        <View
-            android:layout_width="1px"
-            android:layout_height="match_parent"
-            android:background="@color/splid" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/text_wgz"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/fayan_p"
-            android:clickable="true"
-            android:gravity="center"
-            android:onClick="textClick"
-            android:paddingBottom="2dp"
-            android:paddingTop="2dp"
-            android:text="@string/woguanzhu"
-            android:textColor="@color/color_pcenter_font" />
+                        <TextView
+                            android:id="@+id/tvName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="ruhaly" />
 
-        <View
-            android:layout_width="1px"
-            android:layout_height="match_parent"
-            android:background="@color/splid" />
+                        <TextView
+                            android:id="@+id/tvRemarkContent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/followed_yuansu"
+                            android:textColor="@color/light_gray" />
+                    </LinearLayout>
+                </LinearLayout>
 
-        <TextView
-            android:id="@+id/text_gzw"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/fayan_p"
-            android:clickable="true"
-            android:gravity="center"
-            android:onClick="textClick"
-            android:paddingBottom="2dp"
-            android:paddingTop="2dp"
-            android:text="@string/guanzhuwo"
-            android:textColor="@color/color_pcenter_font" />
-    </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical" >
 
-    <com.yingqida.richplay.widget.MyViewPager
-        android:id="@+id/vPager"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="1.0"
-        android:background="@color/mi_white"
-        android:flipInterval="30"
-        android:persistentDrawingCache="animation" />
+                    <Button
+                        android:id="@+id/button1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/addguanzhu" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/mi_white"
+                    android:orientation="vertical" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" >
+
+                        <LinearLayout
+                            android:id="@+id/frameFy"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:clickable="true"
+                            android:gravity="center"
+                            android:orientation="vertical" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="TextView"
+                                android:textColor="@color/Color_Black" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/fanyan2"
+                                android:textColor="@color/light_gray" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1px"
+                            android:layout_height="fill_parent"
+                            android:background="@color/light_gray" />
+
+                        <LinearLayout
+                            android:id="@+id/frameBgz"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:clickable="true"
+                            android:gravity="center"
+                            android:orientation="vertical" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="TextView"
+                                android:textColor="@color/Color_Black" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/beiguanzhu"
+                                android:textColor="@color/light_gray" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:background="@color/light_gray" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" >
+
+                        <LinearLayout
+                            android:id="@+id/frameGzYs"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:clickable="true"
+                            android:gravity="center"
+                            android:orientation="vertical" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="TextView"
+                                android:textColor="@color/Color_Black" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/followed_yuansu"
+                                android:textColor="@color/light_gray" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1px"
+                            android:layout_height="fill_parent"
+                            android:background="@color/light_gray" />
+
+                        <LinearLayout
+                            android:id="@+id/frameGzYh"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:clickable="true"
+                            android:gravity="center"
+                            android:orientation="vertical" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="TextView"
+                                android:textColor="@color/Color_Black" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/followed_user"
+                                android:textColor="@color/light_gray" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:orientation="vertical" >
+
+                    <com.yingqida.richplay.widget.MyListView
+                        android:id="@+id/listViewFy"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+                    </com.yingqida.richplay.widget.MyListView>
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </com.yingqida.richplay.widget.PullToRefreshView>
 
 </LinearLayout>

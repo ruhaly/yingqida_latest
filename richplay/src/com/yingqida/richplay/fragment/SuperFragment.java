@@ -1,6 +1,7 @@
 package com.yingqida.richplay.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,18 +10,18 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.activity.MenuActivity;
 import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.baseapi.common.RichResource;
 import com.yingqida.richplay.baseapi.common.User;
-import com.yingqida.richplay.baseapi.http.HttpResponseHanlder;
-import com.yingqida.richplay.baseapi.http.HttpTimeoutHandler;
 import com.yingqida.richplay.logic.SuperLogic;
 
 public abstract class SuperFragment extends Fragment implements
-		View.OnClickListener, HttpResponseHanlder, HttpTimeoutHandler {
+		View.OnClickListener {
 	public int getScreenH() {
 		return getActivity().getWindowManager().getDefaultDisplay().getHeight();
 	}
@@ -117,5 +118,14 @@ public abstract class SuperFragment extends Fragment implements
 
 	public void toggle() {
 		((SuperActivityForFragment) getActivity()).toggle();
+	}
+
+	public void hiddenSoft(EditText view) {
+		InputMethodManager imm = (InputMethodManager) getActivity()
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
+		boolean isOpen = imm.isActive();// isOpen若返回true，则表示输入法打开
+		if (isOpen) {
+			imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+		}
 	}
 }

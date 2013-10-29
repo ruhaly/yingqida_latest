@@ -17,6 +17,7 @@ import android.os.Handler;
 public abstract class SuperLogic implements HttpResponseHanlder {
 
 	public static final int DATA_FORMAT_ERROR_MSGWHAT = 000;
+	public static final int CONNECT_ERROR_MSGWHAT = 001;
 	public static final int LOGIN_SUCCESS_MSGWHAT = 100;
 	public static final int LOGIN_ERROR_MSGWHAT = 101;
 	public static final int REGISTER_SUCCESS_MSGWHAT = 200;
@@ -33,8 +34,30 @@ public abstract class SuperLogic implements HttpResponseHanlder {
 	public static final int FOLLOW_USER_ERROR_MSGWHAT = 701;
 	public static final int UNFOLLOW_USER_SUCCESS_MSGWHAT = 800;
 	public static final int UNFOLLOW_USER_ERROR_MSGWHAT = 801;
+
+	public static final int FOLLOW_YUANSU_SUCCESS_MSGWHAT = 7000;
+	public static final int FOLLOW_YUANSU_ERROR_MSGWHAT = 7010;
+	public static final int UNFOLLOW_YUANSU_SUCCESS_MSGWHAT = 8000;
+	public static final int UNFOLLOW_YUANSU_ERROR_MSGWHAT = 8010;
+
 	public static final int YUANSU_COMMENT_SUCCESS_MSGWHAT = 900;
 	public static final int YUANSU_COMMENT_ERROR_MSGWHAT = 901;
+	public static final int SHARE_SUCCESS_MSGWHAT = 1000;
+	public static final int SHARE_ERROR_MSGWHAT = 1001;
+
+	public static final int COMMENT_YUANSU_SUCCESS_MSGWHAT = 1100;
+	public static final int COMMENT_YUANSU_ERROR_MSGWHAT = 1201;
+	public static final int GET_REMARKTOKEN_SUCCESS_MSGWHAT = 1400;
+	public static final int GET_REMARKTOKEN_ERROR_MSGWHAT = 1401;
+	public static final int PCENTER_FAYAN_SUCCESS_MSGWHAT = 1300;
+	public static final int PCENTER_FAYAN_ERROR_MSGWHAT = 1301;
+	public static final int PCENTER_BEIGUANZHU_SUCCESS_MSGWHAT = 1500;
+	public static final int PCENTER_BEIGUANZHU_ERROR_MSGWHAT = 1501;
+
+	public static final int PCENTER_GUANZHUYS_SUCCESS_MSGWHAT = 1600;
+	public static final int PCENTER_GUANZHUYS_ERROR_MSGWHAT = 1601;
+	public static final int PCENTER_GUANZHUYH_SUCCESS_MSGWHAT = 1700;
+	public static final int PCENTER_GUANZHUYH_ERROR_MSGWHAT = 1701;
 
 	public Handler handler;
 

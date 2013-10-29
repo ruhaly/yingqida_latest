@@ -1,4 +1,4 @@
-package com.yingqida.richplay.fragment;
+package com.yingqida.richplay.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,71 +14,63 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
-import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.yingqida.richplay.R;
-import com.yingqida.richplay.activity.CommentYuansuActivity;
-import com.yingqida.richplay.activity.YuansuInfoActivity;
-import com.yingqida.richplay.activity.common.SuperActivityForFragment;
-import com.yingqida.richplay.baseapi.Constant;
+import com.yingqida.richplay.activity.common.SuperActivity;
 import com.yingqida.richplay.entity.Yuansu;
-import com.yingqida.richplay.logic.PageHomeLogic;
+import com.yingqida.richplay.logic.PCenterLogic;
 import com.yingqida.richplay.logic.ShareAndFollowLogic;
 import com.yingqida.richplay.logic.SuperLogic;
 import com.yingqida.richplay.widget.PullToRefreshView;
 
-public class PageHomeFragment extends SuperFragment implements
+public class PcGuanzhuYsActivity extends SuperActivity implements
 		OnItemClickListener {
 
 	@ViewInject(R.id.pullToRefreshView)
 	private PullToRefreshView pullToRefreshView;
 
-	@ViewInject(R.id.listViewYs)
-	private ListView listViewYs;
+	@ViewInject(R.id.listViewFy)
+	private ListView listViewFy;
 
-	private Adapter adapter;
-
-	private PageHomeLogic logic;
-
+	private Adapter adapterGuanzhuYs;
+	private ShareAndFollowLogic sLogic;
+	private PCenterLogic pcLogic;
 	private HttpUtils httpUtil;
-
+	private BitmapUtils bitmapUtilsContent;
+	private BitmapUtils bitmapUtilsHead;
 	@ViewInject(R.id.btnToggle)
 	private Button btnToggle;
 
-	private static PageHomeFragment ins;
+	@Override
+	public void handleHttpResponse(String response, int requestId) {
 
-	private ShareAndFollowLogic sLogic;
-
-	public synchronized static PageHomeFragment getIns() {
-		if (null == ins) {
-			ins = new PageHomeFragment();
-		}
-		return ins;
-	}
-
-	@OnClick(R.id.btnToggle)
-	public void btnToggleClick(View view) {
-		((SuperActivityForFragment) getActivity()).toggle();
 	}
 
 	@Override
+	public void handleHttpException(HttpException error, String msg) {
+
+	}
+
 	public void updateView() {
-		if (null == adapter) {
-			adapter = new Adapter();
-			listViewYs.setAdapter(adapter);
-			listViewYs.setOnItemClickListener(this);
+
+		if (null == adapterGuanzhuYs) {
+			adapterGuanzhuYs = new Adapter();
+			listViewFy.setAdapter(adapterGuanzhuYs);
+			listViewFy.setOnItemClickListener(this);
 			pullToRefreshView
 					.setOnHeaderRefreshListener(new PullToRefreshView.OnHeaderRefreshListener() {
 
 						@Override
 						public void onHeaderRefresh(PullToRefreshView view) {
-							requestYuansu(0);
+							requestGuanzhuYs(0);
 						}
 					});
 			pullToRefreshView
@@ -86,56 +78,55 @@ public class PageHomeFragment extends SuperFragment implements
 
 						@Override
 						public void onFooterRefresh(PullToRefreshView view) {
-							requestYuansu(1);
+							requestGuanzhuYs(1);
 
 						}
 					});
 		} else {
-			adapter.notifyDataSetChanged();
+			adapterGuanzhuYs.notifyDataSetChanged();
 		}
+
 	}
 
 	@Override
 	public void initData() {
-		logic = PageHomeLogic.getInstance();
+		pcLogic = PCenterLogic.getInstance();
 		sLogic = ShareAndFollowLogic.getInstance();
 	}
 
-	View convertView;
-	private BitmapUtils bitmapUtilsContent;
-	private BitmapUtils bitmapUtilsHead;
-
 	@Override
-	public View initLayout(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-
-		if (convertView == null)
-			convertView = inflater.inflate(R.layout.page_home_layout, null);
-		ViewUtils.inject(this, convertView);
-		bitmapUtilsContent = new BitmapUtils(getActivity());
+	public void initLayout(Bundle paramBundle) {
+		setContentView(R.layout.pc_fayan_layout);
+		ViewUtils.inject(this);
+		btnToggle.setVisibility(View.GONE);
+		bitmapUtilsContent = new BitmapUtils(this);
 		bitmapUtilsContent.configDefaultLoadingImage(R.drawable.ic_launcher);
 		bitmapUtilsContent
 				.configDefaultLoadFailedImage(R.drawable.list_item_bg);
 		bitmapUtilsContent.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
-		bitmapUtilsHead = new BitmapUtils(getActivity());
+		bitmapUtilsHead = new BitmapUtils(this);
 		bitmapUtilsHead.configDefaultLoadingImage(R.drawable.ic_launcher);
 		bitmapUtilsHead.configDefaultLoadFailedImage(R.drawable.failed);
 		bitmapUtilsHead.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
 		updateView();
-		requestYuansu(0);
-		return convertView;
+		requestGuanzhuYs(0);
+	}
+
+	@Override
+	public void clearData() {
+
 	}
 
 	class Adapter extends BaseAdapter {
 
 		@Override
 		public int getCount() {
-			return logic.list.size();
+			return pcLogic.guanzhuYsList.size();
 		}
 
 		@Override
 		public Yuansu getItem(int arg0) {
-			return logic.list.get(arg0);
+			return pcLogic.guanzhuYsList.get(arg0);
 		}
 
 		@Override
@@ -148,12 +139,11 @@ public class PageHomeFragment extends SuperFragment implements
 			Holder holder;
 			if (null == convertView) {
 				holder = new Holder();
-				convertView = LayoutInflater.from(getActivity()).inflate(
+				convertView = LayoutInflater.from(getBaseContext()).inflate(
 						R.layout.yuansu_item_layout, null);
-				holder.tvName = (TextView) convertView
-						.findViewById(R.id.tvName);
-				holder.tvCommentContent = (TextView) convertView
-						.findViewById(R.id.tvCommentContent);
+
+				holder.frameU = (LinearLayout) convertView
+						.findViewById(R.id.frameU);
 				holder.imgGuanZhu = (ImageView) convertView
 						.findViewById(R.id.imgGuanZhu);
 				holder.imgShare = (ImageView) convertView
@@ -169,22 +159,15 @@ public class PageHomeFragment extends SuperFragment implements
 				holder = (Holder) convertView.getTag();
 			}
 			holder.imgGuanZhu.setTag(position);
-			String follow = getItem(position).getFollowState();
-			if (Constant.HAS_FOLLOW.equals(follow)) {
-				holder.imgGuanZhu
-						.setBackgroundResource(android.R.drawable.ic_menu_close_clear_cancel);
-			} else {
-				holder.imgGuanZhu
-						.setBackgroundResource(android.R.drawable.ic_input_add);
-			}
+			holder.imgGuanZhu
+					.setBackgroundResource(android.R.drawable.ic_menu_close_clear_cancel);
 			holder.imgGuanZhu.setOnClickListener(new View.OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
 					int p = (Integer) v.getTag();
-					String follow = getItem(p).getFollowState();
 					temp = p;
-					pingGuanZhuClick(p, follow);
+					pingGuanZhuClick(p);
 				}
 			});
 			holder.imgShare.setTag(position);
@@ -219,79 +202,93 @@ public class PageHomeFragment extends SuperFragment implements
 				holder.content.setText(getItem(position).getRemarkContent());
 				if (holder.content.getLineCount() <= 1) {
 					holder.content.setGravity(Gravity.CENTER);
+					holder.content.setTextAppearance(getBaseContext(),
+							android.R.attr.textAppearanceLarge);
 				} else {
 					holder.content.setGravity(Gravity.LEFT
 							| Gravity.CENTER_VERTICAL);
+					holder.content.setTextAppearance(getBaseContext(),
+							android.R.attr.textAppearanceMedium);
 				}
 			}
-
-			holder.tvName.setText(getItem(position).getUser().getName());
-			holder.tvCommentContent.setText(getItem(position).getUser()
-					.getComment_content());
+			holder.frameU.setVisibility(View.GONE);
 			return convertView;
 		}
 
 		class Holder {
-			TextView tvName;
-			TextView tvCommentContent;
 			ImageView imgGuanZhu;
 			ImageView imgShare;
 			ImageView imgPingLun;
 			ImageView imgContent;
 			TextView content;
+			LinearLayout frameU;
 		}
 	}
 
+	public int actionType = 0;
 	DialogInterface.OnDismissListener dismiss = new DialogInterface.OnDismissListener() {
 		@Override
 		public void onDismiss(DialogInterface dialog) {
-			// httpUtil.getHttpClient().getConnectionManager().shutdown();
-			logic.realseYuanSuRequest();
+			onLoad();
+			pcLogic.stopReqeust();
 		}
 	};
 
-	/**
-	 * 
-	 * Function:获取元素
-	 * 
-	 * @author ruhaly DateTime 2013-10-17 上午10:34:17
-	 */
-	public void requestYuansu(int type) {
+	public int temp;
+
+	public void requestGuanzhuYs(int type) {
 		actionType = type;
 		httpUtil = new HttpUtils();
-		logic.setDate(fHandler, httpUtil);
-		// ((SuperActivityForFragment)
-		// getActivity()).showProcessDialog(dismiss);
-		logic.sendPageHomeYuanSuRequest(getUser().getUid(), getUser()
-				.getRemarkToken(), type);
+		pcLogic.setDate(mHandler, httpUtil);
+		showProcessDialog(dismiss);
+		pcLogic.sendGuanzhuYsRequest(getUser().getRemarkToken(), type);
+	}
+
+	public void pingGuanZhuClick(int p) {
+		sLogic.setDate(mHandler, httpUtil);
+		showProcessDialog(sdismiss);
+		sLogic.sendUnFollowYuansuRequest(getUser().getRemarkToken(),
+				adapterGuanzhuYs.getItem(p).getId());
+	}
+
+	DialogInterface.OnDismissListener sdismiss = new DialogInterface.OnDismissListener() {
+		@Override
+		public void onDismiss(DialogInterface dialog) {
+			onLoad();
+			sLogic.stopReqeust();
+		}
+	};
+
+	public void pingShareClick(int p) {
+		sLogic.setDate(mHandler, httpUtil);
+		showProcessDialog(sdismiss);
+		sLogic.sendShareRequest(getUser().getRemarkToken(), adapterGuanzhuYs
+				.getItem(p).getId());
+	}
+
+	public void pingLunClick(int p) {
+		startActivityForResult(new Intent(getBaseContext(),
+				CommentYuansuActivity.class).putExtra("remarkId",
+				adapterGuanzhuYs.getItem(p).getId()), 2);
 	}
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		startActivity(new Intent(getActivity().getBaseContext(),
-				YuansuInfoActivity.class)
+		startActivity(new Intent(getBaseContext(), YuansuInfoActivity.class)
 				.putExtra("content",
-						adapter.getItem(position).getRemarkContent())
-				.putExtra("remarkId", adapter.getItem(position).getId())
-				.putExtra("label", adapter.getItem(position).getLabel()));
+						adapterGuanzhuYs.getItem(position).getRemarkContent())
+				.putExtra("remarkId",
+						adapterGuanzhuYs.getItem(position).getId())
+				.putExtra("label",
+						adapterGuanzhuYs.getItem(position).getLabel()));
+
 	}
-
-	public int actionType = 0;
-
-	private void onLoad() {
-
-		if (actionType == 0)
-			pullToRefreshView.onHeaderRefreshComplete();
-		pullToRefreshView.onFooterRefreshComplete();
-	}
-
-	int temp;
 
 	@Override
 	public void handleMsg(Message msg) {
 		switch (msg.what) {
-		case SuperLogic.HOME_PAGE_YUANSU_SUCCESS_MSGWHAT: {
+		case SuperLogic.PCENTER_GUANZHUYS_SUCCESS_MSGWHAT: {
 			updateView();
 			break;
 		}
@@ -299,18 +296,8 @@ public class PageHomeFragment extends SuperFragment implements
 			showToast(getString(R.string.share_success));
 			break;
 		}
-		case SuperLogic.FOLLOW_YUANSU_SUCCESS_MSGWHAT: {
-			if (logic.list.size() > 0) {
-				logic.list.get(temp).setFollowState(Constant.HAS_FOLLOW);
-			}
-			showToast(getString(R.string.has_follow));
-			updateView();
-			break;
-		}
 		case SuperLogic.UNFOLLOW_YUANSU_SUCCESS_MSGWHAT: {
-			if (logic.list.size() > 0) {
-				logic.list.get(temp).setFollowState(Constant.UN_FOLLOW);
-			}
+			pcLogic.guanzhuYsList.remove(temp);
 			showToast(getString(R.string.unfollow));
 			updateView();
 			break;
@@ -320,53 +307,16 @@ public class PageHomeFragment extends SuperFragment implements
 		super.handleMsg(msg);
 	}
 
-	public void pingGuanZhuClick(int p, String follow) {
-		sLogic.setDate(fHandler, httpUtil);
-		showProcessDialog(sdismiss);
-		if (Constant.HAS_FOLLOW.equals(follow)) {
-			sLogic.sendUnFollowYuansuRequest(getUser().getRemarkToken(),
-					adapter.getItem(p).getId());
-		} else {
-			sLogic.sendFollowYuansuRequest(getUser().getRemarkToken(), adapter
-					.getItem(p).getId());
-		}
-	}
-
-	DialogInterface.OnDismissListener sdismiss = new DialogInterface.OnDismissListener() {
-		@Override
-		public void onDismiss(DialogInterface dialog) {
-			// httpUtil.getHttpClient().getConnectionManager().shutdown();
-			sLogic.stopReqeust();
-		}
-	};
-
-	public void pingShareClick(int p) {
-		sLogic.setDate(fHandler, httpUtil);
-		showProcessDialog(sdismiss);
-		sLogic.sendShareRequest(getUser().getRemarkToken(), adapter.getItem(p)
-				.getId());
-	}
-
-	public void pingLunClick(int p) {
-		startActivityForResult(new Intent(getActivity().getBaseContext(),
-				CommentYuansuActivity.class).putExtra("remarkId", adapter
-				.getItem(p).getId()), 2);
+	private void onLoad() {
+		if (actionType == 0)
+			pullToRefreshView.onHeaderRefreshComplete();
+		pullToRefreshView.onFooterRefreshComplete();
 	}
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == 2) {
-			requestYuansu(0);
+			requestGuanzhuYs(0);
 		}
-	}
-
-	public void clearData() {
-		logic.clear();
-	}
-
-	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
-
 	}
 }

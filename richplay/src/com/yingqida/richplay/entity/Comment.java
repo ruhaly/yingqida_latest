@@ -11,6 +11,7 @@ public class Comment {
 	// 评论内容
 	private String content = "";
 
+	
 	public String getContent() {
 		return content;
 	}

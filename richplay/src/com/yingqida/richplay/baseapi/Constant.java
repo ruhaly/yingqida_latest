@@ -50,10 +50,6 @@ public class Constant {
 	// 是否成功登陆过的 key
 	public static final String LOGGED_ON = "logged_on";
 
-	public static final String TYPE_YUANSU_PICTURE = "1";
-
-	public static final String TYPE_YUANSU_WORD = "2";
-
 	public static final String HAS_FOLLOW = "1";
 	public static final String UN_FOLLOW = "2";
 }

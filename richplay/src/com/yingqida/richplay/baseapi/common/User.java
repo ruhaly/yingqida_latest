@@ -44,6 +44,29 @@ public class User {
 	// 关注状态 1:已经关注2:未关注
 	private String stateGuanzhu = Constant.UN_FOLLOW;
 
+	// 获取用户头像(静态域)(基本稳定)
+	// 未上传头像
+	// http://[static]/upload/df_avatar/little.png
+	// http://[static]/upload/df_avatar/normal.png
+	// http://[static]/upload/df_avatar/big.png
+	// 已上传头像
+	// http://[static]/upload/avatar/{uid}-little.jpg
+	// http://[static]/upload/avatar/{uid}-normal.jpg
+	// http://[static]/upload/avatar/{uid}-big.jpg
+
+	/**
+	 * 是否有头像
+	 */
+	private String is_avatar;
+
+	public String getIs_avatar() {
+		return is_avatar;
+	}
+
+	public void setIs_avatar(String is_avatar) {
+		this.is_avatar = is_avatar;
+	}
+
 	public String getIsGuanzhu() {
 		return isGuanzhu;
 	}

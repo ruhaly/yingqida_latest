@@ -160,33 +160,14 @@ public class YonghuFragment extends SuperFragment implements
 		logic.sendGetUserRequest(getUser().getRemarkToken(), keyword, type);
 	}
 
-	@Override
-	public void handleHttpResponse(String response, int rspCode, int requestId) {
-
-	}
-
-	@Override
-	public void handleHttpResponse(String response, int requestId) {
-
-	}
-
-	@Override
-	public void handleHttpException(HttpException error, String msg) {
-
-	}
-
-	@Override
-	public void handleHttpTimeout(int paramInt) {
-
-	}
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		startActivity(new Intent(getActivity().getBaseContext(),
 				YuansuInfoActivity.class).putExtra("content",
-				adapter.getItem(position - 1).getComment_content()).putExtra(
-				"yuansutype", Constant.TYPE_YUANSU_WORD));
+				adapter.getItem(position).getComment_content()).putExtra(
+				"label", ""));
 	}
 
 	@Override

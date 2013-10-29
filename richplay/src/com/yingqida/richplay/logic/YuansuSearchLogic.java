@@ -67,7 +67,7 @@ public class YuansuSearchLogic extends SuperLogic implements HttpAction {
 		curPage = 0;
 	}
 
-	public void realseYuanSuRequest() {
+	public void stop() {
 		httpHanlder.stop();
 	}
 

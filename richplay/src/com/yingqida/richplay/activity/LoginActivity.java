@@ -290,7 +290,7 @@ public class LoginActivity extends SuperActivity {
 	DialogInterface.OnDismissListener dismiss = new DialogInterface.OnDismissListener() {
 		@Override
 		public void onDismiss(DialogInterface dialog) {
-			httpUtil.getHttpClient().getConnectionManager().shutdown();
+			loginLogic.stopRequest();
 		}
 	};
 
@@ -350,7 +350,7 @@ public class LoginActivity extends SuperActivity {
 			showProcessDialog(dismiss);
 			loginLogic.sendLoginRequest(
 					text_account_login.getText().toString(), text_pwd_login
-							.getText().toString());
+							.getText().toString(), getUser().getRemarkToken());
 			break;
 		}
 		case R.id.btn_register: {
@@ -418,8 +418,7 @@ public class LoginActivity extends SuperActivity {
 	 */
 	public void saveUser() {
 		// GlobalVar.ins.clearUserDate(getAppShare());
-		User user = new User();
-		user.remarkToken = loginLogic.user.getRemarkToken();
+		User user = getUser();
 		user.uid = loginLogic.user.getUid();
 		user.account = text_account_login.getText().toString().trim();
 		user.pwd = text_pwd_login.getText().toString().trim();

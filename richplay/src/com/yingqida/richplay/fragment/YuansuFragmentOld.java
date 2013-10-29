@@ -20,10 +20,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lidroid.xutils.ViewUtils;
-import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.yingqida.richplay.R;
-import com.yingqida.richplay.activity.MenuActivity;
 import com.yingqida.richplay.activity.YuansuInfoActivity;
 import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.baseapi.common.RichResource;
@@ -35,7 +33,8 @@ import com.yingqida.richplay.pubuliu.PLA_AdapterView;
 import com.yingqida.richplay.pubuliu.XListView;
 import com.yingqida.richplay.pubuliu.XListView.IXListViewListener;
 
-public class YuansuFragmentOld extends SuperFragment implements IXListViewListener {
+public class YuansuFragmentOld extends SuperFragment implements
+		IXListViewListener {
 
 	private ImageFetcher mImageFetcher;
 	private XListView mAdapterView = null;
@@ -341,27 +340,4 @@ public class YuansuFragmentOld extends SuperFragment implements IXListViewListen
 		((SuperActivityForFragment) getActivity()).getSlidingMenu().toggle();
 	}
 
-	@Override
-	public void handleHttpResponse(String response, int rspCode, int requestId) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void handleHttpResponse(String response, int requestId) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void handleHttpException(HttpException error, String msg) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void handleHttpTimeout(int paramInt) {
-		// TODO Auto-generated method stub
-
-	}
 }

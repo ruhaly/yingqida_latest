@@ -37,10 +37,11 @@ public class LoginLogic extends SuperLogic implements HttpAction {
 		return ins;
 	}
 
-	public void sendLoginRequest(String account, String pwd) {
+	public void sendLoginRequest(String account, String pwd,String remarkToken) {
 		RequestParams params = new RequestParams();
 		params.addBodyParameter("email", account);
 		params.addBodyParameter("password", pwd);
+		params.addBodyParameter("remark_token", remarkToken);
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_LOGIN, params,
 				HttpSenderUtils.METHOD_POST, httpUtils,
 				RequestId.LOGIN_REQUESTID, this);
@@ -76,7 +77,7 @@ public class LoginLogic extends SuperLogic implements HttpAction {
 
 	}
 
-	public void releaseRequest() {
+	public void stopRequest() {
 		if (null != httpHanlder) {
 			httpHanlder.stop();
 		}
@@ -98,6 +99,10 @@ public class LoginLogic extends SuperLogic implements HttpAction {
 			httpModPwdResponse(response);
 			break;
 		}
+		case RequestId.GET_REMARKTOKEN: {
+			httpGetRemarkTokenResponse(response);
+			break;
+		}
 		default:
 			break;
 		}
@@ -106,8 +111,7 @@ public class LoginLogic extends SuperLogic implements HttpAction {
 
 	@Override
 	public void handleHttpException(HttpException error, String msg) {
-		System.out.println(error.getMessage() + "-----------"
-				+ error.getExceptionCode() + "----------" + msg);
+		handler.sendEmptyMessage(CONNECT_ERROR_MSGWHAT);
 	}
 
 	/**
@@ -180,6 +184,34 @@ public class LoginLogic extends SuperLogic implements HttpAction {
 
 		} catch (JSONException e) {
 			handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+			e.printStackTrace();
+		}
+
+	}
+
+	public void sendGetRemarkTokenRequest() {
+		RequestParams params = new RequestParams();
+		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_GET_REMARKTOKEN,
+				params, HttpSenderUtils.METHOD_GET, httpUtils,
+				RequestId.GET_REMARKTOKEN, this);
+	}
+
+	public void httpGetRemarkTokenResponse(String response) {
+
+		try {
+			JSONObject json = new JSONObject(response);
+			String code = String.valueOf(json.get("code"));
+			if (code.equals(ResponseCode.SUCCESS)) {
+				String remarkToken = JsonParse.parseRemarkTokenRes(response);
+				// handler.sendEmptyMessage(GET_REMARKTOKEN_SUCCESS_MSGWHAT);
+				handler.obtainMessage(GET_REMARKTOKEN_SUCCESS_MSGWHAT,
+						remarkToken).sendToTarget();
+			} else {
+				handler.sendEmptyMessage(GET_REMARKTOKEN_ERROR_MSGWHAT);
+			}
+
+		} catch (JSONException e) {
+			handler.sendEmptyMessage(GET_REMARKTOKEN_ERROR_MSGWHAT);
 			e.printStackTrace();
 		}
 

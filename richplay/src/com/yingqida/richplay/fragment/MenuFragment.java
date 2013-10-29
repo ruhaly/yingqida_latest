@@ -22,7 +22,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.lidroid.xutils.ViewUtils;
-import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.yingqida.richplay.R;
@@ -42,13 +41,11 @@ public class MenuFragment extends SuperFragment implements OnItemClickListener {
 
 	private List<Menu> menus = new ArrayList<Menu>();
 
+	@ViewInject(R.id.tvName)
+	private TextView tvName;
+
 	@ViewInject(R.id.btnToggle)
 	private Button btnToggle;
-
-	@Override
-	public void onClick(View v) {
-
-	}
 
 	@Override
 	public void updateView() {
@@ -94,6 +91,15 @@ public class MenuFragment extends SuperFragment implements OnItemClickListener {
 		} else {
 			adapter.notifyDataSetChanged();
 		}
+		etSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if (!hasFocus) {
+					hiddenSoft(etSearch);
+				}
+			}
+		});
 		etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
 			@SuppressLint("NewApi")
@@ -118,6 +124,7 @@ public class MenuFragment extends SuperFragment implements OnItemClickListener {
 
 			}
 		});
+		tvName.setText(getUser().getName());
 		return convertView;
 	}
 
@@ -176,26 +183,6 @@ public class MenuFragment extends SuperFragment implements OnItemClickListener {
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int rspCode, int requestId) {
-
-	}
-
-	@Override
-	public void handleHttpResponse(String response, int requestId) {
-
-	}
-
-	@Override
-	public void handleHttpException(HttpException error, String msg) {
-
-	}
-
-	@Override
-	public void handleHttpTimeout(int paramInt) {
-
-	}
-
-	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		SuperFragment fragment = null;
@@ -232,14 +219,14 @@ public class MenuFragment extends SuperFragment implements OnItemClickListener {
 
 	@OnClick(R.id.framePcenter)
 	public void framePcenterClick(View view) {
-		SuperFragment fragment = PageHomeFragment.getIns();
+		SuperFragment fragment = PCenterFragment.getIns();
 		if (fragment != null)
 			switchFragment(fragment);
 	}
 
 	@OnClick(R.id.tvPersoninfo)
 	public void tvPersoninfoClick(View view) {
-		SuperFragment fragment = PageHomeFragment.getIns();
+		SuperFragment fragment = PCenterFragment.getIns();
 		if (fragment != null)
 			switchFragment(fragment);
 	}
@@ -260,13 +247,17 @@ public class MenuFragment extends SuperFragment implements OnItemClickListener {
 
 	@OnClick(R.id.tvClearCache)
 	public void tvClearCacheClick(View view) {
-		SuperFragment fragment = PageHomeFragment.getIns();
-		if (fragment != null)
-			switchFragment(fragment);
+		((SuperActivityForFragment) getActivity()).showCleanCacheDialog();
 	}
 
 	@OnClick(R.id.tvZhuxiao)
 	public void tvZhuxiaoClick(View view) {
 		((SuperActivityForFragment) getActivity()).showLogoutDialog();
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+
 	}
 }

@@ -53,6 +53,7 @@ import com.yingqida.richplay.pubuliu.ImageCache;
 import com.yingqida.richplay.pubuliu.ImageFetcher;
 import com.yingqida.richplay.pubuliu.ImageWorker.ICallBack;
 import com.yingqida.richplay.service.NetWorkProxy;
+import com.yingqida.richplay.util.DataCleanManager;
 
 public abstract class SuperActivityForFragment extends
 		HandleActivityForFragment implements HttpResponseHanlder,
@@ -506,5 +507,18 @@ public abstract class SuperActivityForFragment extends
 
 	public User getUser() {
 		return GlobalVar.ins.getUser(getAppShare());
+	}
+
+	public OnClickListener okclean = new OnClickListener() {
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			DataCleanManager.cleanApplicationData(getBaseContext());
+		}
+	};
+
+	public void showCleanCacheDialog() {
+		showAlertDialog(0, getString(R.string.tip),
+				getString(R.string.is_clear_cache), null, okclean, DEFAULT_BTN,
+				null, true, true);
 	}
 }

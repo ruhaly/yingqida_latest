@@ -232,7 +232,14 @@
     <string name="person_info">個人資料</string>
     <string name="guanyu">關于</string>
     <string name="banbengengxin">版本更新</string>
-    <string name="clear_cache">清楚緩存</string>
+    <string name="clear_cache">清除緩存</string>
     <string name="zhuxiao">注銷</string>
+    <string name="is_clear_cache">是否清除緩存?</string>
+    <string name="share_success">分享成功~</string>
+    <string name="comment">評論</string>
+    <string name="comment_yuansu_success">評論成功~</string>
+    <string name="data_not_empty">数据不能为空~</string>
+    <string name="followed_yuansu">關注的元素</string>
+    <string name="followed_user">關注的用戶</string>
 
 </resources>

@@ -125,7 +125,9 @@
         android:id="@+id/frameBottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
+        android:paddingBottom="3dp"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:paddingTop="3dp"
@@ -146,7 +148,8 @@
                 android:id="@+id/text_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="你好" />
+                android:text="你好"
+                android:textColor="@color/Color_Black" />
 
             <TextView
                 android:id="@+id/text_msg"

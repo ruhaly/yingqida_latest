@@ -94,7 +94,7 @@ public class YuansuCommentLogic extends SuperLogic implements HttpAction {
 				if (null == list) {
 					list = new ArrayList<Comment>();
 				}
-				if (!list.isEmpty()) {
+				if (!tempList.isEmpty()) {
 					curPage = targetCurPage;
 				}
 				handler.sendEmptyMessage(YUANSU_COMMENT_SUCCESS_MSGWHAT);

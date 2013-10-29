@@ -119,28 +119,4 @@ public class WoguanzhuFragment extends SuperFragment {
 		}
 
 	}
-
-	@Override
-	public void handleHttpResponse(String response, int rspCode, int requestId) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void handleHttpResponse(String response, int requestId) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void handleHttpException(HttpException error, String msg) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void handleHttpTimeout(int paramInt) {
-		// TODO Auto-generated method stub
-
-	}
 }

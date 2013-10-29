@@ -12,7 +12,13 @@ public abstract interface HttpAction {
 	public static final String ACTION_MODIFY_PWD = "/account/modify_password";
 	public static final String ACTION_SEARCH_USER = "/search/user";
 	public static final String ACTION_SEARCH_COMMENT = "/search/comment";
-	public static final String ACTION_FOLLOW_USER = "/relationship/follow";
-	public static final String ACTION_UNFOLLOW_USER = "/relationship/unfollow";
+	public static final String ACTION_FOLLOW_USER_OR_YUANSU = "/relationship/follow";
+	public static final String ACTION_UNFOLLOW_USER_OR_YUANSU = "/relationship/unfollow";
 	public static final String ACTION_YUANSU_COMMENT = "/comment/show";
+	public static final String ACTION_SHARE = "/comment/share";
+	public static final String ACTION_COMMENT_YUANSU = "/comment/create";
+	public static final String ACTION_GET_REMARKTOKEN = "/auth/remark_token";
+	public static final String ACTION_GET_FOLLOWER = "/relationship/follower";
+	public static final String ACTION_GUANZHU_YUANSU = "/relationship/following_remark";
+	public static final String ACTION_GUANZHU_YONGHU = "/relationship/following_user";
 }

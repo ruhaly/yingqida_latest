@@ -39,9 +39,9 @@ public class PCenterActivity extends SuperActivityForFragment {
 	@Override
 	public void initLayout(Bundle paramBundle) {
 		setContentView(R.layout.pcenter_layout);
-		textFy = (TextView) findViewById(R.id.text_fy);
-		textWgz = (TextView) findViewById(R.id.text_wgz);
-		textGzw = (TextView) findViewById(R.id.text_gzw);
+		// textFy = (TextView) findViewById(R.id.text_fy);
+		// textWgz = (TextView) findViewById(R.id.text_wgz);
+		// textGzw = (TextView) findViewById(R.id.text_gzw);
 		findViewById(R.id.btn_setting).setVisibility(View.VISIBLE);
 		updateNum();
 		initViewPager();
@@ -129,28 +129,28 @@ public class PCenterActivity extends SuperActivityForFragment {
 
 	public void setBg(int index) {
 		mPager.setCurrentItem(index);
-		if (0 == index) {
-			findViewById(R.id.text_fy)
-					.setBackgroundResource(R.drawable.fayan_g);
-			findViewById(R.id.text_wgz).setBackgroundResource(
-					R.drawable.fayan_p);
-			findViewById(R.id.text_gzw).setBackgroundResource(
-					R.drawable.fayan_p);
-		} else if (1 == index) {
-			findViewById(R.id.text_fy)
-					.setBackgroundResource(R.drawable.fayan_p);
-			findViewById(R.id.text_wgz).setBackgroundResource(
-					R.drawable.fayan_g);
-			findViewById(R.id.text_gzw).setBackgroundResource(
-					R.drawable.fayan_p);
-		} else {
-			findViewById(R.id.text_fy)
-					.setBackgroundResource(R.drawable.fayan_p);
-			findViewById(R.id.text_wgz).setBackgroundResource(
-					R.drawable.fayan_p);
-			findViewById(R.id.text_gzw).setBackgroundResource(
-					R.drawable.fayan_g);
-		}
+		// if (0 == index) {
+		// findViewById(R.id.text_fy)
+		// .setBackgroundResource(R.drawable.fayan_g);
+		// findViewById(R.id.text_wgz).setBackgroundResource(
+		// R.drawable.fayan_p);
+		// findViewById(R.id.text_gzw).setBackgroundResource(
+		// R.drawable.fayan_p);
+		// } else if (1 == index) {
+		// findViewById(R.id.text_fy)
+		// .setBackgroundResource(R.drawable.fayan_p);
+		// findViewById(R.id.text_wgz).setBackgroundResource(
+		// R.drawable.fayan_g);
+		// findViewById(R.id.text_gzw).setBackgroundResource(
+		// R.drawable.fayan_p);
+		// } else {
+		// findViewById(R.id.text_fy)
+		// .setBackgroundResource(R.drawable.fayan_p);
+		// findViewById(R.id.text_wgz).setBackgroundResource(
+		// R.drawable.fayan_p);
+		// findViewById(R.id.text_gzw).setBackgroundResource(
+		// R.drawable.fayan_g);
+		// }
 	}
 
 	public static final int FAYAN = 0;
@@ -159,19 +159,19 @@ public class PCenterActivity extends SuperActivityForFragment {
 
 	public void textClick(View view) {
 		switch (view.getId()) {
-		case R.id.text_fy: {
-			setBg(FAYAN);
-			break;
-		}
-
-		case R.id.text_wgz: {
-			setBg(WOGUANZHU);
-			break;
-		}
-		case R.id.text_gzw: {
-			setBg(GUANZHUWO);
-			break;
-		}
+		// case R.id.text_fy: {
+		// setBg(FAYAN);
+		// break;
+		// }
+		//
+		// case R.id.text_wgz: {
+		// setBg(WOGUANZHU);
+		// break;
+		// }
+		// case R.id.text_gzw: {
+		// setBg(GUANZHUWO);
+		// break;
+		// }
 		default:
 			break;
 		}
@@ -179,13 +179,11 @@ public class PCenterActivity extends SuperActivityForFragment {
 
 	@Override
 	public void handleHttpResponse(String response, int requestId) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void handleHttpException(HttpException error, String msg) {
-		// TODO Auto-generated method stub
 
 	}
 }

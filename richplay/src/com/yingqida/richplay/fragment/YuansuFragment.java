@@ -24,10 +24,9 @@ import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.activity.YuansuInfoActivity;
 import com.yingqida.richplay.activity.common.SuperActivityForFragment;
-import com.yingqida.richplay.baseapi.Constant;
 import com.yingqida.richplay.entity.Yuansu;
-import com.yingqida.richplay.logic.YuansuSearchLogic;
 import com.yingqida.richplay.logic.SuperLogic;
+import com.yingqida.richplay.logic.YuansuSearchLogic;
 import com.yingqida.richplay.widget.XListView;
 import com.yingqida.richplay.widget.XListView.IXListViewListener;
 
@@ -203,33 +202,14 @@ public class YuansuFragment extends SuperFragment implements
 				keyword);
 	}
 
-	@Override
-	public void handleHttpResponse(String response, int rspCode, int requestId) {
-
-	}
-
-	@Override
-	public void handleHttpResponse(String response, int requestId) {
-
-	}
-
-	@Override
-	public void handleHttpException(HttpException error, String msg) {
-
-	}
-
-	@Override
-	public void handleHttpTimeout(int paramInt) {
-
-	}
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		startActivity(new Intent(getActivity().getBaseContext(),
 				YuansuInfoActivity.class).putExtra("content",
-				adapter.getItem(position - 1).getRemarkContent()).putExtra(
-				"yuansutype", Constant.TYPE_YUANSU_WORD));
+				adapter.getItem(position).getRemarkContent()).putExtra(
+				"label", adapter.getItem(position).getLabel()));
 	}
 
 	@Override

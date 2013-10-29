@@ -1,8 +1,7 @@
 package com.yingqida.richplay.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Message;
@@ -22,8 +21,9 @@ import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.activity.common.SuperActivity;
-import com.yingqida.richplay.baseapi.Constant;
 import com.yingqida.richplay.entity.Comment;
+import com.yingqida.richplay.entity.Yuansu;
+import com.yingqida.richplay.logic.ShareAndFollowLogic;
 import com.yingqida.richplay.logic.SuperLogic;
 import com.yingqida.richplay.logic.YuansuCommentLogic;
 import com.yingqida.richplay.widget.PullToRefreshView;
@@ -38,17 +38,18 @@ public class YuansuInfoActivity extends SuperActivity {
 
 	Adapter adapter;
 
-	private List<Comment> list = new ArrayList<Comment>();
-
 	private HttpUtils httpUtil;
 
 	private YuansuCommentLogic logic;
 	private BitmapUtils bitmapUtilsContent;
 	private BitmapUtils bitmapUtilsHead;
 
+	private ShareAndFollowLogic sLogic;
+
 	@Override
 	public void initData() {
 		logic = YuansuCommentLogic.getInstance();
+		sLogic = ShareAndFollowLogic.getInstance();
 	}
 
 	String purl = "";
@@ -63,9 +64,9 @@ public class YuansuInfoActivity extends SuperActivity {
 	TextView text_name;
 	TextView text_msg;
 	TextView text_share_count;
-	String yuansuType;
 	String content;
 	String shareCount;
+	String label;
 
 	@Override
 	public void initLayout(Bundle paramBundle) {
@@ -73,6 +74,7 @@ public class YuansuInfoActivity extends SuperActivity {
 		ViewUtils.inject(this);
 		purl = getIntent().getStringExtra("PURL");
 		remarkId = getIntent().getStringExtra("remarkId");
+		label = getIntent().getStringExtra("label");
 		headerView = LayoutInflater.from(getBaseContext()).inflate(
 				R.layout.yuansu_top_layout, null);
 
@@ -87,9 +89,8 @@ public class YuansuInfoActivity extends SuperActivity {
 		imgContent = (ImageView) headerView.findViewById(R.id.imgContent);
 		text_share_count = (TextView) headerView
 				.findViewById(R.id.text_share_count);
-		yuansuType = getIntent().getExtras().getString("yuansutype");
 		content = getIntent().getExtras().getString("content");
-		updateHeaderView(yuansuType);
+		updateHeaderView(label);
 		imgGuanZhu.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -141,12 +142,12 @@ public class YuansuInfoActivity extends SuperActivity {
 
 		@Override
 		public int getCount() {
-			return list.size();
+			return logic.list.size();
 		}
 
 		@Override
 		public Comment getItem(int arg0) {
-			return list.get(arg0);
+			return logic.list.get(arg0);
 		}
 
 		@Override
@@ -214,12 +215,33 @@ public class YuansuInfoActivity extends SuperActivity {
 		showToast("添加关注");
 	}
 
+	DialogInterface.OnDismissListener sdismiss = new DialogInterface.OnDismissListener() {
+		@Override
+		public void onDismiss(DialogInterface dialog) {
+			// httpUtil.getHttpClient().getConnectionManager().shutdown();
+			sLogic.stopReqeust();
+		}
+	};
+
 	public void pingShareClick() {
-		showToast("分享");
+		sLogic.setDate(mHandler, httpUtil);
+		showProcessDialog(sdismiss);
+		sLogic.sendShareRequest(getUser().getRemarkToken(), remarkId);
 	}
 
+	public static int UPDATEVIEW = 1;
+
 	public void pingLunClick() {
-		showToast("评论");
+		startActivityForResult(new Intent(getBaseContext(),
+				CommentYuansuActivity.class).putExtra("remarkId", remarkId),
+				UPDATEVIEW);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == 1) {
+			requestYuansuComment(0);
+		}
 	}
 
 	@Override
@@ -230,22 +252,16 @@ public class YuansuInfoActivity extends SuperActivity {
 			updateView();
 			break;
 		}
+		case SuperLogic.SHARE_SUCCESS_MSGWHAT: {
+			showToast(getString(R.string.share_success));
+			break;
+		}
 		}
 		super.handleMsg(msg);
 	}
 
 	public void updateHeaderView(String type) {
-		if (type.equals(Constant.TYPE_YUANSU_WORD)) {
-			imgContent.setVisibility(View.GONE);
-			text_word_content.setVisibility(View.VISIBLE);
-			text_word_content.setText(content);
-			if (text_word_content.getLineCount() <= 1) {
-				text_word_content.setGravity(Gravity.CENTER);
-			} else {
-				text_word_content.setGravity(Gravity.LEFT
-						| Gravity.CENTER_VERTICAL);
-			}
-		} else {
+		if (type.equals(Yuansu.Label.img.toString())) {
 			imgContent.setVisibility(View.VISIBLE);
 			text_word_content.setVisibility(View.GONE);
 			if (null == bitmapUtilsContent) {
@@ -258,17 +274,33 @@ public class YuansuInfoActivity extends SuperActivity {
 						.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
 			}
 			bitmapUtilsContent.display(imgContent, content);
+		} else {
+			imgContent.setVisibility(View.GONE);
+			text_word_content.setVisibility(View.VISIBLE);
+			text_word_content.setText(content);
+			if (text_word_content.getLineCount() <= 1) {
+				text_word_content.setGravity(Gravity.CENTER);
+			} else {
+				text_word_content.setGravity(Gravity.LEFT
+						| Gravity.CENTER_VERTICAL);
+			}
 		}
 	}
 
 	public int actionType = 0;
+	DialogInterface.OnDismissListener dismiss = new DialogInterface.OnDismissListener() {
+		@Override
+		public void onDismiss(DialogInterface dialog) {
+			// httpUtil.getHttpClient().getConnectionManager().shutdown();
+			logic.stopReqeust();
+		}
+	};
 
 	public void requestYuansuComment(int type) {
 		actionType = type;
 		httpUtil = new HttpUtils();
 		logic.setDate(mHandler, httpUtil);
-		// ((SuperActivityForFragment)
-		// getActivity()).showProcessDialog(dismiss);
+		showProcessDialog(dismiss);
 		logic.sendYuansuCommentRequest(getUser().getRemarkToken(), remarkId,
 				type);
 	}

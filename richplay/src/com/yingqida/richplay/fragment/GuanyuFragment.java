@@ -23,31 +23,6 @@ public class GuanyuFragment extends SuperFragment {
 	}
 
 	@Override
-	public void onClick(View v) {
-
-	}
-
-	@Override
-	public void handleHttpResponse(String response, int rspCode, int requestId) {
-
-	}
-
-	@Override
-	public void handleHttpResponse(String response, int requestId) {
-
-	}
-
-	@Override
-	public void handleHttpException(HttpException error, String msg) {
-
-	}
-
-	@Override
-	public void handleHttpTimeout(int paramInt) {
-
-	}
-
-	@Override
 	public void updateView() {
 
 	}
@@ -72,6 +47,12 @@ public class GuanyuFragment extends SuperFragment {
 					false);
 		ViewUtils.inject(this, convertView);
 		return convertView;
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

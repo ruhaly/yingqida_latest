@@ -1,5 +1,6 @@
 package com.yingqida.richplay.activity;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -164,7 +165,7 @@ public class WallPicActivityOld extends SuperActivityForFragment {
 			"http://b.hiphotos.bdimg.com/album/w%3D2048/sign=c17a8b6830adcbef0134790698972cdd/3b292df5e0fe9925ade9dbfc35a85edf8cb171b0.jpg" };
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId, InputStream is) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -162,6 +162,8 @@ public class PageHomeFragment extends SuperFragment implements
 						.findViewById(R.id.imgPingLun);
 				holder.imgContent = (ImageView) convertView
 						.findViewById(R.id.imgContent);
+				holder.imgHead = (ImageView) convertView
+						.findViewById(R.id.imgHead);
 				holder.content = (TextView) convertView
 						.findViewById(R.id.content);
 				convertView.setTag(holder);
@@ -225,6 +227,14 @@ public class PageHomeFragment extends SuperFragment implements
 				}
 			}
 
+			if (getItem(position).getUser().getIs_avatar().equals("true")) {
+				bitmapUtilsHead.display(holder.imgHead,
+						getHeadUrl(1, 2, getUser().getUid()));
+			} else {
+				bitmapUtilsHead.display(holder.imgHead,
+						getHeadUrl(2, 2, getUser().getUid()));
+			}
+
 			holder.tvName.setText(getItem(position).getUser().getName());
 			holder.tvCommentContent.setText(getItem(position).getUser()
 					.getComment_content());
@@ -238,6 +248,7 @@ public class PageHomeFragment extends SuperFragment implements
 			ImageView imgShare;
 			ImageView imgPingLun;
 			ImageView imgContent;
+			ImageView imgHead;
 			TextView content;
 		}
 	}
@@ -260,8 +271,7 @@ public class PageHomeFragment extends SuperFragment implements
 		actionType = type;
 		httpUtil = new HttpUtils();
 		logic.setDate(fHandler, httpUtil);
-		// ((SuperActivityForFragment)
-		// getActivity()).showProcessDialog(dismiss);
+		((SuperActivityForFragment) getActivity()).showProcessDialog(dismiss);
 		logic.sendPageHomeYuanSuRequest(getUser().getUid(), getUser()
 				.getRemarkToken(), type);
 	}

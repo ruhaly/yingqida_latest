@@ -1,5 +1,8 @@
 package com.yingqida.richplay.activity.common;
 
+
+import java.io.InputStream;
+
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
@@ -20,7 +23,7 @@ public class BaseActivity extends SuperActivityForFragment {
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId, InputStream is) {
 		// TODO Auto-generated method stub
 
 	}

@@ -99,16 +99,19 @@
         android:gravity="center_vertical" >
 
         <EditText
+            android:id="@+id/etCaptcha"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="@string/captcha">
+            android:hint="@string/captcha"
+            android:inputType="number" >
         </EditText>
 
         <ImageView
             android:id="@+id/img_captcha"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:src="@android:drawable/ic_lock_lock" />
     </LinearLayout>
 

@@ -515,4 +515,16 @@ public abstract class SuperActivity extends HandleActivity implements
 			imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 		}
 	}
+
+	public void showCodetip(int code) {
+		switch (code) {
+		case 302002: {
+			showToast("Email Can't Be Repeated");
+			break;
+		}
+
+		default:
+			break;
+		}
+	}
 }

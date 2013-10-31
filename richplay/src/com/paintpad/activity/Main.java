@@ -1,6 +1,7 @@
 package com.paintpad.activity;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -1218,7 +1219,7 @@ public class Main extends SuperActivityForFragment implements OnClickListener {
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId, InputStream is) {
 		// TODO Auto-generated method stub
 		
 	}

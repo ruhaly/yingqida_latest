@@ -1,5 +1,8 @@
 package com.yingqida.richplay.logic;
 
+
+import java.io.InputStream;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,7 +40,7 @@ public class ShareAndFollowLogic extends SuperLogic implements HttpAction {
 		params.addBodyParameter("remark_token", remark_token);
 		params.addBodyParameter("remark_id", remark_id);
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_SHARE, params,
-				HttpSenderUtils.METHOD_POST, httpUtils, RequestId.SHARE, this);
+				HttpSenderUtils.METHOD_POST, httpUtils, RequestId.SHARE, this, false);
 	}
 
 	@Override
@@ -55,7 +58,7 @@ public class ShareAndFollowLogic extends SuperLogic implements HttpAction {
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId, InputStream is) {
 
 		switch (requestId) {
 		case RequestId.SHARE: {
@@ -129,7 +132,7 @@ public class ShareAndFollowLogic extends SuperLogic implements HttpAction {
 		params.addBodyParameter("uid", uid);
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_FOLLOW_USER_OR_YUANSU,
 				params, HttpSenderUtils.METHOD_POST, httpUtils,
-				RequestId.FOLLOW_USER, this);
+				RequestId.FOLLOW_USER, this, false);
 	}
 
 	public void httpFollowUser(String response) {
@@ -167,7 +170,7 @@ public class ShareAndFollowLogic extends SuperLogic implements HttpAction {
 		httpHanlder = HttpSenderUtils.sendMsgImpl(
 				ACTION_UNFOLLOW_USER_OR_YUANSU, params,
 				HttpSenderUtils.METHOD_POST, httpUtils,
-				RequestId.UNFOLLOW_USER, this);
+				RequestId.UNFOLLOW_USER, this, false);
 	}
 
 	public void httpUnFollowUser(String response) {
@@ -198,7 +201,7 @@ public class ShareAndFollowLogic extends SuperLogic implements HttpAction {
 		params.addBodyParameter("remark_id", remark_id);
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_FOLLOW_USER_OR_YUANSU,
 				params, HttpSenderUtils.METHOD_POST, httpUtils,
-				RequestId.FOLLOW_YUANSU, this);
+				RequestId.FOLLOW_YUANSU, this, false);
 	}
 
 	public void httpFollowYuansu(String response) {
@@ -227,7 +230,7 @@ public class ShareAndFollowLogic extends SuperLogic implements HttpAction {
 		httpHanlder = HttpSenderUtils.sendMsgImpl(
 				ACTION_UNFOLLOW_USER_OR_YUANSU, params,
 				HttpSenderUtils.METHOD_POST, httpUtils,
-				RequestId.UNFOLLOW_YUANSU, this);
+				RequestId.UNFOLLOW_YUANSU, this, false);
 	}
 
 	public void httpUnFollowYuansu(String response) {

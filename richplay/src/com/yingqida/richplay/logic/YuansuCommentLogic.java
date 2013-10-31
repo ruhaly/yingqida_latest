@@ -1,5 +1,6 @@
 package com.yingqida.richplay.logic;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class YuansuCommentLogic extends SuperLogic implements HttpAction {
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId, InputStream is) {
 
 		switch (requestId) {
 		case RequestId.YUANSU_COMMENT: {
@@ -70,7 +71,7 @@ public class YuansuCommentLogic extends SuperLogic implements HttpAction {
 		params.addQueryStringParameter("per_page", perPage);
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_YUANSU_COMMENT,
 				params, HttpSenderUtils.METHOD_GET, httpUtils,
-				RequestId.YUANSU_COMMENT, this);
+				RequestId.YUANSU_COMMENT, this, false);
 
 	}
 

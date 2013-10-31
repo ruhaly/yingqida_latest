@@ -1,5 +1,8 @@
 package com.twitter;
 
+
+import java.io.InputStream;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -75,7 +78,7 @@ public class WebsiteActivity extends SuperActivityForFragment {
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId, InputStream is) {
 		// TODO Auto-generated method stub
 		
 	}

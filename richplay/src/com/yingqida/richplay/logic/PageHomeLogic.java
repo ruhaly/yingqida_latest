@@ -1,5 +1,6 @@
 package com.yingqida.richplay.logic;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class PageHomeLogic extends SuperLogic implements HttpAction {
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId, InputStream is) {
 
 		switch (requestId) {
 		case RequestId.HOME_TIMELINE: {
@@ -84,7 +85,7 @@ public class PageHomeLogic extends SuperLogic implements HttpAction {
 		params.addQueryStringParameter("per_page", perPage);
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_HOME_TIMELINE, params,
 				HttpSenderUtils.METHOD_GET, httpUtils, RequestId.HOME_TIMELINE,
-				this);
+				this, false);
 	}
 
 	/**
@@ -123,4 +124,5 @@ public class PageHomeLogic extends SuperLogic implements HttpAction {
 		}
 
 	}
+
 }

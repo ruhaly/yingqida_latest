@@ -1,6 +1,7 @@
 package com.yingqida.richplay.activity;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -354,7 +355,7 @@ public class WallPicActivity extends SuperActivityForFragment implements
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId, InputStream is) {
 		// TODO Auto-generated method stub
 
 	}

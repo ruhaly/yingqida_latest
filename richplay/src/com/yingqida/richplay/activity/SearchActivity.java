@@ -1,5 +1,6 @@
 package com.yingqida.richplay.activity;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import android.os.Bundle;
@@ -131,7 +132,7 @@ public class SearchActivity extends SuperActivityForFragment {
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId, InputStream is) {
 		// TODO Auto-generated method stub
 		
 	}

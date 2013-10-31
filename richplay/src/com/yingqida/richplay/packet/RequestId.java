@@ -3,7 +3,9 @@ package com.yingqida.richplay.packet;
 public class RequestId {
 	public static final int GET_REMARKTOKEN = 10000;
 	public static final int LOGIN_REQUESTID = 10001;
+	public static final int LOGIN_CAPTCHA_REQUESTID = 100010;
 	public static final int REGISTER_REQUESTID = 10002;
+	public static final int REGISTER_CAPTCHA_REQUESTID = 100020;
 	public static final int EXIT_REQUESTID = 10003;
 	public static final int USER_TIMELINE = 10004;
 	public static final int USER_TIMELINE2 = 100041;
@@ -24,7 +26,10 @@ public class RequestId {
 	public static final int PCENTER_FOLLOWER = 100014;
 	public static final int PCENTER_GUANZHU_YUANSU = 100015;
 	public static final int PCENTER_GUANZHU_YONGHU = 100016;
-
+	public static final int PCENTER_COUNT = 100017;
+	public static final int UPLOAD_HEAD = 100018;
+	public static final int USER_INFO = 100019;
+	public static final int MODIFY_USER_INFO = 100020;
 	/**
 	 * 发布图片
 	 */

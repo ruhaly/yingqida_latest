@@ -1,5 +1,6 @@
 package com.yingqida.richplay.logic;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class YuansuSearchLogic extends SuperLogic implements HttpAction {
 	private HttpHandler<String> httpHanlder;
 
 	public int curPage = 1;
-	public String perPage = "20";
+	public String perPage = "10";
 	public int targetCurPage = 1;
 
 	// 0刷新；1加载更多
@@ -44,7 +45,7 @@ public class YuansuSearchLogic extends SuperLogic implements HttpAction {
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId, InputStream is) {
 
 		switch (requestId) {
 		case RequestId.GET_YUANSU: {
@@ -86,7 +87,7 @@ public class YuansuSearchLogic extends SuperLogic implements HttpAction {
 		params.addQueryStringParameter("keyword", keyword);
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_SEARCH_COMMENT,
 				params, HttpSenderUtils.METHOD_GET, httpUtils,
-				RequestId.GET_YUANSU, this);
+				RequestId.GET_YUANSU, this, false);
 	}
 
 	/**

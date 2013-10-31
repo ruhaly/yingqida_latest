@@ -86,4 +86,5 @@
     <color name="color_pcenter_font">#a6a6a6</color>
     <color name="color_pcenter_bg">#d7d7d7</color>
 	<color name="splid" >#aaa9a9</color>
+	<color name="gray_bg">#d7d7d7</color>
 </resources>

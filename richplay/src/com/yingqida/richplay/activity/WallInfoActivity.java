@@ -1,5 +1,8 @@
 package com.yingqida.richplay.activity;
 
+
+import java.io.InputStream;
+
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.graphics.Bitmap;
@@ -165,7 +168,7 @@ public class WallInfoActivity extends SuperActivityForFragment {
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId, InputStream is) {
 		// TODO Auto-generated method stub
 		
 	}

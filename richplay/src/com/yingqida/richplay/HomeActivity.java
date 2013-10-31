@@ -1,5 +1,6 @@
 package com.yingqida.richplay;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -334,7 +335,7 @@ public class HomeActivity extends TabSuperActivity {
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId, InputStream is) {
 		// TODO Auto-generated method stub
 
 	}

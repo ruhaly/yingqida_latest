@@ -241,5 +241,15 @@
     <string name="data_not_empty">数据不能为空~</string>
     <string name="followed_yuansu">關注的元素</string>
     <string name="followed_user">關注的用戶</string>
-
+    <string name="more">更多</string>
+    <string name="mail">郵箱地址</string>
+    <string name="modpwd">修改密碼</string>
+    <string name="scholl">教育學校</string>
+    <string name="company">任職公司</string>
+    <string name="name">姓名</string>
+    <string name="address">地址</string>
+    <string name="zip_code">郵編</string>
+    <string name="phone">電話</string>
+    <string name="upload_head_success">上傳成功</string>
+	<string name="update_userinfo_success">修改成功</string>
 </resources>

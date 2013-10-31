@@ -1,5 +1,8 @@
 package com.yingqida.richplay.activity;
 
+
+import java.io.InputStream;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Message;
@@ -65,7 +68,7 @@ public class ModifyPWDActivity extends SuperActivity {
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId, InputStream is) {
 
 	}
 

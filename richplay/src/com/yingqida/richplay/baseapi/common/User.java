@@ -59,6 +59,96 @@ public class User {
 	 */
 	private String is_avatar;
 
+	public String email;
+
+	public String summary;
+
+	public String realname;
+
+	public String addr;
+
+	public String zipCode;
+
+	public String phone;
+
+	public String shipTime;
+
+	public String commpany;
+
+	public String education;
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+
+	public String getRealname() {
+		return realname;
+	}
+
+	public void setRealname(String realname) {
+		this.realname = realname;
+	}
+
+	public String getAddr() {
+		return addr;
+	}
+
+	public void setAddr(String addr) {
+		this.addr = addr;
+	}
+
+	public String getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getShipTime() {
+		return shipTime;
+	}
+
+	public void setShipTime(String shipTime) {
+		this.shipTime = shipTime;
+	}
+
+	public String getCommpany() {
+		return commpany;
+	}
+
+	public void setCommpany(String commpany) {
+		this.commpany = commpany;
+	}
+
+	public String getEducation() {
+		return education;
+	}
+
+	public void setEducation(String education) {
+		this.education = education;
+	}
+
 	public String getIs_avatar() {
 		return is_avatar;
 	}

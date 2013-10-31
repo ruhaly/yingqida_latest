@@ -1,5 +1,8 @@
 package com.yingqida.richplay.activity;
 
+
+import java.io.InputStream;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -50,7 +53,7 @@ public class PcGuanzhuYsActivity extends SuperActivity implements
 	private Button btnToggle;
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId, InputStream is) {
 
 	}
 

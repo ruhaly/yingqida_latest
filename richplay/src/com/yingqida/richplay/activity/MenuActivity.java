@@ -1,10 +1,22 @@
 package com.yingqida.richplay.activity;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
@@ -16,8 +28,10 @@ import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.baseapi.common.RichResource;
 import com.yingqida.richplay.fragment.MenuFragment;
 import com.yingqida.richplay.fragment.PageHomeFragment;
+import com.yingqida.richplay.fragment.PersonFragment;
 import com.yingqida.richplay.fragment.SearchFragment;
 import com.yingqida.richplay.fragment.SuperFragment;
+import com.yingqida.richplay.util.ImageTools;
 
 public class MenuActivity extends SuperActivityForFragment {
 
@@ -26,7 +40,7 @@ public class MenuActivity extends SuperActivityForFragment {
 	HomeReceiver homeReceiver;
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId, InputStream is) {
 
 	}
 

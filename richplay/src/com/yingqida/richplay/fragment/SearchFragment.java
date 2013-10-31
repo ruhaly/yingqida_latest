@@ -29,6 +29,7 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.activity.CommentYuansuActivity;
+import com.yingqida.richplay.activity.PCenterActivity;
 import com.yingqida.richplay.activity.YuansuInfoActivity;
 import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.baseapi.Constant;
@@ -36,7 +37,7 @@ import com.yingqida.richplay.baseapi.common.User;
 import com.yingqida.richplay.entity.Yuansu;
 import com.yingqida.richplay.logic.ShareAndFollowLogic;
 import com.yingqida.richplay.logic.SuperLogic;
-import com.yingqida.richplay.logic.UserSearchLogic;
+import com.yingqida.richplay.logic.UserLogic;
 import com.yingqida.richplay.logic.YuansuSearchLogic;
 import com.yingqida.richplay.widget.PullToRefreshView;
 
@@ -76,7 +77,7 @@ public class SearchFragment extends SuperFragment {
 
 	private YuansuSearchLogic yLogic;
 
-	private UserSearchLogic uLogic;
+	private UserLogic uLogic;
 
 	private HttpUtils httpUtil;
 
@@ -116,7 +117,7 @@ public class SearchFragment extends SuperFragment {
 	@Override
 	public void initData() {
 		yLogic = YuansuSearchLogic.getInstance();
-		uLogic = UserSearchLogic.getInstance();
+		uLogic = UserLogic.getInstance();
 		sLogic = ShareAndFollowLogic.getInstance();
 	}
 
@@ -212,6 +213,20 @@ public class SearchFragment extends SuperFragment {
 			adapterYh = new YhAdapter(uLogic.list, getActivity()
 					.getBaseContext(), bitmapUtilsYh);
 			gridviewYh.setAdapter(adapterYh);
+			gridviewYh
+					.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+						@Override
+						public void onItemClick(AdapterView<?> parent,
+								View view, int position, long id) {
+
+							Intent intent = new Intent(getActivity()
+									.getBaseContext(), PCenterActivity.class);
+							intent.putExtra("", adapterYh.getItem(position)
+									.getUid());
+							startActivity(intent);
+						}
+					});
 			pullToRefreshViewYh
 					.setOnHeaderRefreshListener(new PullToRefreshView.OnHeaderRefreshListener() {
 
@@ -459,10 +474,14 @@ public class SearchFragment extends SuperFragment {
 				}
 			});
 			holder.tvName.setText(getItem(position).getName());
-			bitmapUtils
-					.display(
-							holder.imgHeader,
-							"http://g.hiphotos.baidu.com/album/w%3D2048/sign=10e27d76adaf2eddd4f14ee9b92800e9/bd315c6034a85edfeb5afd5348540923dc5475ef.jpg");
+
+			if (getItem(position).getIs_avatar().equals("true")) {
+				bitmapUtils.display(holder.imgHeader,
+						getHeadUrl(1, 2, getItem(position).getUid()));
+			} else {
+				bitmapUtils.display(holder.imgHeader,
+						getHeadUrl(2, 2, getItem(position).getUid()));
+			}
 			return convertView;
 		}
 

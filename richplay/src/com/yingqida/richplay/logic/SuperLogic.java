@@ -20,8 +20,11 @@ public abstract class SuperLogic implements HttpResponseHanlder {
 	public static final int CONNECT_ERROR_MSGWHAT = 001;
 	public static final int LOGIN_SUCCESS_MSGWHAT = 100;
 	public static final int LOGIN_ERROR_MSGWHAT = 101;
+	public static final int LOGIN_ERROR_NEED_CAPTCHA_MSGWHAT = 1010;
+	public static final int LOGIN_CAPTCHA_MSGWHAT = 10101;
 	public static final int REGISTER_SUCCESS_MSGWHAT = 200;
 	public static final int REGISTER_ERROR_MSGWHAT = 201;
+	public static final int REGISTER_ERROR_NEED_CAPTCHA_MSGWHAT = 2010;
 	public static final int HOME_PAGE_YUANSU_SUCCESS_MSGWHAT = 300;
 	public static final int HOME_PAGE_YUANSU_ERROR_MSGWHAT = 301;
 	public static final int MODIFY_PWD_SUCCESS_MSGWHAT = 400;
@@ -58,6 +61,10 @@ public abstract class SuperLogic implements HttpResponseHanlder {
 	public static final int PCENTER_GUANZHUYS_ERROR_MSGWHAT = 1601;
 	public static final int PCENTER_GUANZHUYH_SUCCESS_MSGWHAT = 1700;
 	public static final int PCENTER_GUANZHUYH_ERROR_MSGWHAT = 1701;
+	public static final int PCENTER_COUNT_SUCCESS_MSGWHAT = 1801;
+	public static final int UPLOAD_HEAD_SUCCESS_MSGWHAT = 1901;
+	public static final int USER_INFO_SUCCESS_MSGWHAT = 2000;
+	public static final int UPDATE_USER_INFO_SUCCESS_MSGWHAT = 2001;
 
 	public Handler handler;
 

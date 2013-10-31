@@ -8,6 +8,7 @@ import android.os.Message;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -24,7 +25,6 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.activity.CommentYuansuActivity;
-import com.yingqida.richplay.activity.PcBeiGuanzhuActivity;
 import com.yingqida.richplay.activity.PcFayanActivity;
 import com.yingqida.richplay.activity.PcGuanzhuYhActivity;
 import com.yingqida.richplay.activity.PcGuanzhuYsActivity;
@@ -38,7 +38,7 @@ import com.yingqida.richplay.logic.SuperLogic;
 import com.yingqida.richplay.widget.PullToRefreshView;
 
 public class PCenterFragment extends SuperFragment implements
-		OnItemClickListener {
+		OnItemClickListener, OnClickListener {
 
 	private static PCenterFragment ins;
 	@ViewInject(R.id.pullToRefreshView)
@@ -54,8 +54,22 @@ public class PCenterFragment extends SuperFragment implements
 	private ShareAndFollowLogic sLogic;
 	private PCenterLogic pcLogic;
 	private HttpUtils httpUtil;
+	private HttpUtils httpUtil2;
 
 	public int index = 0;
+	public TextView tvFy;
+
+	public TextView tvFu;
+
+	public TextView tvBgz;
+
+	public TextView tvFys;
+
+	public TextView tvName;
+
+	public TextView tvSummary;
+
+	public ImageView imgHeader;
 
 	public synchronized static PCenterFragment getIns() {
 		if (null == ins) {
@@ -83,6 +97,7 @@ public class PCenterFragment extends SuperFragment implements
 						@Override
 						public void onHeaderRefresh(PullToRefreshView view) {
 							requestFayan(0);
+							requestCount();
 						}
 					});
 			pullToRefreshView
@@ -91,6 +106,7 @@ public class PCenterFragment extends SuperFragment implements
 						@Override
 						public void onFooterRefresh(PullToRefreshView view) {
 							requestFayan(1);
+							requestCount();
 
 						}
 					});
@@ -109,6 +125,7 @@ public class PCenterFragment extends SuperFragment implements
 	View convertView;
 	private BitmapUtils bitmapUtilsContent;
 	private BitmapUtils bitmapUtilsHead;
+	View headerView;
 
 	@Override
 	public View initLayout(LayoutInflater inflater, ViewGroup container,
@@ -116,6 +133,23 @@ public class PCenterFragment extends SuperFragment implements
 		if (convertView == null)
 			convertView = inflater.inflate(R.layout.pcenter_layout, null);
 		ViewUtils.inject(this, convertView);
+
+		headerView = LayoutInflater.from(getActivity().getBaseContext())
+				.inflate(R.layout.pcenter_top_layout, null);
+
+		tvFy = (TextView) headerView.findViewById(R.id.tvFy);
+		tvFu = (TextView) headerView.findViewById(R.id.tvFu);
+		tvBgz = (TextView) headerView.findViewById(R.id.tvBgz);
+		tvFys = (TextView) headerView.findViewById(R.id.tvFys);
+		tvName = (TextView) headerView.findViewById(R.id.tvName);
+		tvSummary = (TextView) headerView.findViewById(R.id.tvSummary);
+		imgHeader = (ImageView) headerView.findViewById(R.id.imgHeader);
+		listViewFy.addHeaderView(headerView);
+		headerView.findViewById(R.id.frameFy).setOnClickListener(this);
+		headerView.findViewById(R.id.frameBgz).setOnClickListener(this);
+		headerView.findViewById(R.id.frameGzYs).setOnClickListener(this);
+		headerView.findViewById(R.id.frameGzYh).setOnClickListener(this);
+
 		bitmapUtilsContent = new BitmapUtils(getActivity());
 		bitmapUtilsContent.configDefaultLoadingImage(R.drawable.ic_launcher);
 		bitmapUtilsContent
@@ -127,12 +161,8 @@ public class PCenterFragment extends SuperFragment implements
 		bitmapUtilsHead.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
 		updateView();
 		requestFayan(0);
+		requestCount();
 		return convertView;
-	}
-
-	@Override
-	public void onClick(View v) {
-
 	}
 
 	class Adapter extends BaseAdapter {
@@ -265,7 +295,7 @@ public class PCenterFragment extends SuperFragment implements
 		httpUtil = new HttpUtils();
 		pcLogic.setDate(fHandler, httpUtil);
 		((SuperActivityForFragment) getActivity()).showProcessDialog(dismiss);
-		pcLogic.sendFayanRequest1(getUser().getRemarkToken(), type);
+		pcLogic.sendFayanRequest1(getUser().getRemarkToken(), type, null);
 	}
 
 	public int temp = 0;
@@ -315,28 +345,36 @@ public class PCenterFragment extends SuperFragment implements
 
 	}
 
-	@OnClick(R.id.frameFy)
-	public void frameFyClick(View view) {
-		startActivity(new Intent(getActivity().getBaseContext(),
-				PcFayanActivity.class));
-	}
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.frameFy: {
+			startActivity(new Intent(getActivity().getBaseContext(),
+					PcFayanActivity.class));
+			break;
+		}
+		case R.id.frameBgz: {
+			startActivity(new Intent(getActivity().getBaseContext(),
+					PcGuanzhuYsActivity.class));
 
-	@OnClick(R.id.frameBgz)
-	public void frameBgzClick(View view) {
-		startActivity(new Intent(getActivity().getBaseContext(),
-				PcBeiGuanzhuActivity.class));
-	}
+			break;
+		}
+		case R.id.frameGzYs: {
+			startActivity(new Intent(getActivity().getBaseContext(),
+					PcGuanzhuYsActivity.class));
 
-	@OnClick(R.id.frameGzYs)
-	public void frameGzYsClick(View view) {
-		startActivity(new Intent(getActivity().getBaseContext(),
-				PcGuanzhuYsActivity.class));
-	}
+			break;
+		}
+		case R.id.frameGzYh: {
+			startActivity(new Intent(getActivity().getBaseContext(),
+					PcGuanzhuYhActivity.class));
 
-	@OnClick(R.id.frameGzYh)
-	public void frameGzYhClick(View view) {
-		startActivity(new Intent(getActivity().getBaseContext(),
-				PcGuanzhuYhActivity.class));
+			break;
+		}
+
+		default:
+			break;
+		}
 	}
 
 	@Override
@@ -365,9 +403,20 @@ public class PCenterFragment extends SuperFragment implements
 			updateView();
 			break;
 		}
+		case SuperLogic.PCENTER_COUNT_SUCCESS_MSGWHAT: {
+			updateCount();
+			break;
+		}
 		}
 		onLoad();
 		super.handleMsg(msg);
+	}
+
+	public void updateCount() {
+		tvFy.setText(pcLogic.comment_count);
+		tvFu.setText(pcLogic.following_user_count);
+		tvFys.setText(pcLogic.following_remark_count);
+		tvBgz.setText(pcLogic.follower_count);
 	}
 
 	private void onLoad() {
@@ -380,6 +429,13 @@ public class PCenterFragment extends SuperFragment implements
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == 2) {
 			requestFayan(0);
+			requestCount();
 		}
+	}
+
+	public void requestCount() {
+		httpUtil2 = new HttpUtils();
+		pcLogic.setDate(fHandler, httpUtil2);
+		pcLogic.sendCountRequest(getUser().getRemarkToken(), getUser().getUid());
 	}
 }

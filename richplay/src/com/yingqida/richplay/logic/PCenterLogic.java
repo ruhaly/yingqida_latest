@@ -1,5 +1,6 @@
 package com.yingqida.richplay.logic;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,11 @@ public class PCenterLogic extends SuperLogic implements HttpAction {
 
 	private HttpHandler<String> httpHanlder;
 	public String perPage = "50";
+
+	public String comment_count = "0";
+	public String following_user_count = "0";
+	public String following_remark_count = "0";
+	public String follower_count = "0";
 
 	// 发言
 	public int curPageFy2 = 1;
@@ -67,7 +73,8 @@ public class PCenterLogic extends SuperLogic implements HttpAction {
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId,
+			InputStream is) {
 
 		switch (requestId) {
 		case RequestId.USER_TIMELINE: {
@@ -90,6 +97,10 @@ public class PCenterLogic extends SuperLogic implements HttpAction {
 			httpGuanzhuYhResponse(response);
 			break;
 		}
+		case RequestId.PCENTER_COUNT: {
+			httpCountResponse(response);
+			break;
+		}
 		default:
 			break;
 		}
@@ -109,7 +120,7 @@ public class PCenterLogic extends SuperLogic implements HttpAction {
 		httpHanlder.stop();
 	}
 
-	public void sendFayanRequest1(String remark_token, int type) {
+	public void sendFayanRequest1(String remark_token, int type, String uid) {
 		this.type = type;
 		if (type == 0) {
 			targetCurPageFy1 = 1;
@@ -118,11 +129,14 @@ public class PCenterLogic extends SuperLogic implements HttpAction {
 		}
 		RequestParams params = new RequestParams();
 		params.addQueryStringParameter("remark_token", remark_token);
+		if (null != uid) {
+			params.addQueryStringParameter("uid", uid);
+		}
 		params.addQueryStringParameter("cur_page", targetCurPageFy1 + "");
 		params.addQueryStringParameter("per_page", perPage);
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_USER_TIMELINE, params,
 				HttpSenderUtils.METHOD_GET, httpUtils, RequestId.USER_TIMELINE,
-				this);
+				this, false);
 	}
 
 	/**
@@ -161,7 +175,7 @@ public class PCenterLogic extends SuperLogic implements HttpAction {
 
 	}
 
-	public void sendFayanRequest2(String remark_token, int type) {
+	public void sendFayanRequest2(String remark_token, int type, String uid) {
 		this.type = type;
 		if (type == 0) {
 			targetCurPageFy2 = 1;
@@ -170,11 +184,14 @@ public class PCenterLogic extends SuperLogic implements HttpAction {
 		}
 		RequestParams params = new RequestParams();
 		params.addQueryStringParameter("remark_token", remark_token);
+		if (null != uid) {
+			params.addQueryStringParameter("uid", uid);
+		}
 		params.addQueryStringParameter("cur_page", targetCurPageFy2 + "");
 		params.addQueryStringParameter("per_page", perPage);
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_USER_TIMELINE, params,
 				HttpSenderUtils.METHOD_GET, httpUtils,
-				RequestId.USER_TIMELINE2, this);
+				RequestId.USER_TIMELINE2, this, false);
 	}
 
 	/**
@@ -234,7 +251,7 @@ public class PCenterLogic extends SuperLogic implements HttpAction {
 		params.addQueryStringParameter("per_page", perPage);
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_GUANZHU_YUANSU,
 				params, HttpSenderUtils.METHOD_GET, httpUtils,
-				RequestId.PCENTER_GUANZHU_YUANSU, this);
+				RequestId.PCENTER_GUANZHU_YUANSU, this, false);
 	}
 
 	/**
@@ -287,7 +304,7 @@ public class PCenterLogic extends SuperLogic implements HttpAction {
 		params.addQueryStringParameter("per_page", perPage);
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_GUANZHU_YONGHU,
 				params, HttpSenderUtils.METHOD_GET, httpUtils,
-				RequestId.PCENTER_GUANZHU_YONGHU, this);
+				RequestId.PCENTER_GUANZHU_YONGHU, this, false);
 	}
 
 	/**
@@ -348,7 +365,7 @@ public class PCenterLogic extends SuperLogic implements HttpAction {
 		params.addQueryStringParameter("per_page", perPage);
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_GET_FOLLOWER, params,
 				HttpSenderUtils.METHOD_GET, httpUtils,
-				RequestId.PCENTER_FOLLOWER, this);
+				RequestId.PCENTER_FOLLOWER, this, false);
 	}
 
 	/**
@@ -389,5 +406,33 @@ public class PCenterLogic extends SuperLogic implements HttpAction {
 
 	public void stopReqeust() {
 		httpHanlder.stop();
+	}
+
+	public void sendCountRequest(String remark_token, String uid) {
+		RequestParams params = new RequestParams();
+		params.addQueryStringParameter("remark_token", remark_token);
+		params.addQueryStringParameter("uid", uid);
+		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_COUNT, params,
+				HttpSenderUtils.METHOD_GET, httpUtils, RequestId.PCENTER_COUNT,
+				this, false);
+	}
+
+	public void httpCountResponse(String response) {
+
+		try {
+			JSONObject json = new JSONObject(response);
+			String code = String.valueOf(json.get("code"));
+			if (code.equals(ResponseCode.SUCCESS)) {
+				JsonParse.parseCountRes(response);
+				handler.sendEmptyMessage(PCENTER_COUNT_SUCCESS_MSGWHAT);
+			} else {
+				handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+			}
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+		}
+
 	}
 }

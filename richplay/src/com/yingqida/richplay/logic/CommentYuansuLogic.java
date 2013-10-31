@@ -1,5 +1,8 @@
 package com.yingqida.richplay.logic;
 
+
+import java.io.InputStream;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,7 +43,7 @@ public class CommentYuansuLogic extends SuperLogic implements HttpAction {
 		params.addBodyParameter("comment_content", comment_content);
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_COMMENT_YUANSU,
 				params, HttpSenderUtils.METHOD_POST, httpUtils,
-				RequestId.COMMENT_YUANSU, this);
+				RequestId.COMMENT_YUANSU, this, false);
 	}
 
 	@Override
@@ -58,7 +61,7 @@ public class CommentYuansuLogic extends SuperLogic implements HttpAction {
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId, InputStream is) {
 
 		switch (requestId) {
 		case RequestId.COMMENT_YUANSU: {
@@ -115,7 +118,7 @@ public class CommentYuansuLogic extends SuperLogic implements HttpAction {
 		params.addBodyParameter("uid", uid);
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_FOLLOW_USER_OR_YUANSU, params,
 				HttpSenderUtils.METHOD_POST, httpUtils, RequestId.FOLLOW_USER,
-				this);
+				this, false);
 	}
 
 	public void httpFollowUser(String response) {
@@ -152,7 +155,7 @@ public class CommentYuansuLogic extends SuperLogic implements HttpAction {
 		params.addBodyParameter("uid", uid);
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_UNFOLLOW_USER_OR_YUANSU, params,
 				HttpSenderUtils.METHOD_POST, httpUtils,
-				RequestId.UNFOLLOW_USER, this);
+				RequestId.UNFOLLOW_USER, this, false);
 	}
 
 	public void httpUnFollowUser(String response) {
@@ -175,4 +178,5 @@ public class CommentYuansuLogic extends SuperLogic implements HttpAction {
 	public void stopReqeust() {
 		httpHanlder.stop();
 	}
+
 }

@@ -1,5 +1,8 @@
 package com.yingqida.richplay;
 
+
+import java.io.InputStream;
+
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
@@ -63,7 +66,7 @@ public class RichPlayActivity extends SuperActivity {
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId, InputStream is) {
 
 	}
 

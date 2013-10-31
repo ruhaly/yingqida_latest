@@ -26,7 +26,7 @@ import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.baseapi.Constant;
 import com.yingqida.richplay.baseapi.common.User;
 import com.yingqida.richplay.logic.SuperLogic;
-import com.yingqida.richplay.logic.UserSearchLogic;
+import com.yingqida.richplay.logic.UserLogic;
 import com.yingqida.richplay.widget.XListView;
 import com.yingqida.richplay.widget.XListView.IXListViewListener;
 
@@ -43,7 +43,7 @@ public class YonghuFragment extends SuperFragment implements
 
 	private Adapter adapter;
 
-	private UserSearchLogic logic;
+	private UserLogic logic;
 
 	private HttpUtils httpUtil;
 
@@ -73,7 +73,7 @@ public class YonghuFragment extends SuperFragment implements
 
 	@Override
 	public void initData() {
-		logic = UserSearchLogic.getInstance();
+		logic = UserLogic.getInstance();
 	}
 
 	View convertView;

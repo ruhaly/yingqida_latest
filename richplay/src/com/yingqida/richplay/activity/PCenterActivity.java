@@ -1,68 +1,154 @@
 package com.yingqida.richplay.activity;
 
-import java.util.ArrayList;
+import java.io.InputStream;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.text.Html;
+import android.os.Message;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout.LayoutParams;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.lidroid.xutils.BitmapUtils;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.view.annotation.ViewInject;
 import com.yingqida.richplay.R;
-import com.yingqida.richplay.activity.common.SuperActivityForFragment;
-import com.yingqida.richplay.fragment.FayanFragment;
-import com.yingqida.richplay.fragment.MyFragmentPagerAdapter;
-import com.yingqida.richplay.fragment.SuperFragment;
-import com.yingqida.richplay.fragment.WoguanzhuFragment;
-import com.yingqida.richplay.fragment.YonghuFragment;
-import com.yingqida.richplay.widget.MyViewPager;
+import com.yingqida.richplay.activity.common.SuperActivity;
+import com.yingqida.richplay.baseapi.Constant;
+import com.yingqida.richplay.entity.Yuansu;
+import com.yingqida.richplay.logic.PCenterLogic;
+import com.yingqida.richplay.logic.ShareAndFollowLogic;
+import com.yingqida.richplay.logic.SuperLogic;
+import com.yingqida.richplay.widget.PullToRefreshView;
 
-public class PCenterActivity extends SuperActivityForFragment {
+public class PCenterActivity extends SuperActivity implements
+		OnItemClickListener {
 
-	private TextView textFy;
-	private TextView textWgz;
-	private TextView textGzw;
-	private MyViewPager mPager;
-	private ArrayList<Fragment> fragmentsList;
+	@ViewInject(R.id.pullToRefreshView)
+	private PullToRefreshView pullToRefreshView;
 
-	private MyFragmentPagerAdapter adapter;
+	@ViewInject(R.id.listViewFy)
+	private ListView listViewFy;
+
+	@ViewInject(R.id.frameFy)
+	private LinearLayout frameFy;
+
+	private Adapter adapterFy;
+	private ShareAndFollowLogic sLogic;
+	private PCenterLogic pcLogic;
+	private HttpUtils httpUtil;
+	private HttpUtils httpUtil2;
+
+	public int index = 0;
+	public TextView tvFy;
+
+	public TextView tvFu;
+
+	public TextView tvBgz;
+
+	public TextView tvFys;
+
+	public TextView tvName;
+
+	public TextView tvSummary;
+
+	public ImageView imgHeader;
+	private BitmapUtils bitmapUtilsContent;
+	private BitmapUtils bitmapUtilsHead;
+	View headerView;
+
+	String uid = "";
+
+	@ViewInject(R.id.btnToggle)
+	private Button btnToggle;
 
 	@Override
 	public void initData() {
+
+		pcLogic = PCenterLogic.getInstance();
+		sLogic = ShareAndFollowLogic.getInstance();
 
 	}
 
 	@Override
 	public void initLayout(Bundle paramBundle) {
 		setContentView(R.layout.pcenter_layout);
-		// textFy = (TextView) findViewById(R.id.text_fy);
-		// textWgz = (TextView) findViewById(R.id.text_wgz);
-		// textGzw = (TextView) findViewById(R.id.text_gzw);
-		findViewById(R.id.btn_setting).setVisibility(View.VISIBLE);
-		updateNum();
-		initViewPager();
+		ViewUtils.inject(this);
+		btnToggle.setVisibility(View.GONE);
+		uid = getIntent().getExtras().getString("uid");
+		headerView = LayoutInflater.from(getBaseContext()).inflate(
+				R.layout.pcenter_top_layout, null);
+
+		tvFy = (TextView) headerView.findViewById(R.id.tvFy);
+		tvFu = (TextView) headerView.findViewById(R.id.tvFu);
+		tvBgz = (TextView) headerView.findViewById(R.id.tvBgz);
+		tvFys = (TextView) headerView.findViewById(R.id.tvFys);
+		tvName = (TextView) headerView.findViewById(R.id.tvName);
+		tvSummary = (TextView) headerView.findViewById(R.id.tvSummary);
+		imgHeader = (ImageView) headerView.findViewById(R.id.imgHeader);
+		listViewFy.addHeaderView(headerView);
+		headerView.findViewById(R.id.frameFy).setOnClickListener(this);
+		headerView.findViewById(R.id.frameBgz).setOnClickListener(this);
+		headerView.findViewById(R.id.frameGzYs).setOnClickListener(this);
+		headerView.findViewById(R.id.frameGzYh).setOnClickListener(this);
+
+		bitmapUtilsContent = new BitmapUtils(getBaseContext());
+		bitmapUtilsContent.configDefaultLoadingImage(R.drawable.ic_launcher);
+		bitmapUtilsContent
+				.configDefaultLoadFailedImage(R.drawable.list_item_bg);
+		bitmapUtilsContent.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+		bitmapUtilsHead = new BitmapUtils(getBaseContext());
+		bitmapUtilsHead.configDefaultLoadingImage(R.drawable.ic_launcher);
+		bitmapUtilsHead.configDefaultLoadFailedImage(R.drawable.failed);
+		bitmapUtilsHead.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+		updateView();
+		requestFayan(0);
+		requestCount();
 	}
 
-	public void updateNum() {
-		textFy.setText(Html.fromHtml(String.format(getString(R.string.fayan),
-				"<font color=\"#000000\">" + 15211 + "</font>")));
-		textWgz.setText(Html.fromHtml(String.format(
-				getString(R.string.woguanzhu),
-				"<font color=\"#000000\">252</font>")));
-		textGzw.setText(Html.fromHtml(String.format(
-				getString(R.string.guanzhuwo),
-				"<font color=\"#000000\">4</font>")));
+	public void updateView() {
 
-		textFy.setLayoutParams(new LayoutParams((getScreenW() - 2) / 3,
-				LayoutParams.WRAP_CONTENT));
-		textWgz.setLayoutParams(new LayoutParams((getScreenW() - 2) / 3,
-				LayoutParams.WRAP_CONTENT));
-		textGzw.setLayoutParams(new LayoutParams((getScreenW() - 2) / 3,
-				LayoutParams.WRAP_CONTENT));
+		if (null == adapterFy) {
+			adapterFy = new Adapter();
+			listViewFy.setAdapter(adapterFy);
+			listViewFy.setOnItemClickListener(this);
+			pullToRefreshView.setEnablePullTorefresh(false);
+			pullToRefreshView
+					.setOnHeaderRefreshListener(new PullToRefreshView.OnHeaderRefreshListener() {
+
+						@Override
+						public void onHeaderRefresh(PullToRefreshView view) {
+							requestFayan(0);
+							requestCount();
+						}
+					});
+			pullToRefreshView
+					.setOnFooterRefreshListener(new PullToRefreshView.OnFooterRefreshListener() {
+
+						@Override
+						public void onFooterRefresh(PullToRefreshView view) {
+							requestFayan(1);
+							requestCount();
+
+						}
+					});
+		} else {
+			adapterFy.notifyDataSetChanged();
+		}
+
 	}
 
 	@Override
@@ -74,116 +160,293 @@ public class PCenterActivity extends SuperActivityForFragment {
 		startActivity(new Intent(getBaseContext(), SettingActivity.class));
 	}
 
-	private void initViewPager() {
-		mPager = (MyViewPager) findViewById(R.id.vPager);
-		fragmentsList = new ArrayList<Fragment>();
-
-		SuperFragment fragment_fayan = FayanFragment
-				.getInstance("FayanFragment");
-		SuperFragment fragment_woguanzhu = WoguanzhuFragment
-				.getInstance("WoguanzhuFragment");
-		SuperFragment fragment_guanzhuwo = new YonghuFragment();
-		fragmentsList.add(fragment_fayan);
-		fragmentsList.add(fragment_woguanzhu);
-		fragmentsList.add(fragment_guanzhuwo);
-		if (null == adapter) {
-			adapter = new MyFragmentPagerAdapter(getSupportFragmentManager(),
-					fragmentsList);
-			mPager.setAdapter(adapter);
-		} else {
-			adapter.notifyDataSetChanged();
-		}
-		mPager.setCurrentItem(0);
-		mPager.setOnPageChangeListener(new MyOnPageChangeListener());
-	}
-
-	public class MyOnPageChangeListener implements OnPageChangeListener {
-
-		@Override
-		public void onPageSelected(int arg0) {
-			setBg(arg0);
-		}
-
-		@Override
-		public void onPageScrolled(int arg0, float arg1, int arg2) {
-		}
-
-		@Override
-		public void onPageScrollStateChanged(int arg0) {
-		}
-	}
-
-	public class MyOnClickListener implements View.OnClickListener {
-
-		public MyOnClickListener(int i) {
-			index = i;
-		}
-
-		@Override
-		public void onClick(View v) {
-			mPager.setCurrentItem(index);
-		}
-	};
-
-	private int index = 0;
-
-	public void setBg(int index) {
-		mPager.setCurrentItem(index);
-		// if (0 == index) {
-		// findViewById(R.id.text_fy)
-		// .setBackgroundResource(R.drawable.fayan_g);
-		// findViewById(R.id.text_wgz).setBackgroundResource(
-		// R.drawable.fayan_p);
-		// findViewById(R.id.text_gzw).setBackgroundResource(
-		// R.drawable.fayan_p);
-		// } else if (1 == index) {
-		// findViewById(R.id.text_fy)
-		// .setBackgroundResource(R.drawable.fayan_p);
-		// findViewById(R.id.text_wgz).setBackgroundResource(
-		// R.drawable.fayan_g);
-		// findViewById(R.id.text_gzw).setBackgroundResource(
-		// R.drawable.fayan_p);
-		// } else {
-		// findViewById(R.id.text_fy)
-		// .setBackgroundResource(R.drawable.fayan_p);
-		// findViewById(R.id.text_wgz).setBackgroundResource(
-		// R.drawable.fayan_p);
-		// findViewById(R.id.text_gzw).setBackgroundResource(
-		// R.drawable.fayan_g);
-		// }
-	}
-
-	public static final int FAYAN = 0;
-	public static final int WOGUANZHU = 1;
-	public static final int GUANZHUWO = 2;
-
 	public void textClick(View view) {
 		switch (view.getId()) {
-		// case R.id.text_fy: {
-		// setBg(FAYAN);
-		// break;
-		// }
-		//
-		// case R.id.text_wgz: {
-		// setBg(WOGUANZHU);
-		// break;
-		// }
-		// case R.id.text_gzw: {
-		// setBg(GUANZHUWO);
-		// break;
-		// }
 		default:
 			break;
 		}
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId,
+			InputStream is) {
 
 	}
 
 	@Override
 	public void handleHttpException(HttpException error, String msg) {
 
+	}
+
+	class Adapter extends BaseAdapter {
+
+		@Override
+		public int getCount() {
+			return pcLogic.fyList2.size();
+		}
+
+		@Override
+		public Yuansu getItem(int arg0) {
+			return pcLogic.fyList2.get(arg0);
+		}
+
+		@Override
+		public long getItemId(int arg0) {
+			return arg0;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			Holder holder;
+			if (null == convertView) {
+				holder = new Holder();
+				convertView = LayoutInflater.from(getBaseContext()).inflate(
+						R.layout.yuansu_item_layout, null);
+				holder.tvName = (TextView) convertView
+						.findViewById(R.id.tvName);
+				holder.tvCommentContent = (TextView) convertView
+						.findViewById(R.id.tvCommentContent);
+				holder.imgGuanZhu = (ImageView) convertView
+						.findViewById(R.id.imgGuanZhu);
+				holder.imgShare = (ImageView) convertView
+						.findViewById(R.id.imgShare);
+				holder.imgPingLun = (ImageView) convertView
+						.findViewById(R.id.imgPingLun);
+				holder.imgContent = (ImageView) convertView
+						.findViewById(R.id.imgContent);
+				holder.content = (TextView) convertView
+						.findViewById(R.id.content);
+				convertView.setTag(holder);
+			} else {
+				holder = (Holder) convertView.getTag();
+			}
+			holder.imgGuanZhu.setTag(position);
+			String follow = getItem(position).getFollowState();
+			if (Constant.HAS_FOLLOW.equals(follow)) {
+				holder.imgGuanZhu
+						.setBackgroundResource(android.R.drawable.ic_menu_close_clear_cancel);
+			} else {
+				holder.imgGuanZhu
+						.setBackgroundResource(android.R.drawable.ic_input_add);
+			}
+			holder.imgGuanZhu.setOnClickListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					int p = (Integer) v.getTag();
+					String follow = getItem(p).getFollowState();
+					temp = p;
+					pingGuanZhuClick(p, follow);
+				}
+			});
+			holder.imgShare.setTag(position);
+			holder.imgShare.setOnClickListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					int p = (Integer) v.getTag();
+					pingShareClick(p);
+				}
+			});
+			holder.imgPingLun.setTag(position);
+			holder.imgPingLun.setOnClickListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					int p = (Integer) v.getTag();
+					pingLunClick(p);
+				}
+			});
+
+			if (getItem(position).getLabel()
+					.equals(Yuansu.Label.img.toString())) {
+				holder.content.setVisibility(View.GONE);
+				holder.imgContent.setVisibility(View.VISIBLE);
+				holder.imgContent.setMaxWidth(getScreenW());
+				bitmapUtilsContent.display(holder.imgContent, getItem(position)
+						.getRemarkContent());
+			} else {
+				holder.content.setVisibility(View.VISIBLE);
+				holder.imgContent.setVisibility(View.GONE);
+				holder.content.setText(getItem(position).getRemarkContent());
+				if (holder.content.getLineCount() <= 1) {
+					holder.content.setGravity(Gravity.CENTER);
+				} else {
+					holder.content.setGravity(Gravity.LEFT
+							| Gravity.CENTER_VERTICAL);
+				}
+			}
+
+			holder.tvName.setText(getItem(position).getUser().getName());
+			holder.tvCommentContent.setText(getItem(position).getUser()
+					.getComment_content());
+			return convertView;
+		}
+
+		class Holder {
+			TextView tvName;
+			TextView tvCommentContent;
+			ImageView imgGuanZhu;
+			ImageView imgShare;
+			ImageView imgPingLun;
+			ImageView imgContent;
+			TextView content;
+		}
+	}
+
+	public int actionType = 0;
+	DialogInterface.OnDismissListener dismiss = new DialogInterface.OnDismissListener() {
+		@Override
+		public void onDismiss(DialogInterface dialog) {
+			onLoad();
+			pcLogic.stopReqeust();
+		}
+	};
+
+	public void requestFayan(int type) {
+		actionType = type;
+		httpUtil = new HttpUtils();
+		pcLogic.setDate(mHandler, httpUtil);
+		showProcessDialog(dismiss);
+		pcLogic.sendFayanRequest2(getUser().getRemarkToken(), type, uid);
+	}
+
+	public int temp = 0;
+
+	public void pingGuanZhuClick(int p, String follow) {
+		sLogic.setDate(mHandler, httpUtil);
+		showProcessDialog(sdismiss);
+		if (Constant.HAS_FOLLOW.equals(follow)) {
+			sLogic.sendUnFollowYuansuRequest(getUser().getRemarkToken(),
+					adapterFy.getItem(p).getId());
+		} else {
+			sLogic.sendFollowYuansuRequest(getUser().getRemarkToken(),
+					adapterFy.getItem(p).getId());
+		}
+	}
+
+	DialogInterface.OnDismissListener sdismiss = new DialogInterface.OnDismissListener() {
+		@Override
+		public void onDismiss(DialogInterface dialog) {
+			onLoad();
+			sLogic.stopReqeust();
+		}
+	};
+
+	public void pingShareClick(int p) {
+		sLogic.setDate(mHandler, httpUtil);
+		showProcessDialog(sdismiss);
+		sLogic.sendShareRequest(getUser().getRemarkToken(), adapterFy
+				.getItem(p).getId());
+	}
+
+	public void pingLunClick(int p) {
+		startActivityForResult(new Intent(getBaseContext(),
+				CommentYuansuActivity.class).putExtra("remarkId", adapterFy
+				.getItem(p).getId()), 2);
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		startActivity(new Intent(getBaseContext(), YuansuInfoActivity.class)
+				.putExtra("content",
+						adapterFy.getItem(position).getRemarkContent())
+				.putExtra("remarkId", adapterFy.getItem(position).getId())
+				.putExtra("label", adapterFy.getItem(position).getLabel()));
+
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.frameFy: {
+			startActivity(new Intent(getBaseContext(), PcFayanActivity.class));
+			break;
+		}
+		case R.id.frameBgz: {
+			startActivity(new Intent(getBaseContext(),
+					PcGuanzhuYsActivity.class));
+
+			break;
+		}
+		case R.id.frameGzYs: {
+			startActivity(new Intent(getBaseContext(),
+					PcGuanzhuYsActivity.class));
+
+			break;
+		}
+		case R.id.frameGzYh: {
+			startActivity(new Intent(getBaseContext(),
+					PcGuanzhuYhActivity.class));
+
+			break;
+		}
+
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public void handleMsg(Message msg) {
+		switch (msg.what) {
+		case SuperLogic.PCENTER_FAYAN_SUCCESS_MSGWHAT: {
+			updateView();
+			break;
+		}
+		case SuperLogic.PCENTER_BEIGUANZHU_SUCCESS_MSGWHAT: {
+			break;
+		}
+		case SuperLogic.FOLLOW_YUANSU_SUCCESS_MSGWHAT: {
+			if (pcLogic.fyList2.size() > 0) {
+				pcLogic.fyList2.get(temp).setFollowState(Constant.HAS_FOLLOW);
+			}
+			showToast(getString(R.string.has_follow));
+			updateView();
+			break;
+		}
+		case SuperLogic.UNFOLLOW_YUANSU_SUCCESS_MSGWHAT: {
+			if (pcLogic.fyList2.size() > 0) {
+				pcLogic.fyList2.get(temp).setFollowState(Constant.UN_FOLLOW);
+			}
+			showToast(getString(R.string.unfollow));
+			updateView();
+			break;
+		}
+		case SuperLogic.PCENTER_COUNT_SUCCESS_MSGWHAT: {
+			updateCount();
+			break;
+		}
+		}
+		onLoad();
+		super.handleMsg(msg);
+	}
+
+	public void updateCount() {
+		tvFy.setText(pcLogic.comment_count);
+		tvFu.setText(pcLogic.following_user_count);
+		tvFys.setText(pcLogic.following_remark_count);
+		tvBgz.setText(pcLogic.follower_count);
+	}
+
+	private void onLoad() {
+		if (actionType == 0)
+			pullToRefreshView.onHeaderRefreshComplete();
+		pullToRefreshView.onFooterRefreshComplete();
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == 2) {
+			requestFayan(0);
+			requestCount();
+		}
+	}
+
+	public void requestCount() {
+		httpUtil2 = new HttpUtils();
+		pcLogic.setDate(mHandler, httpUtil2);
+		pcLogic.sendCountRequest(getUser().getRemarkToken(), getUser().getUid());
 	}
 }

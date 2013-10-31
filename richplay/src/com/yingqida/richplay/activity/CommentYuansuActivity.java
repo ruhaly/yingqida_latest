@@ -1,5 +1,8 @@
 package com.yingqida.richplay.activity;
 
+
+import java.io.InputStream;
+
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -29,7 +32,7 @@ public class CommentYuansuActivity extends SuperActivity {
 	private EditText etComment;
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId, InputStream is) {
 
 	}
 

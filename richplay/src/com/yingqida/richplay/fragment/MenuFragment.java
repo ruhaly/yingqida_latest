@@ -226,7 +226,7 @@ public class MenuFragment extends SuperFragment implements OnItemClickListener {
 
 	@OnClick(R.id.tvPersoninfo)
 	public void tvPersoninfoClick(View view) {
-		SuperFragment fragment = PCenterFragment.getIns();
+		SuperFragment fragment = PersonFragment.getIns();
 		if (fragment != null)
 			switchFragment(fragment);
 	}

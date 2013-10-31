@@ -1,5 +1,8 @@
 package com.yingqida.richplay.activity;
 
+
+import java.io.InputStream;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -199,7 +202,7 @@ public class YuansuInfoActivity extends SuperActivity {
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId, InputStream is) {
 
 	}
 

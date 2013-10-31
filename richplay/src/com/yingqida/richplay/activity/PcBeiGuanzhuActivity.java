@@ -1,5 +1,6 @@
 package com.yingqida.richplay.activity;
 
+import java.io.InputStream;
 import java.util.List;
 
 import android.content.Context;
@@ -28,7 +29,7 @@ import com.yingqida.richplay.baseapi.common.User;
 import com.yingqida.richplay.logic.PCenterLogic;
 import com.yingqida.richplay.logic.ShareAndFollowLogic;
 import com.yingqida.richplay.logic.SuperLogic;
-import com.yingqida.richplay.logic.UserSearchLogic;
+import com.yingqida.richplay.logic.UserLogic;
 import com.yingqida.richplay.widget.PullToRefreshView;
 
 public class PcBeiGuanzhuActivity extends SuperActivity {
@@ -51,7 +52,7 @@ public class PcBeiGuanzhuActivity extends SuperActivity {
 	private Button btnToggle;
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId, InputStream is) {
 
 	}
 

@@ -1,7 +1,12 @@
 package com.yingqida.richplay.logic;
 
+import java.io.InputStream;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.HttpHandler;
@@ -37,24 +42,31 @@ public class LoginLogic extends SuperLogic implements HttpAction {
 		return ins;
 	}
 
-	public void sendLoginRequest(String account, String pwd,String remarkToken) {
+	public void sendLoginRequest(String account, String pwd,
+			String remarkToken, String captcha) {
 		RequestParams params = new RequestParams();
 		params.addBodyParameter("email", account);
 		params.addBodyParameter("password", pwd);
 		params.addBodyParameter("remark_token", remarkToken);
+		if (null != captcha) {
+			params.addBodyParameter("captcha", captcha);
+		}
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_LOGIN, params,
 				HttpSenderUtils.METHOD_POST, httpUtils,
-				RequestId.LOGIN_REQUESTID, this);
+				RequestId.LOGIN_REQUESTID, this, false);
 	}
 
-	public void sendRegisterRequest(String account, String pwd, String nickName) {
+	public void sendRegisterRequest(String remark_token, String account,
+			String pwd, String nickName, String etCaptcha) {
 		RequestParams params = new RequestParams();
+		params.addBodyParameter("remark_token", remark_token);
 		params.addBodyParameter("email", account);
 		params.addBodyParameter("password", pwd);
 		params.addBodyParameter("username", nickName);
+		params.addBodyParameter("captcha", etCaptcha);
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_REGISTER, params,
 				HttpSenderUtils.METHOD_POST, httpUtils,
-				RequestId.REGISTER_REQUESTID, this);
+				RequestId.REGISTER_REQUESTID, this, false);
 	}
 
 	public void sendModPWDRequest(String remarkToken, String oldPwd,
@@ -65,7 +77,7 @@ public class LoginLogic extends SuperLogic implements HttpAction {
 		params.addBodyParameter("new_password", newPwd);
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_MODIFY_PWD, params,
 				HttpSenderUtils.METHOD_POST, httpUtils, RequestId.MODIFY_PWD,
-				this);
+				this, false);
 	}
 
 	@Override
@@ -84,7 +96,8 @@ public class LoginLogic extends SuperLogic implements HttpAction {
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId,
+			InputStream is) {
 
 		switch (requestId) {
 		case RequestId.LOGIN_REQUESTID: {
@@ -101,6 +114,14 @@ public class LoginLogic extends SuperLogic implements HttpAction {
 		}
 		case RequestId.GET_REMARKTOKEN: {
 			httpGetRemarkTokenResponse(response);
+			break;
+		}
+		case RequestId.REGISTER_CAPTCHA_REQUESTID: {
+			httpGetRegisterCaptchaResponse(is);
+			break;
+		}
+		case RequestId.LOGIN_CAPTCHA_REQUESTID: {
+			httpGetLoginCaptchaResponse(is);
 			break;
 		}
 		default:
@@ -128,6 +149,9 @@ public class LoginLogic extends SuperLogic implements HttpAction {
 			if (code.equals(ResponseCode.SUCCESS)) {
 				user = JsonParse.parseLoginRes(response);
 				handler.sendEmptyMessage(LOGIN_SUCCESS_MSGWHAT);
+			} else if (code.equals(ResponseCode.ERROR_LOGIN_ERROR_CAPTACHA)
+					|| code.equals(ResponseCode.ERROR_LOGIN_ERROR_CAPTACHA2)) {
+				handler.sendEmptyMessage(LOGIN_ERROR_NEED_CAPTCHA_MSGWHAT);
 			} else {
 				handler.sendEmptyMessage(LOGIN_ERROR_MSGWHAT);
 			}
@@ -151,8 +175,11 @@ public class LoginLogic extends SuperLogic implements HttpAction {
 			String code = String.valueOf(json.get("code"));
 			if (code.equals(ResponseCode.SUCCESS)) {
 				handler.sendEmptyMessage(REGISTER_SUCCESS_MSGWHAT);
+			} else if (code.equals(ResponseCode.CAPTCHA_REGISTER)) {
+				handler.sendEmptyMessage(REGISTER_ERROR_NEED_CAPTCHA_MSGWHAT);
 			} else {
-				handler.sendEmptyMessage(REGISTER_ERROR_MSGWHAT);
+				handler.obtainMessage(REGISTER_ERROR_MSGWHAT, code)
+						.sendToTarget();
 			}
 
 		} catch (JSONException e) {
@@ -168,7 +195,7 @@ public class LoginLogic extends SuperLogic implements HttpAction {
 		params.addBodyParameter("remark_token", remark_token);
 		HttpSenderUtils.sendMsgImpl(ACTION_EXIT, params,
 				HttpSenderUtils.METHOD_GET, httpUtils,
-				RequestId.EXIT_REQUESTID, this);
+				RequestId.EXIT_REQUESTID, this, false);
 	}
 
 	public void httpModPwdResponse(String response) {
@@ -193,7 +220,7 @@ public class LoginLogic extends SuperLogic implements HttpAction {
 		RequestParams params = new RequestParams();
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_GET_REMARKTOKEN,
 				params, HttpSenderUtils.METHOD_GET, httpUtils,
-				RequestId.GET_REMARKTOKEN, this);
+				RequestId.GET_REMARKTOKEN, this, false);
 	}
 
 	public void httpGetRemarkTokenResponse(String response) {
@@ -212,6 +239,49 @@ public class LoginLogic extends SuperLogic implements HttpAction {
 
 		} catch (JSONException e) {
 			handler.sendEmptyMessage(GET_REMARKTOKEN_ERROR_MSGWHAT);
+			e.printStackTrace();
+		}
+
+	}
+
+	public void sendGetRegisterCaptchaRequest(String remarkToken) {
+		RequestParams params = new RequestParams();
+		params.addQueryStringParameter("remark_token", remarkToken);
+		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_REGISTER_CAPTCHA,
+				params, HttpSenderUtils.METHOD_GET, httpUtils,
+				RequestId.REGISTER_CAPTCHA_REQUESTID, this, true);
+	}
+
+	public void sendGetLoginCaptchaRequest(String remarkToken) {
+		RequestParams params = new RequestParams();
+		params.addQueryStringParameter("remark_token", remarkToken);
+		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_LOGIN_CAPTCHA, params,
+				HttpSenderUtils.METHOD_GET, httpUtils,
+				RequestId.LOGIN_CAPTCHA_REQUESTID, this, true);
+	}
+
+	public void httpGetRegisterCaptchaResponse(InputStream is) {
+
+		try {
+
+			Bitmap bitmap = BitmapFactory.decodeStream(is);
+			handler.obtainMessage(REGISTER_ERROR_NEED_CAPTCHA_MSGWHAT, bitmap)
+					.sendToTarget();
+		} catch (Exception e) {
+			handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
+			e.printStackTrace();
+		}
+
+	}
+
+	public void httpGetLoginCaptchaResponse(InputStream is) {
+
+		try {
+
+			Bitmap bitmap = BitmapFactory.decodeStream(is);
+			handler.obtainMessage(LOGIN_CAPTCHA_MSGWHAT, bitmap).sendToTarget();
+		} catch (Exception e) {
+			handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
 			e.printStackTrace();
 		}
 

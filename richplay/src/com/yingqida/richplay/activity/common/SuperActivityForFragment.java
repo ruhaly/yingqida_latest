@@ -1,9 +1,14 @@
 package com.yingqida.richplay.activity.common;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -18,8 +23,10 @@ import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo.State;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -46,6 +53,7 @@ import com.yingqida.richplay.baseapi.common.RichplayUtil;
 import com.yingqida.richplay.baseapi.common.User;
 import com.yingqida.richplay.baseapi.http.HttpResponseHanlder;
 import com.yingqida.richplay.baseapi.http.HttpTimeoutHandler;
+import com.yingqida.richplay.fragment.PersonFragment;
 import com.yingqida.richplay.fragment.SuperFragment;
 import com.yingqida.richplay.logic.LoginLogic;
 import com.yingqida.richplay.logic.SuperLogic;
@@ -54,6 +62,7 @@ import com.yingqida.richplay.pubuliu.ImageFetcher;
 import com.yingqida.richplay.pubuliu.ImageWorker.ICallBack;
 import com.yingqida.richplay.service.NetWorkProxy;
 import com.yingqida.richplay.util.DataCleanManager;
+import com.yingqida.richplay.util.ImageTools;
 
 public abstract class SuperActivityForFragment extends
 		HandleActivityForFragment implements HttpResponseHanlder,
@@ -520,5 +529,191 @@ public abstract class SuperActivityForFragment extends
 		showAlertDialog(0, getString(R.string.tip),
 				getString(R.string.is_clear_cache), null, okclean, DEFAULT_BTN,
 				null, true, true);
+	}
+
+	public static final int TAKE_PICTURE = 0;
+	public static final int CHOOSE_PICTURE = 1;
+	public static final int CROP = 2;
+	public static final int CROP_PICTURE = 3;
+
+	public static final int SCALE = 5;// 照片缩小比例
+
+	public void showPicturePicker(boolean isCrop) {
+		final boolean crop = isCrop;
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("图片来源");
+		builder.setNegativeButton("取消", null);
+		builder.setItems(new String[] { "拍照", "相册" },
+				new DialogInterface.OnClickListener() {
+					// 类型码
+					int REQUEST_CODE;
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						switch (which) {
+						case TAKE_PICTURE:
+							Uri imageUri = null;
+							String fileName = null;
+							Intent openCameraIntent = new Intent(
+									MediaStore.ACTION_IMAGE_CAPTURE);
+							if (crop) {
+								REQUEST_CODE = CROP;
+								// 删除上一次截图的临时文件
+								ImageTools.deletePhotoAtPathAndName(ImageTools
+										.getDiskCacheDir(getBaseContext()),
+										getAppShare().getString("tempName", ""));
+
+								// 保存本次截图临时文件名字
+								fileName = String.valueOf(System
+										.currentTimeMillis()) + ".jpg";
+								getAppShare().edit()
+										.putString("tempName", fileName)
+										.commit();
+							} else {
+								REQUEST_CODE = TAKE_PICTURE;
+								fileName = "image.jpg";
+							}
+							imageUri = Uri.fromFile(new File(ImageTools
+									.getDiskCacheDir(getBaseContext()),
+									fileName));
+							// 指定照片保存路径（SD卡），image.jpg为一个临时文件，每次拍照后这个图片都会被替换
+							openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+									imageUri);
+							startActivityForResult(openCameraIntent,
+									REQUEST_CODE);
+							break;
+
+						case CHOOSE_PICTURE:
+							Intent openAlbumIntent = new Intent(
+									Intent.ACTION_GET_CONTENT);
+							if (crop) {
+								REQUEST_CODE = CROP;
+							} else {
+								REQUEST_CODE = CHOOSE_PICTURE;
+							}
+							openAlbumIntent
+									.setDataAndType(
+											MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+											"image/*");
+							startActivityForResult(openAlbumIntent,
+									REQUEST_CODE);
+							break;
+
+						default:
+							break;
+						}
+					}
+				});
+		builder.create().show();
+	}// 截取图片
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode == RESULT_OK) {
+			switch (requestCode) {
+			case SuperActivityForFragment.TAKE_PICTURE:
+				// 将保存在本地的图片取出并缩小后显示在界面上
+				Bitmap bitmap = BitmapFactory.decodeFile(ImageTools
+						.getDiskCacheDir(getBaseContext()) + "/image.jpg");
+				Bitmap newBitmap = ImageTools.zoomBitmap(bitmap,
+						bitmap.getWidth() / SuperActivityForFragment.SCALE,
+						bitmap.getHeight() / SuperActivityForFragment.SCALE);
+				// 由于Bitmap内存占用较大，这里需要回收内存，否则会报out of memory异常
+				bitmap.recycle();
+
+				// 将处理过的图片显示在界面上，并保存到本地
+				ImageTools.savePhotoToSDCard(newBitmap,
+						ImageTools.getDiskCacheDir(getBaseContext()),
+						String.valueOf(System.currentTimeMillis()));
+
+				break;
+
+			case SuperActivityForFragment.CHOOSE_PICTURE:
+				ContentResolver resolver = getContentResolver();
+				// 照片的原始资源地址
+				Uri originalUri = data.getData();
+				try {
+					// 使用ContentProvider通过URI获取原始图片
+					Bitmap photo = MediaStore.Images.Media.getBitmap(resolver,
+							originalUri);
+					if (photo != null) {
+						// 为防止原始图片过大导致内存溢出，这里先缩小原图显示，然后释放原始Bitmap占用的内存
+						// Bitmap smallBitmap = ImageTools.zoomBitmap(photo,
+						// photo.getWidth() / PersonFragment.SCALE,
+						// photo.getHeight() / PersonFragment.SCALE);
+						// 释放原始图片占用的内存，防止out of memory异常发生
+						// photo.recycle();
+						// iv_image.setImageBitmap(smallBitmap);
+						noticePersonFragmentUpdate(photo, originalUri.getPath());
+					}
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				break;
+
+			case SuperActivityForFragment.CROP:
+				Uri uri = null;
+				if (data != null) {
+					uri = data.getData();
+					System.out.println("Data");
+				} else {
+					System.out.println("File");
+					String fileName = getAppShare().getString("tempName", "");
+					uri = Uri.fromFile(new File(ImageTools
+							.getDiskCacheDir(getBaseContext()), fileName));
+				}
+				cropImage(uri, 100, 100, SuperActivityForFragment.CROP_PICTURE);
+				break;
+
+			case SuperActivityForFragment.CROP_PICTURE:
+				Bitmap photo = null;
+				Uri photoUri = data.getData();
+				if (photoUri != null) {
+					photo = BitmapFactory.decodeFile(photoUri.getPath());
+				}
+				if (photo == null) {
+					Bundle extra = data.getExtras();
+					if (extra != null) {
+						photo = (Bitmap) extra.get("data");
+						ByteArrayOutputStream stream = new ByteArrayOutputStream();
+						photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+					}
+					String filename = "head"
+							+ String.valueOf(System.currentTimeMillis());
+					ImageTools.savePhotoToSDCard(photo,
+							ImageTools.getDiskCacheDir(getBaseContext()),
+							filename);
+					noticePersonFragmentUpdate(photo,
+							ImageTools.getDiskCacheDir(getBaseContext())
+									+ File.separator + filename + ".png");
+				}
+				// iv_image.setImageBitmap(photo);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	// 截取图片
+	public void cropImage(Uri uri, int outputX, int outputY, int requestCode) {
+		Intent intent = new Intent("com.android.camera.action.CROP");
+		intent.setDataAndType(uri, "image/*");
+		intent.putExtra("crop", "false");
+		intent.putExtra("aspectX", 1);
+		intent.putExtra("aspectY", 1);
+		intent.putExtra("outputX", outputX);
+		intent.putExtra("outputY", outputY);
+		intent.putExtra("outputFormat", "JPEG");
+		intent.putExtra("noFaceDetection", true);
+		intent.putExtra("return-data", true);
+		startActivityForResult(intent, requestCode);
+	}
+
+	public void noticePersonFragmentUpdate(Bitmap bitmap, String headUrl) {
+		PersonFragment.getIns().uploadHeadPic(bitmap, headUrl);
 	}
 }

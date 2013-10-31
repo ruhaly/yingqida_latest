@@ -3,6 +3,7 @@ package com.yingqida.richplay.fragment;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,6 +19,7 @@ import com.yingqida.richplay.activity.MenuActivity;
 import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.baseapi.common.RichResource;
 import com.yingqida.richplay.baseapi.common.User;
+import com.yingqida.richplay.baseapi.http.HttpSenderUtils;
 import com.yingqida.richplay.logic.SuperLogic;
 
 public abstract class SuperFragment extends Fragment implements
@@ -127,5 +129,72 @@ public abstract class SuperFragment extends Fragment implements
 		if (isOpen) {
 			imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 		}
+	}
+
+	public SharedPreferences getAppShare() {
+		return ((SuperActivityForFragment) getActivity()).getSharedPreferences(
+				RichResource.CONFIG_NAME, 0);
+	}
+
+	/**
+	 * * 获取用户头像(静态域)(基本稳定) 未上传头像 http://[static]/upload/df_avatar/little.png
+	 * http://[static]/upload/df_avatar/normal.png
+	 * http://[static]/upload/df_avatar/big.png 已上传头像
+	 * http://[static]/upload/avatar/{uid}-little.jpg
+	 * http://[static]/upload/avatar/{uid}-normal.jpg
+	 * http://[static]/upload/avatar/{uid}-big.jpg Function: Function:
+	 * 
+	 * @author ruhaly DateTime 2013-10-30 下午1:48:57
+	 * @param type
+	 *            是否已上传头像 1上传过2没有
+	 * @param size
+	 *            图片大小 littile、normal、big
+	 * @param uid
+	 *            用户id
+	 * @return
+	 */
+	public String getHeadUrl(int type, int size, String uid) {
+		String url = "";
+		// 已上传头像
+		if (1 == type) {
+			switch (size) {
+			case 0: {
+				url = "http://" + HttpSenderUtils.DEFALUT_HEAD_AREA
+						+ "/upload/avatar/" + uid + "-little.jpg";
+				break;
+			}
+			case 1: {
+				url = "http://" + HttpSenderUtils.DEFALUT_HEAD_AREA
+						+ "/upload/avatar/" + uid + "-normal.jpg";
+				break;
+			}
+			case 2: {
+				url = "http://" + HttpSenderUtils.DEFALUT_HEAD_AREA
+						+ "/upload/avatar/" + uid + "-big.jpg";
+				break;
+			}
+			}
+		} else {
+			// 未上传头像
+
+			switch (size) {
+			case 0: {
+				url = "http://" + HttpSenderUtils.DEFALUT_HEAD_AREA
+						+ "/upload/df_avatar/" + uid + "-little.jpg";
+				break;
+			}
+			case 1: {
+				url = "http://" + HttpSenderUtils.DEFALUT_HEAD_AREA
+						+ "/upload/df_avatar/" + uid + "-normal.jpg";
+				break;
+			}
+			case 2: {
+				url = "http://" + HttpSenderUtils.DEFALUT_HEAD_AREA
+						+ "/upload/df_avatar/" + uid + "-big.jpg";
+				break;
+			}
+			}
+		}
+		return url;
 	}
 }

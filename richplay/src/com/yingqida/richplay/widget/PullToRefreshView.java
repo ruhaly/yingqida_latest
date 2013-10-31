@@ -371,19 +371,21 @@ public class PullToRefreshView extends LinearLayout {
 				View child = mAdapterView.getChildAt(0);
 				if (child == null) {
 					// 如果mAdapterView中没有数据,不拦截
-					return false;
-				}
-				if (mAdapterView.getFirstVisiblePosition() == 0
-						&& child.getTop() == 0) {
 					mPullState = PULL_DOWN_STATE;
 					return true;
-				}
-				int top = child.getTop();
-				int padding = mAdapterView.getPaddingTop();
-				if (mAdapterView.getFirstVisiblePosition() == 0
-						&& Math.abs(top - padding) <= 11) {// 这里之前用3可以判断,但现在不行,还没找到原因
-					mPullState = PULL_DOWN_STATE;
-					return true;
+				} else {
+					if (mAdapterView.getFirstVisiblePosition() == 0
+							&& child.getTop() == 0) {
+						mPullState = PULL_DOWN_STATE;
+						return true;
+					}
+					int top = child.getTop();
+					int padding = mAdapterView.getPaddingTop();
+					if (mAdapterView.getFirstVisiblePosition() == 0
+							&& Math.abs(top - padding) <= 11) {// 这里之前用3可以判断,但现在不行,还没找到原因
+						mPullState = PULL_DOWN_STATE;
+						return true;
+					}
 				}
 
 			} else if (deltaY < 0) {
@@ -395,15 +397,18 @@ public class PullToRefreshView extends LinearLayout {
 						.getChildCount() - 1);
 				if (lastChild == null) {
 					// 如果mAdapterView中没有数据,不拦截
-					return false;
-				}
-				// 最后一个子view的Bottom小于父View的高度说明mAdapterView的数据没有填满父view,
-				// 等于父View的高度说明mAdapterView已经滑动到最后
-				if (lastChild.getBottom() <= getHeight()
-						&& mAdapterView.getLastVisiblePosition() == mAdapterView
-								.getCount() - 1) {
 					mPullState = PULL_UP_STATE;
 					return true;
+				} else {
+
+					// 最后一个子view的Bottom小于父View的高度说明mAdapterView的数据没有填满父view,
+					// 等于父View的高度说明mAdapterView已经滑动到最后
+					if (lastChild.getBottom() <= getHeight()
+							&& mAdapterView.getLastVisiblePosition() == mAdapterView
+									.getCount() - 1) {
+						mPullState = PULL_UP_STATE;
+						return true;
+					}
 				}
 			}
 		}
@@ -413,6 +418,11 @@ public class PullToRefreshView extends LinearLayout {
 			if (deltaY > 0) {
 				// 判断是否禁用下拉刷新操作
 				if (!enablePullTorefresh) {
+					return false;
+				}
+			} else if (deltaY < 0) {
+				// 判断是否禁用上拉加载更多操作
+				if (!enablePullLoadMoreDataStatus) {
 					return false;
 				}
 			}

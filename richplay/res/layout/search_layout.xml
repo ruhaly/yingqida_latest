@@ -90,6 +90,8 @@
                     android:id="@+id/listviewYs"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:fadingEdge="none"
+                    android:listSelector="@color/transparent"
                     android:verticalSpacing="2dp" >
                 </ListView>
             </com.yingqida.richplay.widget.PullToRefreshView>

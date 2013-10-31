@@ -1,5 +1,7 @@
 package com.yingqida.richplay.activity;
 
+import java.io.InputStream;
+
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -11,6 +13,7 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
@@ -18,6 +21,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.Session;
@@ -59,9 +64,19 @@ public class LoginActivity extends SuperActivity {
 
 	private EditText text_account_login;
 
+	private LinearLayout frameCaptcha;
+
 	private EditText text_pwd_login;
 
 	private EditText text_account_register;
+
+	private EditText etRegisterCaptcha;
+
+	private EditText etLoginCaptcha;
+
+	private ImageView img_register_captcha;
+
+	private ImageView img_login_captcha;
 
 	private EditText text_pwd_register;
 
@@ -307,7 +322,11 @@ public class LoginActivity extends SuperActivity {
 				R.layout.to_login_layout, null);
 		text_account_login = (EditText) viewLogin
 				.findViewById(R.id.text_account);
+		frameCaptcha = (LinearLayout) viewLogin.findViewById(R.id.frameCaptcha);
 		text_pwd_login = (EditText) viewLogin.findViewById(R.id.text_pwd);
+		etLoginCaptcha = (EditText) viewLogin.findViewById(R.id.etLoginCaptcha);
+		img_login_captcha = (ImageView) viewLogin
+				.findViewById(R.id.img_login_captcha);
 		btn_login = (TextView) viewLogin.findViewById(R.id.btn_login);
 		btn_login.setOnClickListener(this);
 		showDialog(viewLogin);
@@ -326,6 +345,17 @@ public class LoginActivity extends SuperActivity {
 	public void showRegisterDialog() {
 		View viewRegister = LayoutInflater.from(getBaseContext()).inflate(
 				R.layout.register_layout, null);
+		img_register_captcha = (ImageView) viewRegister
+				.findViewById(R.id.img_captcha);
+		img_register_captcha.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				getRegisterCaptcha();
+			}
+		});
+		etRegisterCaptcha = (EditText) viewRegister
+				.findViewById(R.id.etCaptcha);
 		text_account_register = (EditText) viewRegister
 				.findViewById(R.id.text_account_register);
 		text_pwd_register = (EditText) viewRegister
@@ -335,6 +365,7 @@ public class LoginActivity extends SuperActivity {
 		btn_register = (TextView) viewRegister.findViewById(R.id.btn_register);
 		btn_register.setOnClickListener(this);
 		showDialog(viewRegister);
+		getRegisterCaptcha();
 	}
 
 	@Override
@@ -348,9 +379,13 @@ public class LoginActivity extends SuperActivity {
 			httpUtil = new HttpUtils();
 			loginLogic.setDate(mHandler, httpUtil);
 			showProcessDialog(dismiss);
+			String etCaptcha = frameCaptcha.getVisibility() == View.VISIBLE ? etLoginCaptcha
+					.getText().toString().trim()
+					: null;
 			loginLogic.sendLoginRequest(
 					text_account_login.getText().toString(), text_pwd_login
-							.getText().toString(), getUser().getRemarkToken());
+							.getText().toString(), getUser().getRemarkToken(),
+					etCaptcha);
 			break;
 		}
 		case R.id.btn_register: {
@@ -362,9 +397,11 @@ public class LoginActivity extends SuperActivity {
 			httpUtil = new HttpUtils();
 			loginLogic.setDate(mHandler, httpUtil);
 			showProcessDialog(dismiss);
-			loginLogic.sendRegisterRequest(text_account_register.getText()
-					.toString(), text_pwd_register.getText().toString(),
-					text_nickname_register.getText().toString());
+			loginLogic.sendRegisterRequest(getUser().getRemarkToken(),
+					text_account_register.getText().toString(),
+					text_pwd_register.getText().toString(),
+					text_nickname_register.getText().toString(),
+					etRegisterCaptcha.getText().toString());
 			break;
 
 		}
@@ -389,6 +426,12 @@ public class LoginActivity extends SuperActivity {
 			dismissProgress();
 			return;
 		}
+		case SuperLogic.LOGIN_ERROR_NEED_CAPTCHA_MSGWHAT: {
+			dismissProgress();
+			frameCaptcha.setVisibility(View.VISIBLE);
+			getLoginCaptcha();
+			return;
+		}
 		case SuperLogic.REGISTER_SUCCESS_MSGWHAT: {
 
 			showToast("注册成功,请登录~");
@@ -399,8 +442,19 @@ public class LoginActivity extends SuperActivity {
 					.toString());
 			return;
 		}
+		case SuperLogic.LOGIN_CAPTCHA_MSGWHAT: {
+			showLoginCaptcha((Bitmap) msg.obj);
+			break;
+		}
+		case SuperLogic.REGISTER_ERROR_NEED_CAPTCHA_MSGWHAT: {
+			showRegisterCaptcha((Bitmap) msg.obj);
+			break;
+		}
 		case SuperLogic.REGISTER_ERROR_MSGWHAT: {
 			showToast("注册失败~");
+			int code = Integer.valueOf((String) msg.obj);
+			showCodetip(code);
+			getRegisterCaptcha();
 			dismissProgress();
 			return;
 		}
@@ -408,6 +462,28 @@ public class LoginActivity extends SuperActivity {
 			break;
 		}
 		super.handleMsg(msg);
+	}
+
+	public void getRegisterCaptcha() {
+		httpUtil = new HttpUtils();
+		loginLogic.setDate(mHandler, httpUtil);
+		// showProcessDialog(dismiss);
+		loginLogic.sendGetRegisterCaptchaRequest(getUser().getRemarkToken());
+	}
+
+	public void getLoginCaptcha() {
+		httpUtil = new HttpUtils();
+		loginLogic.setDate(mHandler, httpUtil);
+		// showProcessDialog(dismiss);
+		loginLogic.sendGetLoginCaptchaRequest(getUser().getRemarkToken());
+	}
+
+	public void showRegisterCaptcha(Bitmap bitmap) {
+		img_register_captcha.setImageBitmap(bitmap);
+	}
+
+	public void showLoginCaptcha(Bitmap bitmap) {
+		img_login_captcha.setImageBitmap(bitmap);
 	}
 
 	/**
@@ -439,21 +515,31 @@ public class LoginActivity extends SuperActivity {
 
 	@SuppressLint("NewApi")
 	public boolean checkLoginDataEmpty() {
-		return text_account_login.getText().toString().trim().isEmpty()
-				|| text_pwd_login.getText().toString().trim().isEmpty() ? true
-				: false;
+		if (frameCaptcha.getVisibility() == View.VISIBLE) {
+			return text_account_login.getText().toString().trim().isEmpty()
+					|| text_pwd_login.getText().toString().trim().isEmpty()
+					|| etLoginCaptcha.getText().toString().toString().isEmpty() ? true
+					: false;
+		} else {
+			return text_account_login.getText().toString().trim().isEmpty()
+					|| text_pwd_login.getText().toString().trim().isEmpty() ? true
+					: false;
+
+		}
 	}
 
 	@SuppressLint("NewApi")
 	public boolean checkRegisterDataEmpty() {
 		return text_account_register.getText().toString().trim().isEmpty()
 				|| text_pwd_register.getText().toString().trim().isEmpty()
-				|| text_nickname_register.getText().toString().trim().isEmpty() ? true
+				|| text_nickname_register.getText().toString().trim().isEmpty()
+				|| etRegisterCaptcha.getText().toString().trim().isEmpty() ? true
 				: false;
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId,
+			InputStream is) {
 
 	}
 
@@ -470,4 +556,5 @@ public class LoginActivity extends SuperActivity {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
+
 }

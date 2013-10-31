@@ -1,5 +1,8 @@
 package com.yingqida.richplay.activity;
 
+
+import java.io.InputStream;
+
 import android.os.Bundle;
 
 import com.lidroid.xutils.exception.HttpException;
@@ -25,7 +28,7 @@ public class UserEditActivity extends SuperActivityForFragment {
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int requestId) {
+	public void handleHttpResponse(String response, int requestId, InputStream is) {
 		// TODO Auto-generated method stub
 		
 	}

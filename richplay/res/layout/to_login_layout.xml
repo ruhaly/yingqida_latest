@@ -65,6 +65,30 @@
         </EditText>
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/frameCaptcha"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:visibility="gone" >
+
+        <EditText
+            android:id="@+id/etLoginCaptcha"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/captcha"
+            android:inputType="number" >
+        </EditText>
+
+        <ImageView
+            android:id="@+id/img_login_captcha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_lock_lock" />
+    </LinearLayout>
+
     <TextView
         android:id="@+id/btn_login"
         android:layout_width="match_parent"

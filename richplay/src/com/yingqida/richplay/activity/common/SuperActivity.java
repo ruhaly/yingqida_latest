@@ -47,6 +47,7 @@ import com.yingqida.richplay.baseapi.common.RichResource;
 import com.yingqida.richplay.baseapi.common.RichplayUtil;
 import com.yingqida.richplay.baseapi.common.User;
 import com.yingqida.richplay.baseapi.http.HttpResponseHanlder;
+import com.yingqida.richplay.baseapi.http.HttpSenderUtils;
 import com.yingqida.richplay.baseapi.http.HttpTimeoutHandler;
 import com.yingqida.richplay.fragment.SuperFragment;
 import com.yingqida.richplay.logic.LoginLogic;
@@ -526,5 +527,67 @@ public abstract class SuperActivity extends HandleActivity implements
 		default:
 			break;
 		}
+	}
+
+	/**
+	 * * 获取用户头像(静态域)(基本稳定) 未上传头像 http://[static]/upload/df_avatar/little.png
+	 * http://[static]/upload/df_avatar/normal.png
+	 * http://[static]/upload/df_avatar/big.png 已上传头像
+	 * http://[static]/upload/avatar/{uid}-little.jpg
+	 * http://[static]/upload/avatar/{uid}-normal.jpg
+	 * http://[static]/upload/avatar/{uid}-big.jpg Function: Function:
+	 * 
+	 * @author ruhaly DateTime 2013-10-30 下午1:48:57
+	 * @param type
+	 *            是否已上传头像 1上传过2没有
+	 * @param size
+	 *            图片大小 littile、normal、big
+	 * @param uid
+	 *            用户id
+	 * @return
+	 */
+	public String getHeadUrl(int type, int size, String uid) {
+		String url = "";
+		// 已上传头像
+		if (1 == type) {
+			switch (size) {
+			case 0: {
+				url = "http://" + HttpSenderUtils.DEFALUT_HEAD_AREA
+						+ "/upload/avatar/" + uid + "-little.jpg";
+				break;
+			}
+			case 1: {
+				url = "http://" + HttpSenderUtils.DEFALUT_HEAD_AREA
+						+ "/upload/avatar/" + uid + "-normal.jpg";
+				break;
+			}
+			case 2: {
+				url = "http://" + HttpSenderUtils.DEFALUT_HEAD_AREA
+						+ "/upload/avatar/" + uid + "-big.jpg";
+				break;
+			}
+			}
+		} else {
+			// 未上传头像
+
+			switch (size) {
+			case 0: {
+				url = "http://" + HttpSenderUtils.DEFALUT_HEAD_AREA
+						+ "/upload/df_avatar/" + uid + "-little.jpg";
+				break;
+			}
+			case 1: {
+				url = "http://" + HttpSenderUtils.DEFALUT_HEAD_AREA
+						+ "/upload/df_avatar/" + uid + "-normal.jpg";
+				break;
+			}
+			case 2: {
+				url = "http://" + HttpSenderUtils.DEFALUT_HEAD_AREA
+						+ "/upload/df_avatar/" + uid + "-big.jpg";
+				break;
+			}
+			}
+		}
+		return url;
 	}
 }

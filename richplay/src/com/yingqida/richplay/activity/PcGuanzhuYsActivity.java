@@ -1,6 +1,5 @@
 package com.yingqida.richplay.activity;
 
-
 import java.io.InputStream;
 
 import android.content.DialogInterface;
@@ -12,15 +11,14 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
+import com.huewu.pla.lib.internal.PLA_AdapterView;
+import com.huewu.pla.lib.internal.PLA_AdapterView.OnItemClickListener;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.ViewUtils;
@@ -28,20 +26,23 @@ import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.activity.common.SuperActivity;
+import com.yingqida.richplay.baseapi.Constant;
 import com.yingqida.richplay.entity.Yuansu;
 import com.yingqida.richplay.logic.PCenterLogic;
 import com.yingqida.richplay.logic.ShareAndFollowLogic;
 import com.yingqida.richplay.logic.SuperLogic;
+import com.yingqida.richplay.pubuliu.XListView;
+import com.yingqida.richplay.pubuliu.XListView.IXListViewListener;
 import com.yingqida.richplay.widget.PullToRefreshView;
 
 public class PcGuanzhuYsActivity extends SuperActivity implements
-		OnItemClickListener {
+		IXListViewListener, OnItemClickListener {
 
 	@ViewInject(R.id.pullToRefreshView)
 	private PullToRefreshView pullToRefreshView;
 
 	@ViewInject(R.id.listViewFy)
-	private ListView listViewFy;
+	private XListView listViewFy;
 
 	private Adapter adapterGuanzhuYs;
 	private ShareAndFollowLogic sLogic;
@@ -51,9 +52,11 @@ public class PcGuanzhuYsActivity extends SuperActivity implements
 	private BitmapUtils bitmapUtilsHead;
 	@ViewInject(R.id.btnToggle)
 	private Button btnToggle;
+	public String uid;
 
 	@Override
-	public void handleHttpResponse(String response, int requestId, InputStream is) {
+	public void handleHttpResponse(String response, int requestId,
+			InputStream is) {
 
 	}
 
@@ -67,24 +70,29 @@ public class PcGuanzhuYsActivity extends SuperActivity implements
 		if (null == adapterGuanzhuYs) {
 			adapterGuanzhuYs = new Adapter();
 			listViewFy.setAdapter(adapterGuanzhuYs);
+			listViewFy.setXListViewListener(this);
+			listViewFy.setPullLoadEnable(true);
 			listViewFy.setOnItemClickListener(this);
-			pullToRefreshView
-					.setOnHeaderRefreshListener(new PullToRefreshView.OnHeaderRefreshListener() {
-
-						@Override
-						public void onHeaderRefresh(PullToRefreshView view) {
-							requestGuanzhuYs(0);
-						}
-					});
-			pullToRefreshView
-					.setOnFooterRefreshListener(new PullToRefreshView.OnFooterRefreshListener() {
-
-						@Override
-						public void onFooterRefresh(PullToRefreshView view) {
-							requestGuanzhuYs(1);
-
-						}
-					});
+			// listViewFy.setOnItemClickListener(this);
+			// pullToRefreshView
+			// .setOnHeaderRefreshListener(new
+			// PullToRefreshView.OnHeaderRefreshListener() {
+			//
+			// @Override
+			// public void onHeaderRefresh(PullToRefreshView view) {
+			// requestGuanzhuYs(0);
+			// }
+			// });
+			// pullToRefreshView
+			// .setOnFooterRefreshListener(new
+			// PullToRefreshView.OnFooterRefreshListener() {
+			//
+			// @Override
+			// public void onFooterRefresh(PullToRefreshView view) {
+			// requestGuanzhuYs(1);
+			//
+			// }
+			// });
 		} else {
 			adapterGuanzhuYs.notifyDataSetChanged();
 		}
@@ -101,6 +109,7 @@ public class PcGuanzhuYsActivity extends SuperActivity implements
 	public void initLayout(Bundle paramBundle) {
 		setContentView(R.layout.pc_fayan_layout);
 		ViewUtils.inject(this);
+		uid = getIntent().getExtras().getString("uid");
 		btnToggle.setVisibility(View.GONE);
 		bitmapUtilsContent = new BitmapUtils(this);
 		bitmapUtilsContent.configDefaultLoadingImage(R.drawable.ic_launcher);
@@ -161,9 +170,16 @@ public class PcGuanzhuYsActivity extends SuperActivity implements
 			} else {
 				holder = (Holder) convertView.getTag();
 			}
+			String follow = getItem(position).getFollowState();
+			if (Constant.HAS_FOLLOW.equals(follow)) {
+				holder.imgGuanZhu
+						.setBackgroundResource(android.R.drawable.ic_menu_close_clear_cancel);
+			} else {
+				holder.imgGuanZhu
+						.setBackgroundResource(android.R.drawable.ic_input_add);
+			}
 			holder.imgGuanZhu.setTag(position);
-			holder.imgGuanZhu
-					.setBackgroundResource(android.R.drawable.ic_menu_close_clear_cancel);
+
 			holder.imgGuanZhu.setOnClickListener(new View.OnClickListener() {
 
 				@Override
@@ -244,14 +260,21 @@ public class PcGuanzhuYsActivity extends SuperActivity implements
 		httpUtil = new HttpUtils();
 		pcLogic.setDate(mHandler, httpUtil);
 		showProcessDialog(dismiss);
-		pcLogic.sendGuanzhuYsRequest(getUser().getRemarkToken(), type);
+		pcLogic.sendGuanzhuYsRequest(getUser().getRemarkToken(), type, uid);
 	}
 
 	public void pingGuanZhuClick(int p) {
 		sLogic.setDate(mHandler, httpUtil);
 		showProcessDialog(sdismiss);
-		sLogic.sendUnFollowYuansuRequest(getUser().getRemarkToken(),
-				adapterGuanzhuYs.getItem(p).getId());
+		String follow = adapterGuanzhuYs.getItem(p).getFollowState();
+		if (Constant.HAS_FOLLOW.equals(follow)) {
+			sLogic.sendUnFollowYuansuRequest(getUser().getRemarkToken(),
+					adapterGuanzhuYs.getItem(p).getId());
+		} else {
+			sLogic.sendFollowYuansuRequest(getUser().getRemarkToken(),
+					adapterGuanzhuYs.getItem(p).getId());
+
+		}
 	}
 
 	DialogInterface.OnDismissListener sdismiss = new DialogInterface.OnDismissListener() {
@@ -276,19 +299,6 @@ public class PcGuanzhuYsActivity extends SuperActivity implements
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position,
-			long id) {
-		startActivity(new Intent(getBaseContext(), YuansuInfoActivity.class)
-				.putExtra("content",
-						adapterGuanzhuYs.getItem(position).getRemarkContent())
-				.putExtra("remarkId",
-						adapterGuanzhuYs.getItem(position).getId())
-				.putExtra("label",
-						adapterGuanzhuYs.getItem(position).getLabel()));
-
-	}
-
-	@Override
 	public void handleMsg(Message msg) {
 		switch (msg.what) {
 		case SuperLogic.PCENTER_GUANZHUYS_SUCCESS_MSGWHAT: {
@@ -300,7 +310,18 @@ public class PcGuanzhuYsActivity extends SuperActivity implements
 			break;
 		}
 		case SuperLogic.UNFOLLOW_YUANSU_SUCCESS_MSGWHAT: {
-			pcLogic.guanzhuYsList.remove(temp);
+			if (getUser().getUid().equals(uid)) {
+				pcLogic.guanzhuYsList.remove(temp);
+			} else {
+				pcLogic.guanzhuYsList.get(temp).setFollowState(
+						Constant.UN_FOLLOW);
+			}
+			showToast(getString(R.string.unfollow));
+			updateView();
+			break;
+		}
+		case SuperLogic.FOLLOW_YUANSU_SUCCESS_MSGWHAT: {
+			pcLogic.guanzhuYsList.get(temp).setFollowState(Constant.HAS_FOLLOW);
 			showToast(getString(R.string.unfollow));
 			updateView();
 			break;
@@ -310,16 +331,48 @@ public class PcGuanzhuYsActivity extends SuperActivity implements
 		super.handleMsg(msg);
 	}
 
-	private void onLoad() {
-		if (actionType == 0)
-			pullToRefreshView.onHeaderRefreshComplete();
-		pullToRefreshView.onFooterRefreshComplete();
-	}
-
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == 2) {
 			requestGuanzhuYs(0);
 		}
+	}
+
+	@Override
+	public void onClick(View v) {
+
+	}
+
+	private void onLoad() {
+		if (actionType == 0)
+			listViewFy.stopRefresh();
+		listViewFy.stopLoadMore();
+	}
+
+	@Override
+	public void onRefresh() {
+		requestGuanzhuYs(0);
+	}
+
+	@Override
+	public void onLoadMore() {
+		requestGuanzhuYs(1);
+	}
+
+	@Override
+	public void onItemClick(PLA_AdapterView<?> parent, View view, int position,
+			long id) {
+		startActivity(new Intent(getBaseContext(), YuansuInfoActivity.class)
+				.putExtra(
+						"content",
+						adapterGuanzhuYs.getItem(position - 1)
+								.getRemarkContent())
+				.putExtra("remarkId",
+						adapterGuanzhuYs.getItem(position - 1).getId())
+				.putExtra("label",
+						adapterGuanzhuYs.getItem(position - 1).getLabel())
+				.putExtra("followstate",
+						adapterGuanzhuYs.getItem(position - 1).getFollowState()));
+
 	}
 }

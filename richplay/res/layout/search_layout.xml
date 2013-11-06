@@ -77,24 +77,25 @@
             android:orientation="vertical"
             android:paddingTop="3dp" >
 
-            <com.yingqida.richplay.widget.PullToRefreshView
-                android:id="@+id/pullToRefreshViewYs"
+            <!-- <com.yingqida.richplay.widget.PullToRefreshView -->
+            <!-- android:id="@+id/pullToRefreshViewYs" -->
+            <!-- android:layout_width="match_parent" -->
+            <!-- android:layout_height="match_parent" -->
+            <!-- android:orientation="vertical" -->
+            <!-- android:paddingLeft="5dp" -->
+            <!-- android:paddingRight="5dp" -->
+            <!-- android:paddingTop="3dp" > -->
+
+            <com.yingqida.richplay.pubuliu.XListView
+                android:id="@+id/listviewYs"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:paddingTop="3dp" >
-
-                <ListView
-                    android:id="@+id/listviewYs"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:fadingEdge="none"
-                    android:listSelector="@color/transparent"
-                    android:verticalSpacing="2dp" >
-                </ListView>
-            </com.yingqida.richplay.widget.PullToRefreshView>
+                android:cacheColorHint="@color/transparent"
+                android:fadingEdge="none"
+                android:listSelector="@color/transparent"
+                android:verticalSpacing="2dp" >
+            </com.yingqida.richplay.pubuliu.XListView>
+            <!-- </com.yingqida.richplay.widget.PullToRefreshView> -->
         </LinearLayout>
 
         <LinearLayout
@@ -104,25 +105,26 @@
             android:orientation="vertical"
             android:visibility="gone" >
 
-            <com.yingqida.richplay.widget.PullToRefreshView
-                android:id="@+id/pullToRefreshViewYh"
+            <!-- <com.yingqida.richplay.widget.PullToRefreshView -->
+            <!-- android:id="@+id/pullToRefreshViewYh" -->
+            <!-- android:layout_width="match_parent" -->
+            <!-- android:layout_height="match_parent" -->
+            <!-- android:orientation="vertical" -->
+            <!-- android:paddingLeft="5dp" -->
+            <!-- android:paddingRight="5dp" -->
+            <!-- android:paddingTop="3dp" > -->
+
+            <com.yingqida.richplay.pubuliu.XListView
+                android:id="@+id/gridviewYh"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:paddingTop="3dp" >
-
-                <GridView
-                    android:id="@+id/gridviewYh"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:horizontalSpacing="2dp"
-                    android:listSelector="@color/transparent"
-                    android:numColumns="2"
-                    android:verticalSpacing="2dp" >
-                </GridView>
-            </com.yingqida.richplay.widget.PullToRefreshView>
+                android:cacheColorHint="@color/transparent"
+                android:horizontalSpacing="2dp"
+                android:listSelector="@color/transparent"
+                android:numColumns="2"
+                android:verticalSpacing="2dp" >
+            </com.yingqida.richplay.pubuliu.XListView>
+            <!-- </com.yingqida.richplay.widget.PullToRefreshView> -->
         </LinearLayout>
     </LinearLayout>
 

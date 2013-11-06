@@ -39,8 +39,10 @@ public abstract class SuperLogic implements HttpResponseHanlder {
 	public static final int UNFOLLOW_USER_ERROR_MSGWHAT = 801;
 
 	public static final int FOLLOW_YUANSU_SUCCESS_MSGWHAT = 7000;
+	public static final int FOLLOW_YUANSU_ERROR_EXIST_MSGWHAT = 700001;
 	public static final int FOLLOW_YUANSU_ERROR_MSGWHAT = 7010;
 	public static final int UNFOLLOW_YUANSU_SUCCESS_MSGWHAT = 8000;
+	public static final int ERROR_FOLLOW_YUANSU_DONT_EXIST = 80001;
 	public static final int UNFOLLOW_YUANSU_ERROR_MSGWHAT = 8010;
 
 	public static final int YUANSU_COMMENT_SUCCESS_MSGWHAT = 900;

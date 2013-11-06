@@ -11,7 +11,19 @@ public class Comment {
 	// 评论内容
 	private String content = "";
 
-	
+	/**
+	 * 是否有头像
+	 */
+	private String is_avatar;
+
+	public String getIs_avatar() {
+		return is_avatar;
+	}
+
+	public void setIs_avatar(String is_avatar) {
+		this.is_avatar = is_avatar;
+	}
+
 	public String getContent() {
 		return content;
 	}

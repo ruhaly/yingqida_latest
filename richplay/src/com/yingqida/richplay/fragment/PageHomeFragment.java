@@ -9,14 +9,13 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
+import com.huewu.pla.lib.internal.PLA_AdapterView;
+import com.huewu.pla.lib.internal.PLA_AdapterView.OnItemClickListener;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.ViewUtils;
@@ -24,6 +23,7 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.activity.CommentYuansuActivity;
+import com.yingqida.richplay.activity.PCenterActivity;
 import com.yingqida.richplay.activity.YuansuInfoActivity;
 import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.baseapi.Constant;
@@ -31,16 +31,20 @@ import com.yingqida.richplay.entity.Yuansu;
 import com.yingqida.richplay.logic.PageHomeLogic;
 import com.yingqida.richplay.logic.ShareAndFollowLogic;
 import com.yingqida.richplay.logic.SuperLogic;
-import com.yingqida.richplay.widget.PullToRefreshView;
+import com.yingqida.richplay.pubuliu.XListView;
+import com.yingqida.richplay.pubuliu.XListView.IXListViewListener;
 
 public class PageHomeFragment extends SuperFragment implements
-		OnItemClickListener {
+		IXListViewListener, OnItemClickListener {
 
-	@ViewInject(R.id.pullToRefreshView)
-	private PullToRefreshView pullToRefreshView;
+	// @ViewInject(R.id.pullToRefreshView)
+	// private PullToRefreshView pullToRefreshView;
+
+	// @ViewInject(R.id.listViewYs)
+	// private ListView listViewYs;
 
 	@ViewInject(R.id.listViewYs)
-	private ListView listViewYs;
+	private XListView listViewYs;
 
 	private Adapter adapter;
 
@@ -72,24 +76,28 @@ public class PageHomeFragment extends SuperFragment implements
 		if (null == adapter) {
 			adapter = new Adapter();
 			listViewYs.setAdapter(adapter);
+			listViewYs.setXListViewListener(this);
+			listViewYs.setPullLoadEnable(true);
 			listViewYs.setOnItemClickListener(this);
-			pullToRefreshView
-					.setOnHeaderRefreshListener(new PullToRefreshView.OnHeaderRefreshListener() {
-
-						@Override
-						public void onHeaderRefresh(PullToRefreshView view) {
-							requestYuansu(0);
-						}
-					});
-			pullToRefreshView
-					.setOnFooterRefreshListener(new PullToRefreshView.OnFooterRefreshListener() {
-
-						@Override
-						public void onFooterRefresh(PullToRefreshView view) {
-							requestYuansu(1);
-
-						}
-					});
+			// pullToRefreshView
+			// .setOnHeaderRefreshListener(new
+			// PullToRefreshView.OnHeaderRefreshListener() {
+			//
+			// @Override
+			// public void onHeaderRefresh(PullToRefreshView view) {
+			// requestYuansu(0);
+			// }
+			// });
+			// pullToRefreshView
+			// .setOnFooterRefreshListener(new
+			// PullToRefreshView.OnFooterRefreshListener() {
+			//
+			// @Override
+			// public void onFooterRefresh(PullToRefreshView view) {
+			// requestYuansu(1);
+			//
+			// }
+			// });
 		} else {
 			adapter.notifyDataSetChanged();
 		}
@@ -229,12 +237,24 @@ public class PageHomeFragment extends SuperFragment implements
 
 			if (getItem(position).getUser().getIs_avatar().equals("true")) {
 				bitmapUtilsHead.display(holder.imgHead,
-						getHeadUrl(1, 2, getUser().getUid()));
+						getHeadUrl(1, 2, getItem(position).getUser().getUid()));
 			} else {
 				bitmapUtilsHead.display(holder.imgHead,
-						getHeadUrl(2, 2, getUser().getUid()));
+						getHeadUrl(2, 2, getItem(position).getUser().getUid()));
 			}
+			holder.imgHead.setTag(position);
+			holder.imgHead.setOnClickListener(new View.OnClickListener() {
 
+				@Override
+				public void onClick(View v) {
+					int p = (Integer) v.getTag();
+					Intent intent = new Intent(getActivity().getBaseContext(),
+							PCenterActivity.class);
+					intent.putExtra("uid", getItem(p).getUser().getUid());
+					startActivity(intent);
+
+				}
+			});
 			holder.tvName.setText(getItem(position).getUser().getName());
 			holder.tvCommentContent.setText(getItem(position).getUser()
 					.getComment_content());
@@ -276,24 +296,15 @@ public class PageHomeFragment extends SuperFragment implements
 				.getRemarkToken(), type);
 	}
 
-	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position,
-			long id) {
-		startActivity(new Intent(getActivity().getBaseContext(),
-				YuansuInfoActivity.class)
-				.putExtra("content",
-						adapter.getItem(position).getRemarkContent())
-				.putExtra("remarkId", adapter.getItem(position).getId())
-				.putExtra("label", adapter.getItem(position).getLabel()));
-	}
-
 	public int actionType = 0;
 
 	private void onLoad() {
 
 		if (actionType == 0)
-			pullToRefreshView.onHeaderRefreshComplete();
-		pullToRefreshView.onFooterRefreshComplete();
+			listViewYs.stopRefresh();
+		listViewYs.stopLoadMore();
+		// pullToRefreshView.onHeaderRefreshComplete();
+		// pullToRefreshView.onFooterRefreshComplete();
 	}
 
 	int temp;
@@ -317,12 +328,30 @@ public class PageHomeFragment extends SuperFragment implements
 			updateView();
 			break;
 		}
+
 		case SuperLogic.UNFOLLOW_YUANSU_SUCCESS_MSGWHAT: {
 			if (logic.list.size() > 0) {
 				logic.list.get(temp).setFollowState(Constant.UN_FOLLOW);
 			}
 			showToast(getString(R.string.unfollow));
 			updateView();
+			break;
+		}
+		case SuperLogic.ERROR_FOLLOW_YUANSU_DONT_EXIST: {
+			if (logic.list.size() > 0) {
+				logic.list.get(temp).setFollowState(Constant.UN_FOLLOW);
+			}
+			showToast(getString(R.string.unfollow));
+			updateView();
+			break;
+		}
+		case SuperLogic.FOLLOW_YUANSU_ERROR_EXIST_MSGWHAT: {
+			if (logic.list.size() > 0) {
+				logic.list.get(temp).setFollowState(Constant.HAS_FOLLOW);
+			}
+			showToast(getString(R.string.has_follow));
+			updateView();
+
 			break;
 		}
 		}
@@ -376,7 +405,31 @@ public class PageHomeFragment extends SuperFragment implements
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onRefresh() {
+		requestYuansu(0);
+	}
+
+	@Override
+	public void onLoadMore() {
+		requestYuansu(1);
+	}
+
+	@Override
+	public void onItemClick(PLA_AdapterView<?> parent, View view, int position,
+			long id) {
+
+		startActivity(new Intent(getActivity().getBaseContext(),
+				YuansuInfoActivity.class)
+				.putExtra("content",
+						adapter.getItem(position - 1).getRemarkContent())
+				.putExtra("remarkId", adapter.getItem(position - 1).getId())
+				.putExtra("label", adapter.getItem(position - 1).getLabel())
+				.putExtra("followstate",
+						adapter.getItem(position - 1).getFollowState()));
 
 	}
 }

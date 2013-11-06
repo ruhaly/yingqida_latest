@@ -13,15 +13,16 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.GridView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
+import com.huewu.pla.lib.internal.PLA_AdapterView;
+import com.huewu.pla.lib.internal.PLA_AdapterView.OnItemClickListener;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.ViewUtils;
@@ -39,7 +40,7 @@ import com.yingqida.richplay.logic.ShareAndFollowLogic;
 import com.yingqida.richplay.logic.SuperLogic;
 import com.yingqida.richplay.logic.UserLogic;
 import com.yingqida.richplay.logic.YuansuSearchLogic;
-import com.yingqida.richplay.widget.PullToRefreshView;
+import com.yingqida.richplay.pubuliu.XListView;
 
 @SuppressLint("ValidFragment")
 public class SearchFragment extends SuperFragment {
@@ -57,17 +58,17 @@ public class SearchFragment extends SuperFragment {
 
 	public String keyword = "";
 
-	@ViewInject(R.id.pullToRefreshViewYs)
-	private PullToRefreshView pullToRefreshViewYs;
-
-	@ViewInject(R.id.pullToRefreshViewYh)
-	private PullToRefreshView pullToRefreshViewYh;
+	// @ViewInject(R.id.pullToRefreshViewYs)
+	// private PullToRefreshView pullToRefreshViewYs;
+	//
+	// @ViewInject(R.id.pullToRefreshViewYh)
+	// private PullToRefreshView pullToRefreshViewYh;
 
 	@ViewInject(R.id.listviewYs)
-	private ListView listviewYs;
+	private XListView listviewYs;
 
 	@ViewInject(R.id.gridviewYh)
-	private GridView gridviewYh;
+	private XListView gridviewYh;
 
 	@ViewInject(R.id.frameYs)
 	private LinearLayout frameYs;
@@ -139,6 +140,7 @@ public class SearchFragment extends SuperFragment {
 
 	private BitmapUtils bitmapUtilsYh;
 	private BitmapUtils bitmapUtilsYs;
+	private BitmapUtils bitmapUtilsHead;
 
 	View convertView;
 
@@ -159,6 +161,11 @@ public class SearchFragment extends SuperFragment {
 		bitmapUtilsYs.configDefaultLoadFailedImage(R.drawable.list_item_bg);
 		bitmapUtilsYs.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
 
+		bitmapUtilsHead = new BitmapUtils(getActivity());
+		bitmapUtilsHead.configDefaultLoadingImage(R.drawable.ic_launcher);
+		bitmapUtilsHead.configDefaultLoadFailedImage(R.drawable.failed);
+		bitmapUtilsHead.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+
 		initListView();
 		return convertView;
 	}
@@ -168,44 +175,85 @@ public class SearchFragment extends SuperFragment {
 			adapterYs = new YsAdapter(yLogic.list, getActivity()
 					.getBaseContext());
 			listviewYs.setAdapter(adapterYs);
-			listviewYs
-					.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			listviewYs.setPullLoadEnable(true);
+			listviewYs.setXListViewListener(new XListView.IXListViewListener() {
 
-						@Override
-						public void onItemClick(AdapterView<?> parent,
-								View view, int position, long id) {
-							startActivity(new Intent(getActivity()
-									.getBaseContext(), YuansuInfoActivity.class)
-									.putExtra(
-											"content",
-											adapterYs.getItem(position)
-													.getRemarkContent())
-									.putExtra("remarkId",
-											adapterYs.getItem(position).getId())
-									.putExtra(
-											"label",
-											adapterYs.getItem(position)
-													.getLabel()));
+				@Override
+				public void onRefresh() {
+					reqeustDate(0);
+				}
 
-						}
-					});
-			pullToRefreshViewYs
-					.setOnHeaderRefreshListener(new PullToRefreshView.OnHeaderRefreshListener() {
+				@Override
+				public void onLoadMore() {
+					reqeustDate(1);
+				}
+			});
+			listviewYs.setOnItemClickListener(new OnItemClickListener() {
 
-						@Override
-						public void onHeaderRefresh(PullToRefreshView view) {
-							reqeustDate(0);
-						}
-					});
-			pullToRefreshViewYs
-					.setOnFooterRefreshListener(new PullToRefreshView.OnFooterRefreshListener() {
+				@Override
+				public void onItemClick(PLA_AdapterView<?> parent, View view,
+						int position, long id) {
+					startActivity(new Intent(getActivity().getBaseContext(),
+							YuansuInfoActivity.class)
+							.putExtra(
+									"content",
+									adapterYs.getItem(position - 1)
+											.getRemarkContent())
+							.putExtra("remarkId",
+									adapterYs.getItem(position - 1).getId())
+							.putExtra("label",
+									adapterYs.getItem(position - 1).getLabel())
+							.putExtra(
+									"followstate",
+									adapterYs.getItem(position - 1)
+											.getFollowState()));
+				}
+			});
 
-						@Override
-						public void onFooterRefresh(PullToRefreshView view) {
-							reqeustDate(1);
-
-						}
-					});
+			// listviewYs
+			// .setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			//
+			// @Override
+			// public void onItemClick(AdapterView<?> parent,
+			// View view, int position, long id) {
+			// startActivity(new Intent(getActivity()
+			// .getBaseContext(), YuansuInfoActivity.class)
+			// .putExtra(
+			// "content",
+			// adapterYs.getItem(position)
+			// .getRemarkContent())
+			// .putExtra("remarkId",
+			// adapterYs.getItem(position).getId())
+			// .putExtra(
+			// "label",
+			// adapterYs.getItem(position)
+			// .getLabel())
+			// .putExtra(
+			// "followstate",
+			// adapterYs.getItem(position)
+			// .getFollowState()));
+			//
+			// }
+			// });
+			// pullToRefreshViewYs
+			// .setOnHeaderRefreshListener(new
+			// PullToRefreshView.OnHeaderRefreshListener() {
+			//
+			// @Override
+			// public void onHeaderRefresh(PullToRefreshView view) {
+			// reqeustDate(0);
+			// }
+			// });
+			// pullToRefreshViewYs
+			// .setOnFooterRefreshListener(new
+			// PullToRefreshView.OnFooterRefreshListener() {
+			//
+			// @Override
+			// public void onFooterRefresh(PullToRefreshView view) {
+			// reqeustDate(1);
+			//
+			// }
+			// });
 		} else {
 			adapterYs.notifyDataSetChanged();
 		}
@@ -213,37 +261,64 @@ public class SearchFragment extends SuperFragment {
 			adapterYh = new YhAdapter(uLogic.list, getActivity()
 					.getBaseContext(), bitmapUtilsYh);
 			gridviewYh.setAdapter(adapterYh);
-			gridviewYh
-					.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			gridviewYh.setPullLoadEnable(true);
+			gridviewYh.setXListViewListener(new XListView.IXListViewListener() {
 
-						@Override
-						public void onItemClick(AdapterView<?> parent,
-								View view, int position, long id) {
+				@Override
+				public void onRefresh() {
+					reqeustDate(0);
+				}
 
-							Intent intent = new Intent(getActivity()
-									.getBaseContext(), PCenterActivity.class);
-							intent.putExtra("", adapterYh.getItem(position)
-									.getUid());
-							startActivity(intent);
-						}
-					});
-			pullToRefreshViewYh
-					.setOnHeaderRefreshListener(new PullToRefreshView.OnHeaderRefreshListener() {
+				@Override
+				public void onLoadMore() {
+					reqeustDate(1);
+				}
+			});
+			gridviewYh.setOnItemClickListener(new OnItemClickListener() {
 
-						@Override
-						public void onHeaderRefresh(PullToRefreshView view) {
-							reqeustDate(0);
-						}
-					});
-			pullToRefreshViewYh
-					.setOnFooterRefreshListener(new PullToRefreshView.OnFooterRefreshListener() {
-
-						@Override
-						public void onFooterRefresh(PullToRefreshView view) {
-							reqeustDate(1);
-
-						}
-					});
+				@Override
+				public void onItemClick(PLA_AdapterView<?> parent, View view,
+						int position, long id) {
+					Intent intent = new Intent(getActivity().getBaseContext(),
+							PCenterActivity.class);
+					intent.putExtra("uid", adapterYh.getItem(position - 1)
+							.getUid());
+					startActivity(intent);
+				}
+			});
+			// gridviewYh
+			// .setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			//
+			// @Override
+			// public void onItemClick(AdapterView<?> parent,
+			// View view, int position, long id) {
+			//
+			// Intent intent = new Intent(getActivity()
+			// .getBaseContext(), PCenterActivity.class);
+			// intent.putExtra("uid", adapterYh.getItem(position)
+			// .getUid());
+			// startActivity(intent);
+			// }
+			// });
+			// pullToRefreshViewYh
+			// .setOnHeaderRefreshListener(new
+			// PullToRefreshView.OnHeaderRefreshListener() {
+			//
+			// @Override
+			// public void onHeaderRefresh(PullToRefreshView view) {
+			// reqeustDate(0);
+			// }
+			// });
+			// pullToRefreshViewYh
+			// .setOnFooterRefreshListener(new
+			// PullToRefreshView.OnFooterRefreshListener() {
+			//
+			// @Override
+			// public void onFooterRefresh(PullToRefreshView view) {
+			// reqeustDate(1);
+			//
+			// }
+			// });
 		} else {
 			adapterYh.notifyDataSetChanged();
 		}
@@ -309,15 +384,15 @@ public class SearchFragment extends SuperFragment {
 
 		if (actionType == 0) {
 			if (index == 0) {
-				pullToRefreshViewYs.onHeaderRefreshComplete();
+				listviewYs.stopRefresh();
 			} else {
-				pullToRefreshViewYh.onHeaderRefreshComplete();
+				gridviewYh.stopRefresh();
 			}
 		} else {
 			if (index == 0) {
-				pullToRefreshViewYs.onFooterRefreshComplete();
+				listviewYs.stopLoadMore();
 			} else {
-				pullToRefreshViewYh.onFooterRefreshComplete();
+				gridviewYh.stopLoadMore();
 			}
 		}
 	}
@@ -401,6 +476,23 @@ public class SearchFragment extends SuperFragment {
 			updateView();
 			break;
 		}
+		case SuperLogic.ERROR_FOLLOW_YUANSU_DONT_EXIST: {
+			if (yLogic.list.size() > 0) {
+				yLogic.list.get(temp).setFollowState(Constant.UN_FOLLOW);
+			}
+			showToast(getString(R.string.unfollow));
+			updateView();
+			break;
+		}
+		case SuperLogic.FOLLOW_YUANSU_ERROR_EXIST_MSGWHAT: {
+			if (yLogic.list.size() > 0) {
+				yLogic.list.get(temp).setFollowState(Constant.HAS_FOLLOW);
+			}
+			showToast(getString(R.string.has_follow));
+			updateView();
+
+			break;
+		}
 		}
 		super.handleMsg(msg);
 	}
@@ -440,8 +532,8 @@ public class SearchFragment extends SuperFragment {
 				holder = new Holder();
 				convertView = LayoutInflater.from(context).inflate(
 						R.layout.user_item_layout, null);
-				holder.imgHeader = (ImageView) convertView
-						.findViewById(R.id.imgHeader);
+				holder.imgHead = (ImageView) convertView
+						.findViewById(R.id.imgHead);
 				holder.tvFy = (TextView) convertView.findViewById(R.id.tvFy);
 				holder.tvName = (TextView) convertView
 						.findViewById(R.id.tvName);
@@ -475,18 +567,22 @@ public class SearchFragment extends SuperFragment {
 			});
 			holder.tvName.setText(getItem(position).getName());
 
-			if (getItem(position).getIs_avatar().equals("true")) {
-				bitmapUtils.display(holder.imgHeader,
+			if (getItem(position).getIs_avatar().equals("true")
+					|| "100052".equals(getItem(position).getIs_avatar())) {
+				bitmapUtils.display(holder.imgHead,
 						getHeadUrl(1, 2, getItem(position).getUid()));
 			} else {
-				bitmapUtils.display(holder.imgHeader,
+				bitmapUtils.display(holder.imgHead,
 						getHeadUrl(2, 2, getItem(position).getUid()));
 			}
+			int w = (getScreenW() - 3) / 2;
+			holder.imgHead.setLayoutParams(new FrameLayout.LayoutParams(w, w));
+			holder.imgHead.setScaleType(ScaleType.CENTER_INSIDE);
 			return convertView;
 		}
 
 		class Holder {
-			ImageView imgHeader;
+			ImageView imgHead;
 			TextView tvFy;
 			TextView tvName;
 			TextView tvGuanzhu;
@@ -540,6 +636,8 @@ public class SearchFragment extends SuperFragment {
 						.findViewById(R.id.imgContent);
 				holder.content = (TextView) convertView
 						.findViewById(R.id.content);
+				holder.imgHead = (ImageView) convertView
+						.findViewById(R.id.imgHead);
 				convertView.setTag(holder);
 			} else {
 				holder = (Holder) convertView.getTag();
@@ -602,6 +700,13 @@ public class SearchFragment extends SuperFragment {
 			holder.tvName.setText(getItem(position).getUser().getName());
 			holder.tvCommentContent.setText(getItem(position).getUser()
 					.getComment_content());
+			if (getItem(position).getUser().getIs_avatar().equals("true")) {
+				bitmapUtilsHead.display(holder.imgHead,
+						getHeadUrl(1, 2, getItem(position).getUser().getUid()));
+			} else {
+				bitmapUtilsHead.display(holder.imgHead,
+						getHeadUrl(2, 2, getItem(position).getUser().getUid()));
+			}
 			return convertView;
 		}
 
@@ -613,6 +718,7 @@ public class SearchFragment extends SuperFragment {
 			ImageView imgPingLun;
 			ImageView imgContent;
 			TextView content;
+			ImageView imgHead;
 		}
 	}
 

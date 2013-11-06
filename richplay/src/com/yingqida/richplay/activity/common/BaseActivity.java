@@ -6,7 +6,6 @@ import java.io.InputStream;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
-import com.actionbarsherlock.view.Window;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.lidroid.xutils.exception.HttpException;
 import com.yingqida.richplay.R;

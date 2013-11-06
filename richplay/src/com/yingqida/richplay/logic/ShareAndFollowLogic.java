@@ -1,6 +1,5 @@
 package com.yingqida.richplay.logic;
 
-
 import java.io.InputStream;
 
 import org.json.JSONException;
@@ -40,7 +39,8 @@ public class ShareAndFollowLogic extends SuperLogic implements HttpAction {
 		params.addBodyParameter("remark_token", remark_token);
 		params.addBodyParameter("remark_id", remark_id);
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_SHARE, params,
-				HttpSenderUtils.METHOD_POST, httpUtils, RequestId.SHARE, this, false);
+				HttpSenderUtils.METHOD_POST, httpUtils, RequestId.SHARE, this,
+				false);
 	}
 
 	@Override
@@ -58,7 +58,8 @@ public class ShareAndFollowLogic extends SuperLogic implements HttpAction {
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int requestId, InputStream is) {
+	public void handleHttpResponse(String response, int requestId,
+			InputStream is) {
 
 		switch (requestId) {
 		case RequestId.SHARE: {
@@ -211,6 +212,10 @@ public class ShareAndFollowLogic extends SuperLogic implements HttpAction {
 			String code = String.valueOf(json.get("code"));
 			if (code.equals(ResponseCode.SUCCESS)) {
 				handler.sendEmptyMessage(FOLLOW_YUANSU_SUCCESS_MSGWHAT);
+			} else if (code.equals(ResponseCode.ERROR_FOLLOW_YUANSU_EXIST)) {
+				handler.sendEmptyMessage(FOLLOW_YUANSU_ERROR_EXIST_MSGWHAT);
+			} else if (code.equals(ResponseCode.ERROR_FOLLOW_YUANSU_EXIST)) {
+				handler.sendEmptyMessage(FOLLOW_YUANSU_ERROR_EXIST_MSGWHAT);
 			} else {
 				handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
 			}
@@ -239,6 +244,8 @@ public class ShareAndFollowLogic extends SuperLogic implements HttpAction {
 			String code = String.valueOf(json.get("code"));
 			if (code.equals(ResponseCode.SUCCESS)) {
 				handler.sendEmptyMessage(UNFOLLOW_YUANSU_SUCCESS_MSGWHAT);
+			} else if (code.equals(ResponseCode.ERROR_FOLLOW_YUANSU_DONT_EXIST)) {
+				handler.sendEmptyMessage(ERROR_FOLLOW_YUANSU_DONT_EXIST);
 			} else {
 				handler.sendEmptyMessage(DATA_FORMAT_ERROR_MSGWHAT);
 			}

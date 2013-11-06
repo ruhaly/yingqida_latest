@@ -1,6 +1,5 @@
 package com.yingqida.richplay.activity;
 
-
 import java.io.InputStream;
 
 import android.content.DialogInterface;
@@ -24,6 +23,7 @@ import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.activity.common.SuperActivity;
+import com.yingqida.richplay.baseapi.Constant;
 import com.yingqida.richplay.entity.Comment;
 import com.yingqida.richplay.entity.Yuansu;
 import com.yingqida.richplay.logic.ShareAndFollowLogic;
@@ -57,6 +57,7 @@ public class YuansuInfoActivity extends SuperActivity {
 
 	String purl = "";
 	String remarkId = "";
+	String followstate = "";
 
 	View headerView;
 	ImageView imgGuanZhu;
@@ -78,6 +79,7 @@ public class YuansuInfoActivity extends SuperActivity {
 		purl = getIntent().getStringExtra("PURL");
 		remarkId = getIntent().getStringExtra("remarkId");
 		label = getIntent().getStringExtra("label");
+		followstate = getIntent().getExtras().getString("followstate");
 		headerView = LayoutInflater.from(getBaseContext()).inflate(
 				R.layout.yuansu_top_layout, null);
 
@@ -97,7 +99,7 @@ public class YuansuInfoActivity extends SuperActivity {
 		imgGuanZhu.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				pingGuanZhuClick();
+				pingGuanZhuClick(logic.ys.getFollowState());
 			}
 		});
 		imgShare.setOnClickListener(new View.OnClickListener() {
@@ -137,6 +139,7 @@ public class YuansuInfoActivity extends SuperActivity {
 		bitmapUtilsHead.configDefaultLoadingImage(R.drawable.ic_launcher);
 		bitmapUtilsHead.configDefaultLoadFailedImage(R.drawable.failed);
 		bitmapUtilsHead.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+		updateGuanzhuImg();
 		updateView();
 		requestYuansuComment(0);
 	}
@@ -145,12 +148,12 @@ public class YuansuInfoActivity extends SuperActivity {
 
 		@Override
 		public int getCount() {
-			return logic.list.size();
+			return logic.ys.getCommentList().size();
 		}
 
 		@Override
 		public Comment getItem(int arg0) {
-			return logic.list.get(arg0);
+			return logic.ys.getCommentList().get(arg0);
 		}
 
 		@Override
@@ -177,10 +180,13 @@ public class YuansuInfoActivity extends SuperActivity {
 			}
 			holder.text_name.setText(getItem(position).getUname());
 			holder.text_msg.setText(getItem(position).getContent());
-			bitmapUtilsHead
-					.display(
-							holder.imgHead,
-							"http://imgtest.meiliworks.com/pic/_o/a2/68/53732042564a9248900de058832f_440_441.jpg?refer_type=&expr_alt=b&frm=out_pic");
+			if (getItem(position).getIs_avatar().equals("true")) {
+				bitmapUtilsHead.display(holder.imgHead,
+						getHeadUrl(1, 2, getItem(position).getUid()));
+			} else {
+				bitmapUtilsHead.display(holder.imgHead,
+						getHeadUrl(2, 2, getItem(position).getUid()));
+			}
 			return convertView;
 		}
 
@@ -202,7 +208,8 @@ public class YuansuInfoActivity extends SuperActivity {
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int requestId, InputStream is) {
+	public void handleHttpResponse(String response, int requestId,
+			InputStream is) {
 
 	}
 
@@ -214,8 +221,15 @@ public class YuansuInfoActivity extends SuperActivity {
 		}
 	}
 
-	public void pingGuanZhuClick() {
-		showToast("添加关注");
+	public void pingGuanZhuClick(String follow) {
+		sLogic.setDate(mHandler, httpUtil);
+		showProcessDialog(sdismiss);
+		if (Constant.HAS_FOLLOW.equals(follow)) {
+			sLogic.sendUnFollowYuansuRequest(getUser().getRemarkToken(),
+					remarkId);
+		} else {
+			sLogic.sendFollowYuansuRequest(getUser().getRemarkToken(), remarkId);
+		}
 	}
 
 	DialogInterface.OnDismissListener sdismiss = new DialogInterface.OnDismissListener() {
@@ -257,6 +271,22 @@ public class YuansuInfoActivity extends SuperActivity {
 		}
 		case SuperLogic.SHARE_SUCCESS_MSGWHAT: {
 			showToast(getString(R.string.share_success));
+			break;
+		}
+		case SuperLogic.FOLLOW_YUANSU_SUCCESS_MSGWHAT: {
+			logic.ys.setFollowState(Constant.HAS_FOLLOW);
+			showToast(getString(R.string.has_follow));
+			followstate = Constant.HAS_FOLLOW;
+			updateGuanzhuImg();
+			updateView();
+			break;
+		}
+		case SuperLogic.UNFOLLOW_YUANSU_SUCCESS_MSGWHAT: {
+			logic.ys.setFollowState(Constant.UN_FOLLOW);
+			showToast(getString(R.string.unfollow));
+			followstate = Constant.UN_FOLLOW;
+			updateGuanzhuImg();
+			updateView();
 			break;
 		}
 		}
@@ -306,6 +336,16 @@ public class YuansuInfoActivity extends SuperActivity {
 		showProcessDialog(dismiss);
 		logic.sendYuansuCommentRequest(getUser().getRemarkToken(), remarkId,
 				type);
+	}
+
+	public void updateGuanzhuImg() {
+		if (followstate.equals(Constant.HAS_FOLLOW)) {
+			imgGuanZhu
+					.setBackgroundResource(android.R.drawable.ic_menu_close_clear_cancel);
+		} else {
+			imgGuanZhu.setBackgroundResource(android.R.drawable.ic_input_add);
+
+		}
 	}
 
 	public void updateView() {

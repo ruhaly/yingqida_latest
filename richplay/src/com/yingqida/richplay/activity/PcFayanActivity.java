@@ -1,6 +1,5 @@
 package com.yingqida.richplay.activity;
 
-
 import java.io.InputStream;
 
 import android.content.DialogInterface;
@@ -12,15 +11,14 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
+import com.huewu.pla.lib.internal.PLA_AdapterView;
+import com.huewu.pla.lib.internal.PLA_AdapterView.OnItemClickListener;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.ViewUtils;
@@ -29,20 +27,22 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.activity.common.SuperActivity;
+import com.yingqida.richplay.baseapi.Constant;
 import com.yingqida.richplay.entity.Yuansu;
 import com.yingqida.richplay.logic.PCenterLogic;
 import com.yingqida.richplay.logic.ShareAndFollowLogic;
 import com.yingqida.richplay.logic.SuperLogic;
-import com.yingqida.richplay.widget.PullToRefreshView;
+import com.yingqida.richplay.pubuliu.XListView;
+import com.yingqida.richplay.pubuliu.XListView.IXListViewListener;
 
 public class PcFayanActivity extends SuperActivity implements
-		OnItemClickListener {
+		IXListViewListener, OnItemClickListener {
 
-	@ViewInject(R.id.pullToRefreshView)
-	private PullToRefreshView pullToRefreshView;
+	// @ViewInject(R.id.pullToRefreshView)
+	// private PullToRefreshView pullToRefreshView;
 
 	@ViewInject(R.id.listViewFy)
-	private ListView listViewFy;
+	private XListView listViewFy;
 
 	@ViewInject(R.id.frameFy)
 	private LinearLayout frameFy;
@@ -54,11 +54,13 @@ public class PcFayanActivity extends SuperActivity implements
 	private BitmapUtils bitmapUtilsContent;
 	private BitmapUtils bitmapUtilsHead;
 
+	public String uid;
 	@ViewInject(R.id.btnToggle)
 	private Button btnToggle;
 
 	@Override
-	public void handleHttpResponse(String response, int requestId, InputStream is) {
+	public void handleHttpResponse(String response, int requestId,
+			InputStream is) {
 
 	}
 
@@ -72,24 +74,29 @@ public class PcFayanActivity extends SuperActivity implements
 		if (null == adapterFy) {
 			adapterFy = new Adapter();
 			listViewFy.setAdapter(adapterFy);
+			listViewFy.setXListViewListener(this);
+			listViewFy.setPullLoadEnable(true);
 			listViewFy.setOnItemClickListener(this);
-			pullToRefreshView
-					.setOnHeaderRefreshListener(new PullToRefreshView.OnHeaderRefreshListener() {
-
-						@Override
-						public void onHeaderRefresh(PullToRefreshView view) {
-							requestFayan(0);
-						}
-					});
-			pullToRefreshView
-					.setOnFooterRefreshListener(new PullToRefreshView.OnFooterRefreshListener() {
-
-						@Override
-						public void onFooterRefresh(PullToRefreshView view) {
-							requestFayan(1);
-
-						}
-					});
+			// listViewFy.setOnItemClickListener(this);
+			// pullToRefreshView
+			// .setOnHeaderRefreshListener(new
+			// PullToRefreshView.OnHeaderRefreshListener() {
+			//
+			// @Override
+			// public void onHeaderRefresh(PullToRefreshView view) {
+			// requestFayan(0);
+			// }
+			// });
+			// pullToRefreshView
+			// .setOnFooterRefreshListener(new
+			// PullToRefreshView.OnFooterRefreshListener() {
+			//
+			// @Override
+			// public void onFooterRefresh(PullToRefreshView view) {
+			// requestFayan(1);
+			//
+			// }
+			// });
 		} else {
 			adapterFy.notifyDataSetChanged();
 		}
@@ -106,6 +113,7 @@ public class PcFayanActivity extends SuperActivity implements
 	public void initLayout(Bundle paramBundle) {
 		setContentView(R.layout.pc_fayan_layout);
 		ViewUtils.inject(this);
+		uid = getIntent().getExtras().getString("uid");
 		btnToggle.setVisibility(View.GONE);
 		bitmapUtilsContent = new BitmapUtils(this);
 		bitmapUtilsContent.configDefaultLoadingImage(R.drawable.ic_launcher);
@@ -161,17 +169,32 @@ public class PcFayanActivity extends SuperActivity implements
 						.findViewById(R.id.imgPingLun);
 				holder.imgContent = (ImageView) convertView
 						.findViewById(R.id.imgContent);
+				holder.imgHead = (ImageView) convertView
+						.findViewById(R.id.imgHead);
 				holder.content = (TextView) convertView
 						.findViewById(R.id.content);
 				convertView.setTag(holder);
 			} else {
 				holder = (Holder) convertView.getTag();
 			}
+
+			if (getItem(position).getFollowState().equals(Constant.HAS_FOLLOW)) {
+				holder.imgGuanZhu
+						.setBackgroundResource(android.R.drawable.ic_menu_close_clear_cancel);
+			} else {
+				holder.imgGuanZhu
+						.setBackgroundResource(android.R.drawable.ic_input_add);
+
+			}
+			holder.imgGuanZhu.setTag(position);
 			holder.imgGuanZhu.setOnClickListener(new View.OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
-					pingGuanZhuClick();
+					int p = (Integer) v.getTag();
+					temp = p;
+					pingGuanZhuClick(getItem(p).getFollowState(), getItem(p)
+							.getId());
 				}
 			});
 			holder.imgShare.setTag(position);
@@ -215,6 +238,13 @@ public class PcFayanActivity extends SuperActivity implements
 			holder.tvName.setText(getItem(position).getUser().getName());
 			holder.tvCommentContent.setText(getItem(position).getUser()
 					.getComment_content());
+			if (getItem(position).getUser().getIs_avatar().equals("true")) {
+				bitmapUtilsHead.display(holder.imgHead,
+						getHeadUrl(1, 2, getItem(position).getUser().getUid()));
+			} else {
+				bitmapUtilsHead.display(holder.imgHead,
+						getHeadUrl(2, 2, getItem(position).getUser().getUid()));
+			}
 			return convertView;
 		}
 
@@ -225,6 +255,7 @@ public class PcFayanActivity extends SuperActivity implements
 			ImageView imgShare;
 			ImageView imgPingLun;
 			ImageView imgContent;
+			ImageView imgHead;
 			TextView content;
 		}
 	}
@@ -243,11 +274,18 @@ public class PcFayanActivity extends SuperActivity implements
 		httpUtil = new HttpUtils();
 		pcLogic.setDate(mHandler, httpUtil);
 		showProcessDialog(dismiss);
-		pcLogic.sendFayanRequest2(getUser().getRemarkToken(), type, null);
+		pcLogic.sendFayanRequest2(getUser().getRemarkToken(), type, uid);
 	}
 
-	public void pingGuanZhuClick() {
-		showToast("添加关注");
+	public void pingGuanZhuClick(String follow, String remarkId) {
+		sLogic.setDate(mHandler, httpUtil);
+		showProcessDialog(sdismiss);
+		if (Constant.HAS_FOLLOW.equals(follow)) {
+			sLogic.sendUnFollowYuansuRequest(getUser().getRemarkToken(),
+					remarkId);
+		} else {
+			sLogic.sendFollowYuansuRequest(getUser().getRemarkToken(), remarkId);
+		}
 	}
 
 	DialogInterface.OnDismissListener sdismiss = new DialogInterface.OnDismissListener() {
@@ -271,21 +309,12 @@ public class PcFayanActivity extends SuperActivity implements
 				.getItem(p).getId()), 2);
 	}
 
-	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position,
-			long id) {
-		startActivity(new Intent(getBaseContext(), YuansuInfoActivity.class)
-				.putExtra("content",
-						adapterFy.getItem(position).getRemarkContent())
-				.putExtra("remarkId", adapterFy.getItem(position).getId())
-				.putExtra("label", adapterFy.getItem(position).getLabel()));
-
-	}
-
 	@OnClick(R.id.frameFy)
 	public void frameFyClick(View view) {
 		requestFayan(0);
 	}
+
+	int temp;
 
 	@Override
 	public void handleMsg(Message msg) {
@@ -294,11 +323,24 @@ public class PcFayanActivity extends SuperActivity implements
 			updateView();
 			break;
 		}
-		case SuperLogic.PCENTER_BEIGUANZHU_SUCCESS_MSGWHAT: {
-			break;
-		}
 		case SuperLogic.SHARE_SUCCESS_MSGWHAT: {
 			showToast(getString(R.string.share_success));
+			break;
+		}
+		case SuperLogic.FOLLOW_YUANSU_SUCCESS_MSGWHAT: {
+			if (pcLogic.fyList2.size() > 0) {
+				pcLogic.fyList2.get(temp).setFollowState(Constant.HAS_FOLLOW);
+			}
+			showToast(getString(R.string.has_follow));
+			updateView();
+			break;
+		}
+		case SuperLogic.UNFOLLOW_YUANSU_SUCCESS_MSGWHAT: {
+			if (pcLogic.fyList2.size() > 0) {
+				pcLogic.fyList2.get(temp).setFollowState(Constant.HAS_FOLLOW);
+			}
+			showToast(getString(R.string.unfollow));
+			updateView();
 			break;
 		}
 		}
@@ -306,16 +348,44 @@ public class PcFayanActivity extends SuperActivity implements
 		super.handleMsg(msg);
 	}
 
-	private void onLoad() {
-		if (actionType == 0)
-			pullToRefreshView.onHeaderRefreshComplete();
-		pullToRefreshView.onFooterRefreshComplete();
-	}
-
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == 2) {
 			requestFayan(0);
 		}
+	}
+
+	@Override
+	public void onClick(View v) {
+
+	}
+
+	private void onLoad() {
+		if (actionType == 0)
+			listViewFy.stopRefresh();
+		listViewFy.stopLoadMore();
+	}
+
+	@Override
+	public void onRefresh() {
+		requestFayan(0);
+	}
+
+	@Override
+	public void onLoadMore() {
+		requestFayan(1);
+	}
+
+	@Override
+	public void onItemClick(PLA_AdapterView<?> parent, View view, int position,
+			long id) {
+		startActivity(new Intent(getBaseContext(), YuansuInfoActivity.class)
+				.putExtra("content",
+						adapterFy.getItem(position - 1).getRemarkContent())
+				.putExtra("remarkId", adapterFy.getItem(position - 1).getId())
+				.putExtra("label", adapterFy.getItem(position - 1).getLabel())
+				.putExtra("followstate",
+						adapterFy.getItem(position - 1).getFollowState()));
+
 	}
 }

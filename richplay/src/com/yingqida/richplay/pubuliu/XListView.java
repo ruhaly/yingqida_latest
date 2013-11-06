@@ -19,8 +19,10 @@ import android.widget.RelativeLayout;
 import android.widget.Scroller;
 import android.widget.TextView;
 
+import com.huewu.pla.lib.MultiColumnListView;
+import com.huewu.pla.lib.internal.PLA_AbsListView;
+import com.huewu.pla.lib.internal.PLA_AbsListView.OnScrollListener;
 import com.yingqida.richplay.R;
-import com.yingqida.richplay.pubuliu.PLA_AbsListView.OnScrollListener;
 
 public class XListView extends MultiColumnListView implements OnScrollListener {
 
@@ -70,11 +72,6 @@ public class XListView extends MultiColumnListView implements OnScrollListener {
 		initWithContext(context);
 	}
 
-	public XListView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		initWithContext(context);
-	}
-
 	public XListView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		initWithContext(context);
@@ -107,6 +104,11 @@ public class XListView extends MultiColumnListView implements OnScrollListener {
 								.removeGlobalOnLayoutListener(this);
 					}
 				});
+	}
+
+	public XListView(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		initWithContext(context);
 	}
 
 	@Override

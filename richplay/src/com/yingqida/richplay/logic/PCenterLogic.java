@@ -237,8 +237,9 @@ public class PCenterLogic extends SuperLogic implements HttpAction {
 	 * @author ruhaly DateTime 2013-10-28 上午11:17:36
 	 * @param remark_token
 	 * @param type
+	 * @param uid TODO
 	 */
-	public void sendGuanzhuYsRequest(String remark_token, int type) {
+	public void sendGuanzhuYsRequest(String remark_token, int type, String uid) {
 		this.type = type;
 		if (type == 0) {
 			targetCurPageYs = 1;
@@ -247,6 +248,7 @@ public class PCenterLogic extends SuperLogic implements HttpAction {
 		}
 		RequestParams params = new RequestParams();
 		params.addQueryStringParameter("remark_token", remark_token);
+		params.addQueryStringParameter("uid", uid);
 		params.addQueryStringParameter("cur_page", targetCurPageYs + "");
 		params.addQueryStringParameter("per_page", perPage);
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_GUANZHU_YUANSU,
@@ -291,7 +293,7 @@ public class PCenterLogic extends SuperLogic implements HttpAction {
 
 	}
 
-	public void sendGuanzhuYhRequest(String remark_token, int type) {
+	public void sendGuanzhuYhRequest(String remark_token, int type, String uid) {
 		this.type = type;
 		if (type == 0) {
 			targetCurPageYh = 1;
@@ -300,6 +302,7 @@ public class PCenterLogic extends SuperLogic implements HttpAction {
 		}
 		RequestParams params = new RequestParams();
 		params.addQueryStringParameter("remark_token", remark_token);
+		params.addQueryStringParameter("uid", uid);
 		params.addQueryStringParameter("cur_page", targetCurPageYh + "");
 		params.addQueryStringParameter("per_page", perPage);
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_GUANZHU_YONGHU,

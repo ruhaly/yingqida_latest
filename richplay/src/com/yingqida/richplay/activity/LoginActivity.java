@@ -20,9 +20,12 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.Session;
@@ -53,7 +56,7 @@ public class LoginActivity extends SuperActivity {
 	private LoginButton btn_login_facebook;
 
 	@ViewInject(R.id.btn_login_twitter)
-	private TextView btn_login_twitter;
+	private Button btn_login_twitter;
 
 	@ViewInject(R.id.btn_to_login)
 	private TextView btn_to_login;
@@ -86,6 +89,9 @@ public class LoginActivity extends SuperActivity {
 
 	private HttpUtils httpUtil;
 
+	@ViewInject(R.id.frame_login)
+	private RelativeLayout frame_login;
+
 	@Override
 	public void initData() {
 		loginLogic = LoginLogic.getInstance();
@@ -112,6 +118,13 @@ public class LoginActivity extends SuperActivity {
 						// 登录成功,更新界面
 					}
 				});
+
+		FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+				FrameLayout.LayoutParams.MATCH_PARENT,
+				FrameLayout.LayoutParams.WRAP_CONTENT);
+		lp.setMargins(0, 1 * getScreenH() / 3, 0, 0);
+		frame_login.setLayoutParams(lp);
+
 	}
 
 	@Override

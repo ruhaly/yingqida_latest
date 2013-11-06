@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Message;
@@ -13,10 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.GridView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 
+import com.huewu.pla.lib.internal.PLA_AdapterView;
+import com.huewu.pla.lib.internal.PLA_AdapterView.OnItemClickListener;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.ViewUtils;
@@ -29,18 +33,19 @@ import com.yingqida.richplay.baseapi.common.User;
 import com.yingqida.richplay.logic.PCenterLogic;
 import com.yingqida.richplay.logic.ShareAndFollowLogic;
 import com.yingqida.richplay.logic.SuperLogic;
-import com.yingqida.richplay.logic.UserLogic;
-import com.yingqida.richplay.widget.PullToRefreshView;
+import com.yingqida.richplay.pubuliu.XListView;
+import com.yingqida.richplay.pubuliu.XListView.IXListViewListener;
 
-public class PcBeiGuanzhuActivity extends SuperActivity {
+public class PcBeiGuanzhuActivity extends SuperActivity implements
+		IXListViewListener, OnItemClickListener {
 
-	@ViewInject(R.id.pullToRefreshViewYh)
-	private PullToRefreshView pullToRefreshViewYh;
+	// @ViewInject(R.id.pullToRefreshViewYh)
+	// private PullToRefreshView pullToRefreshViewYh;
 
 	private BitmapUtils bitmapUtilsYh;
 
 	@ViewInject(R.id.gridviewYh)
-	private GridView gridviewYh;
+	private XListView gridviewYh;
 
 	private PCenterLogic pcLogic;
 
@@ -51,8 +56,11 @@ public class PcBeiGuanzhuActivity extends SuperActivity {
 	@ViewInject(R.id.btnToggle)
 	private Button btnToggle;
 
+	public String uid;
+
 	@Override
-	public void handleHttpResponse(String response, int requestId, InputStream is) {
+	public void handleHttpResponse(String response, int requestId,
+			InputStream is) {
 
 	}
 
@@ -72,6 +80,7 @@ public class PcBeiGuanzhuActivity extends SuperActivity {
 		setContentView(R.layout.pc_beiguanzhu_layout);
 		ViewUtils.inject(this);
 		btnToggle.setVisibility(View.GONE);
+		uid = getIntent().getExtras().getString("uid");
 		bitmapUtilsYh = new BitmapUtils(this);
 		bitmapUtilsYh.configDefaultLoadingImage(R.drawable.ic_launcher);
 		bitmapUtilsYh.configDefaultLoadFailedImage(R.drawable.failed);
@@ -96,14 +105,13 @@ public class PcBeiGuanzhuActivity extends SuperActivity {
 		httpUtil = new HttpUtils();
 		pcLogic.setDate(mHandler, httpUtil);
 		showProcessDialog(dismiss);
-		pcLogic.sendBeiGuanzhuRequest(getUser().getRemarkToken(), getUser()
-				.getUid(), type);
+		pcLogic.sendBeiGuanzhuRequest(getUser().getRemarkToken(), uid, type);
 	}
 
 	DialogInterface.OnDismissListener dismiss = new DialogInterface.OnDismissListener() {
 		@Override
 		public void onDismiss(DialogInterface dialog) {
-			httpUtil.getHttpClient().getConnectionManager().shutdown();
+			pcLogic.stopReqeust();
 		}
 	};
 
@@ -143,37 +151,33 @@ public class PcBeiGuanzhuActivity extends SuperActivity {
 
 	public int actionType = 0;
 
-	private void onLoad() {
-
-		if (actionType == 0) {
-			pullToRefreshViewYh.onHeaderRefreshComplete();
-		} else {
-			pullToRefreshViewYh.onFooterRefreshComplete();
-		}
-	}
-
 	public void updateView() {
 		if (null == adapterYh) {
 			adapterYh = new YhAdapter(pcLogic.beiguanzhuYhList,
 					getBaseContext(), bitmapUtilsYh);
 			gridviewYh.setAdapter(adapterYh);
-			pullToRefreshViewYh
-					.setOnHeaderRefreshListener(new PullToRefreshView.OnHeaderRefreshListener() {
-
-						@Override
-						public void onHeaderRefresh(PullToRefreshView view) {
-							refreshYonghu(0);
-						}
-					});
-			pullToRefreshViewYh
-					.setOnFooterRefreshListener(new PullToRefreshView.OnFooterRefreshListener() {
-
-						@Override
-						public void onFooterRefresh(PullToRefreshView view) {
-							refreshYonghu(1);
-
-						}
-					});
+			gridviewYh.setXListViewListener(this);
+			gridviewYh.setPullLoadEnable(true);
+			gridviewYh.setOnItemClickListener(this);
+			// pullToRefreshViewYh
+			// .setOnHeaderRefreshListener(new
+			// PullToRefreshView.OnHeaderRefreshListener() {
+			//
+			// @Override
+			// public void onHeaderRefresh(PullToRefreshView view) {
+			// refreshYonghu(0);
+			// }
+			// });
+			// pullToRefreshViewYh
+			// .setOnFooterRefreshListener(new
+			// PullToRefreshView.OnFooterRefreshListener() {
+			//
+			// @Override
+			// public void onFooterRefresh(PullToRefreshView view) {
+			// refreshYonghu(1);
+			//
+			// }
+			// });
 		} else {
 			adapterYh.notifyDataSetChanged();
 		}
@@ -222,6 +226,8 @@ public class PcBeiGuanzhuActivity extends SuperActivity {
 						.findViewById(R.id.tvName);
 				holder.tvGuanzhu = (TextView) convertView
 						.findViewById(R.id.tvGuanzhu);
+				holder.imgHead = (ImageView) convertView
+						.findViewById(R.id.imgHead);
 				convertView.setTag(holder);
 			} else {
 				holder = (Holder) convertView.getTag();
@@ -248,11 +254,17 @@ public class PcBeiGuanzhuActivity extends SuperActivity {
 					}
 				}
 			});
+			int w = (getScreenW() - 3) / 2;
+			holder.imgHead.setLayoutParams(new FrameLayout.LayoutParams(w, w));
+			holder.imgHead.setScaleType(ScaleType.CENTER_INSIDE);
 			holder.tvName.setText(getItem(position).getName());
-			bitmapUtils
-					.display(
-							holder.imgHeader,
-							"http://g.hiphotos.baidu.com/album/w%3D2048/sign=10e27d76adaf2eddd4f14ee9b92800e9/bd315c6034a85edfeb5afd5348540923dc5475ef.jpg");
+			if (getItem(position).getIs_avatar().equals("true")) {
+				bitmapUtils.display(holder.imgHead,
+						getHeadUrl(1, 2, getItem(position).getUid()));
+			} else {
+				bitmapUtils.display(holder.imgHead,
+						getHeadUrl(2, 2, getItem(position).getUid()));
+			}
 			return convertView;
 		}
 
@@ -261,6 +273,7 @@ public class PcBeiGuanzhuActivity extends SuperActivity {
 			TextView tvFy;
 			TextView tvName;
 			TextView tvGuanzhu;
+			ImageView imgHead;
 		}
 	}
 
@@ -285,5 +298,30 @@ public class PcBeiGuanzhuActivity extends SuperActivity {
 		sLogic.setDate(mHandler, httpUtil);
 		showProcessDialog(dismiss);
 		sLogic.sendFollowUserRequest(getUser().getRemarkToken(), uid);
+	}
+
+	private void onLoad() {
+		if (actionType == 0)
+			gridviewYh.stopRefresh();
+		gridviewYh.stopLoadMore();
+	}
+
+	@Override
+	public void onRefresh() {
+		refreshYonghu(0);
+	}
+
+	@Override
+	public void onLoadMore() {
+		refreshYonghu(1);
+	}
+
+	@Override
+	public void onItemClick(PLA_AdapterView<?> parent, View view, int position,
+			long id) {
+
+		Intent intent = new Intent(getBaseContext(), PCenterActivity.class);
+		intent.putExtra("uid", adapterYh.getItem(position - 1).getUid());
+		startActivity(intent);
 	}
 }

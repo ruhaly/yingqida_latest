@@ -10,14 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
+import com.huewu.pla.lib.internal.PLA_AdapterView;
+import com.huewu.pla.lib.internal.PLA_AdapterView.OnItemClickListener;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.ViewUtils;
@@ -25,6 +25,7 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.activity.CommentYuansuActivity;
+import com.yingqida.richplay.activity.PcBeiGuanzhuActivity;
 import com.yingqida.richplay.activity.PcFayanActivity;
 import com.yingqida.richplay.activity.PcGuanzhuYhActivity;
 import com.yingqida.richplay.activity.PcGuanzhuYsActivity;
@@ -35,17 +36,18 @@ import com.yingqida.richplay.entity.Yuansu;
 import com.yingqida.richplay.logic.PCenterLogic;
 import com.yingqida.richplay.logic.ShareAndFollowLogic;
 import com.yingqida.richplay.logic.SuperLogic;
-import com.yingqida.richplay.widget.PullToRefreshView;
+import com.yingqida.richplay.pubuliu.XListView;
+import com.yingqida.richplay.pubuliu.XListView.IXListViewListener;
 
 public class PCenterFragment extends SuperFragment implements
-		OnItemClickListener, OnClickListener {
+		IXListViewListener, OnItemClickListener, OnClickListener {
 
 	private static PCenterFragment ins;
-	@ViewInject(R.id.pullToRefreshView)
-	private PullToRefreshView pullToRefreshView;
+	// @ViewInject(R.id.pullToRefreshView)
+	// private PullToRefreshView pullToRefreshView;
 
 	@ViewInject(R.id.listViewFy)
-	private ListView listViewFy;
+	private XListView listViewFy;
 
 	@ViewInject(R.id.frameFy)
 	private LinearLayout frameFy;
@@ -71,6 +73,8 @@ public class PCenterFragment extends SuperFragment implements
 
 	public ImageView imgHeader;
 
+	public Button btnGuanzhu;
+
 	public synchronized static PCenterFragment getIns() {
 		if (null == ins) {
 			ins = new PCenterFragment();
@@ -90,26 +94,28 @@ public class PCenterFragment extends SuperFragment implements
 			adapterFy = new Adapter();
 			listViewFy.setAdapter(adapterFy);
 			listViewFy.setOnItemClickListener(this);
-			pullToRefreshView.setEnablePullTorefresh(false);
-			pullToRefreshView
-					.setOnHeaderRefreshListener(new PullToRefreshView.OnHeaderRefreshListener() {
-
-						@Override
-						public void onHeaderRefresh(PullToRefreshView view) {
-							requestFayan(0);
-							requestCount();
-						}
-					});
-			pullToRefreshView
-					.setOnFooterRefreshListener(new PullToRefreshView.OnFooterRefreshListener() {
-
-						@Override
-						public void onFooterRefresh(PullToRefreshView view) {
-							requestFayan(1);
-							requestCount();
-
-						}
-					});
+			// pullToRefreshView.setEnablePullTorefresh(true);
+			// pullToRefreshView
+			// .setOnHeaderRefreshListener(new
+			// PullToRefreshView.OnHeaderRefreshListener() {
+			//
+			// @Override
+			// public void onHeaderRefresh(PullToRefreshView view) {
+			// requestFayan(0);
+			// requestCount();
+			// }
+			// });
+			// pullToRefreshView
+			// .setOnFooterRefreshListener(new
+			// PullToRefreshView.OnFooterRefreshListener() {
+			//
+			// @Override
+			// public void onFooterRefresh(PullToRefreshView view) {
+			// requestFayan(1);
+			// requestCount();
+			//
+			// }
+			// });
 		} else {
 			adapterFy.notifyDataSetChanged();
 		}
@@ -136,7 +142,8 @@ public class PCenterFragment extends SuperFragment implements
 
 		headerView = LayoutInflater.from(getActivity().getBaseContext())
 				.inflate(R.layout.pcenter_top_layout, null);
-
+		btnGuanzhu = (Button) headerView.findViewById(R.id.btnGuanzhu);
+		btnGuanzhu.setVisibility(View.GONE);
 		tvFy = (TextView) headerView.findViewById(R.id.tvFy);
 		tvFu = (TextView) headerView.findViewById(R.id.tvFu);
 		tvBgz = (TextView) headerView.findViewById(R.id.tvBgz);
@@ -145,6 +152,8 @@ public class PCenterFragment extends SuperFragment implements
 		tvSummary = (TextView) headerView.findViewById(R.id.tvSummary);
 		imgHeader = (ImageView) headerView.findViewById(R.id.imgHeader);
 		listViewFy.addHeaderView(headerView);
+		listViewFy.setXListViewListener(this);
+		listViewFy.setPullLoadEnable(true);
 		headerView.findViewById(R.id.frameFy).setOnClickListener(this);
 		headerView.findViewById(R.id.frameBgz).setOnClickListener(this);
 		headerView.findViewById(R.id.frameGzYs).setOnClickListener(this);
@@ -201,6 +210,8 @@ public class PCenterFragment extends SuperFragment implements
 						.findViewById(R.id.imgPingLun);
 				holder.imgContent = (ImageView) convertView
 						.findViewById(R.id.imgContent);
+				holder.imgHead = (ImageView) convertView
+						.findViewById(R.id.imgHead);
 				holder.content = (TextView) convertView
 						.findViewById(R.id.content);
 				convertView.setTag(holder);
@@ -249,7 +260,6 @@ public class PCenterFragment extends SuperFragment implements
 					.equals(Yuansu.Label.img.toString())) {
 				holder.content.setVisibility(View.GONE);
 				holder.imgContent.setVisibility(View.VISIBLE);
-				holder.imgContent.setMaxWidth(getScreenW());
 				bitmapUtilsContent.display(holder.imgContent, getItem(position)
 						.getRemarkContent());
 			} else {
@@ -267,6 +277,13 @@ public class PCenterFragment extends SuperFragment implements
 			holder.tvName.setText(getItem(position).getUser().getName());
 			holder.tvCommentContent.setText(getItem(position).getUser()
 					.getComment_content());
+			if (getItem(position).getUser().getIs_avatar().equals("true")) {
+				bitmapUtilsHead.display(holder.imgHead,
+						getHeadUrl(1, 2, getItem(position).getUser().getUid()));
+			} else {
+				bitmapUtilsHead.display(holder.imgHead,
+						getHeadUrl(2, 2, getItem(position).getUser().getUid()));
+			}
 			return convertView;
 		}
 
@@ -277,6 +294,7 @@ public class PCenterFragment extends SuperFragment implements
 			ImageView imgShare;
 			ImageView imgPingLun;
 			ImageView imgContent;
+			ImageView imgHead;
 			TextView content;
 		}
 	}
@@ -334,40 +352,31 @@ public class PCenterFragment extends SuperFragment implements
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position,
-			long id) {
-		startActivity(new Intent(getActivity().getBaseContext(),
-				YuansuInfoActivity.class)
-				.putExtra("content",
-						adapterFy.getItem(position).getRemarkContent())
-				.putExtra("remarkId", adapterFy.getItem(position).getId())
-				.putExtra("label", adapterFy.getItem(position).getLabel()));
-
-	}
-
-	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.frameFy: {
 			startActivity(new Intent(getActivity().getBaseContext(),
-					PcFayanActivity.class));
+					PcFayanActivity.class).putExtra("uid", getUser().getUid()));
 			break;
 		}
 		case R.id.frameBgz: {
 			startActivity(new Intent(getActivity().getBaseContext(),
-					PcGuanzhuYsActivity.class));
+					PcBeiGuanzhuActivity.class).putExtra("uid", getUser()
+					.getUid()));
 
 			break;
 		}
 		case R.id.frameGzYs: {
 			startActivity(new Intent(getActivity().getBaseContext(),
-					PcGuanzhuYsActivity.class));
+					PcGuanzhuYsActivity.class).putExtra("uid", getUser()
+					.getUid()));
 
 			break;
 		}
 		case R.id.frameGzYh: {
 			startActivity(new Intent(getActivity().getBaseContext(),
-					PcGuanzhuYhActivity.class));
+					PcGuanzhuYhActivity.class).putExtra("uid", getUser()
+					.getUid()));
 
 			break;
 		}
@@ -382,6 +391,10 @@ public class PCenterFragment extends SuperFragment implements
 		switch (msg.what) {
 		case SuperLogic.PCENTER_FAYAN_SUCCESS_MSGWHAT: {
 			updateView();
+			break;
+		}
+		case SuperLogic.SHARE_SUCCESS_MSGWHAT: {
+			showToast(getString(R.string.share_success));
 			break;
 		}
 		case SuperLogic.PCENTER_BEIGUANZHU_SUCCESS_MSGWHAT: {
@@ -403,6 +416,23 @@ public class PCenterFragment extends SuperFragment implements
 			updateView();
 			break;
 		}
+		case SuperLogic.ERROR_FOLLOW_YUANSU_DONT_EXIST: {
+			if (pcLogic.fyList.size() > 0) {
+				pcLogic.fyList.get(temp).setFollowState(Constant.UN_FOLLOW);
+			}
+			showToast(getString(R.string.unfollow));
+			updateView();
+			break;
+		}
+		case SuperLogic.FOLLOW_YUANSU_ERROR_EXIST_MSGWHAT: {
+			if (pcLogic.fyList.size() > 0) {
+				pcLogic.fyList.get(temp).setFollowState(Constant.HAS_FOLLOW);
+			}
+			showToast(getString(R.string.has_follow));
+			updateView();
+
+			break;
+		}
 		case SuperLogic.PCENTER_COUNT_SUCCESS_MSGWHAT: {
 			updateCount();
 			break;
@@ -421,8 +451,8 @@ public class PCenterFragment extends SuperFragment implements
 
 	private void onLoad() {
 		if (actionType == 0)
-			pullToRefreshView.onHeaderRefreshComplete();
-		pullToRefreshView.onFooterRefreshComplete();
+			listViewFy.stopRefresh();
+		listViewFy.stopLoadMore();
 	}
 
 	@Override
@@ -437,5 +467,32 @@ public class PCenterFragment extends SuperFragment implements
 		httpUtil2 = new HttpUtils();
 		pcLogic.setDate(fHandler, httpUtil2);
 		pcLogic.sendCountRequest(getUser().getRemarkToken(), getUser().getUid());
+	}
+
+	@Override
+	public void onItemClick(PLA_AdapterView<?> parent, View view, int position,
+			long id) {
+
+		startActivity(new Intent(getActivity().getBaseContext(),
+				YuansuInfoActivity.class)
+				.putExtra("content",
+						adapterFy.getItem(position - 1).getRemarkContent())
+				.putExtra("remarkId", adapterFy.getItem(position - 1).getId())
+				.putExtra("label", adapterFy.getItem(position - 1).getLabel())
+				.putExtra("followstate",
+						adapterFy.getItem(position - 1).getFollowState()));
+
+	}
+
+	@Override
+	public void onRefresh() {
+		requestFayan(0);
+		requestCount();
+	}
+
+	@Override
+	public void onLoadMore() {
+		requestFayan(1);
+		requestCount();
 	}
 }

@@ -57,10 +57,9 @@ public class UserLogic extends SuperLogic implements HttpAction {
 		params.addQueryStringParameter("keyword", keyword);
 		params.addQueryStringParameter("cur_page", "" + targetCurPage);
 		params.addQueryStringParameter("per_page", perPage);
-		httpHanlder = HttpSenderUtils
-				.sendMsgImpl(ACTION_SEARCH_USER, params,
-						HttpSenderUtils.METHOD_GET, httpUtils,
-						RequestId.GET_USER, this, false);
+		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_SEARCH_USER, params,
+				HttpSenderUtils.METHOD_GET, httpUtils, RequestId.GET_USER,
+				this, false);
 	}
 
 	@Override
@@ -79,7 +78,8 @@ public class UserLogic extends SuperLogic implements HttpAction {
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int requestId, InputStream is) {
+	public void handleHttpResponse(String response, int requestId,
+			InputStream is) {
 
 		switch (requestId) {
 		case RequestId.GET_USER: {
@@ -175,9 +175,11 @@ public class UserLogic extends SuperLogic implements HttpAction {
 		params.addBodyParameter("realname", user.getRealname());
 		params.addBodyParameter("addr", user.getAddr());
 		params.addBodyParameter("zip_code", user.getZipCode());
+		params.addBodyParameter("ship_time", user.getShipTime());
 		params.addBodyParameter("phone", user.getPhone());
 		params.addBodyParameter("company", user.getCommpany());
 		params.addBodyParameter("education", user.getEducation());
+		params.addBodyParameter("phone", user.getPhone());
 		httpHanlder = HttpSenderUtils.sendMsgImpl(ACTION_MODIFY_USER_INFO,
 				params, HttpSenderUtils.METHOD_POST, httpUtils,
 				RequestId.MODIFY_USER_INFO, this, false);

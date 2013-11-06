@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Message;
@@ -13,10 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.GridView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 
+import com.huewu.pla.lib.internal.PLA_AdapterView;
+import com.huewu.pla.lib.internal.PLA_AdapterView.OnItemClickListener;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.ViewUtils;
@@ -24,35 +28,38 @@ import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.activity.common.SuperActivity;
+import com.yingqida.richplay.baseapi.Constant;
 import com.yingqida.richplay.baseapi.common.User;
 import com.yingqida.richplay.logic.PCenterLogic;
 import com.yingqida.richplay.logic.ShareAndFollowLogic;
 import com.yingqida.richplay.logic.SuperLogic;
-import com.yingqida.richplay.logic.UserLogic;
-import com.yingqida.richplay.widget.PullToRefreshView;
+import com.yingqida.richplay.pubuliu.XListView;
+import com.yingqida.richplay.pubuliu.XListView.IXListViewListener;
 
-public class PcGuanzhuYhActivity extends SuperActivity {
+public class PcGuanzhuYhActivity extends SuperActivity implements
+		IXListViewListener, OnItemClickListener {
 
-	@ViewInject(R.id.pullToRefreshViewYh)
-	private PullToRefreshView pullToRefreshViewYh;
+	// @ViewInject(R.id.pullToRefreshViewYh)
+	// private PullToRefreshView pullToRefreshViewYh;
 
 	private BitmapUtils bitmapUtilsYh;
 
 	@ViewInject(R.id.gridviewYh)
-	private GridView gridviewYh;
+	private XListView gridviewYh;
 
 	private PCenterLogic pcLogic;
 
 	private HttpUtils httpUtil;
 
 	private YhAdapter adapterYh;
-	private UserLogic uLogic;
 	private ShareAndFollowLogic sLogic;
 	@ViewInject(R.id.btnToggle)
 	private Button btnToggle;
+	public String uid;
 
 	@Override
-	public void handleHttpResponse(String response, int requestId, InputStream is) {
+	public void handleHttpResponse(String response, int requestId,
+			InputStream is) {
 
 	}
 
@@ -64,7 +71,6 @@ public class PcGuanzhuYhActivity extends SuperActivity {
 	@Override
 	public void initData() {
 		pcLogic = PCenterLogic.getInstance();
-		uLogic = UserLogic.getInstance();
 		sLogic = ShareAndFollowLogic.getInstance();
 	}
 
@@ -72,6 +78,7 @@ public class PcGuanzhuYhActivity extends SuperActivity {
 	public void initLayout(Bundle paramBundle) {
 		setContentView(R.layout.pc_beiguanzhu_layout);
 		ViewUtils.inject(this);
+		uid = getIntent().getExtras().getString("uid");
 		btnToggle.setVisibility(View.GONE);
 		bitmapUtilsYh = new BitmapUtils(this);
 		bitmapUtilsYh.configDefaultLoadingImage(R.drawable.ic_launcher);
@@ -97,7 +104,7 @@ public class PcGuanzhuYhActivity extends SuperActivity {
 		httpUtil = new HttpUtils();
 		pcLogic.setDate(mHandler, httpUtil);
 		showProcessDialog(dismiss);
-		pcLogic.sendGuanzhuYhRequest(getUser().getRemarkToken(), type);
+		pcLogic.sendGuanzhuYhRequest(getUser().getRemarkToken(), type, uid);
 	}
 
 	DialogInterface.OnDismissListener dismiss = new DialogInterface.OnDismissListener() {
@@ -116,11 +123,27 @@ public class PcGuanzhuYhActivity extends SuperActivity {
 			break;
 		}
 		case SuperLogic.UNFOLLOW_USER_SUCCESS_MSGWHAT: {
-			pcLogic.guanzhuYhList.remove(temp);
+			if (getUser().getUid().equals(uid)) {
+				pcLogic.guanzhuYhList.remove(temp);
+			} else {
+				if (pcLogic.guanzhuYhList.size() > temp) {
+					pcLogic.guanzhuYhList.get(temp).setStateGuanzhu(
+							Constant.UN_FOLLOW);
+				}
+			}
 			showToast(getString(R.string.unfollow));
 			updateView();
 			break;
 
+		}
+		case SuperLogic.FOLLOW_USER_SUCCESS_MSGWHAT: {
+			if (pcLogic.guanzhuYhList.size() > temp) {
+				pcLogic.guanzhuYhList.get(temp).setStateGuanzhu(
+						Constant.HAS_FOLLOW);
+			}
+			showToast(getString(R.string.has_follow));
+			updateView();
+			break;
 		}
 		case SuperLogic.SHARE_SUCCESS_MSGWHAT: {
 			showToast(getString(R.string.share_success));
@@ -132,37 +155,47 @@ public class PcGuanzhuYhActivity extends SuperActivity {
 
 	public int actionType = 0;
 
-	private void onLoad() {
-
-		if (actionType == 0) {
-			pullToRefreshViewYh.onHeaderRefreshComplete();
-		} else {
-			pullToRefreshViewYh.onFooterRefreshComplete();
-		}
-	}
-
 	public void updateView() {
 		if (null == adapterYh) {
 			adapterYh = new YhAdapter(pcLogic.guanzhuYhList, getBaseContext(),
 					bitmapUtilsYh);
 			gridviewYh.setAdapter(adapterYh);
-			pullToRefreshViewYh
-					.setOnHeaderRefreshListener(new PullToRefreshView.OnHeaderRefreshListener() {
-
-						@Override
-						public void onHeaderRefresh(PullToRefreshView view) {
-							refreshYonghu(0);
-						}
-					});
-			pullToRefreshViewYh
-					.setOnFooterRefreshListener(new PullToRefreshView.OnFooterRefreshListener() {
-
-						@Override
-						public void onFooterRefresh(PullToRefreshView view) {
-							refreshYonghu(1);
-
-						}
-					});
+			gridviewYh.setXListViewListener(this);
+			gridviewYh.setPullLoadEnable(true);
+			gridviewYh.setOnItemClickListener(this);
+			// gridviewYh
+			// .setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			//
+			// @Override
+			// public void onItemClick(AdapterView<?> parent,
+			// View view, int position, long id) {
+			//
+			// Intent intent = new Intent(getBaseContext(),
+			// PCenterActivity.class);
+			// intent.putExtra("uid", adapterYh.getItem(position)
+			// .getUid());
+			// startActivity(intent);
+			// }
+			// });
+			// pullToRefreshViewYh
+			// .setOnHeaderRefreshListener(new
+			// PullToRefreshView.OnHeaderRefreshListener() {
+			//
+			// @Override
+			// public void onHeaderRefresh(PullToRefreshView view) {
+			// refreshYonghu(0);
+			// }
+			// });
+			// pullToRefreshViewYh
+			// .setOnFooterRefreshListener(new
+			// PullToRefreshView.OnFooterRefreshListener() {
+			//
+			// @Override
+			// public void onFooterRefresh(PullToRefreshView view) {
+			// refreshYonghu(1);
+			//
+			// }
+			// });
 		} else {
 			adapterYh.notifyDataSetChanged();
 		}
@@ -211,27 +244,45 @@ public class PcGuanzhuYhActivity extends SuperActivity {
 						.findViewById(R.id.tvName);
 				holder.tvGuanzhu = (TextView) convertView
 						.findViewById(R.id.tvGuanzhu);
+				holder.imgHead = (ImageView) convertView
+						.findViewById(R.id.imgHead);
 				convertView.setTag(holder);
 			} else {
 				holder = (Holder) convertView.getTag();
 			}
-
-			holder.tvGuanzhu.setText(getString(R.string.unfollow));
+			String followState = getItem(position).getStateGuanzhu();
+			if (Constant.HAS_FOLLOW.equals(followState)) {
+				holder.tvGuanzhu.setText(getString(R.string.unfollow));
+			} else {
+				holder.tvGuanzhu.setText(getString(R.string.follow));
+			}
 			holder.tvGuanzhu.setTag(position);
+
 			holder.tvGuanzhu.setOnClickListener(new View.OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
 					int p = (Integer) v.getTag();
 					temp = p;
-					unFollowUser(getItem(p).uid);
+					String followState = getItem(p).getStateGuanzhu();
+					if (followState.equals(Constant.HAS_FOLLOW)) {
+						unFollowUser(getItem(p).uid);
+					} else {
+						followUser(getItem(p).uid);
+					}
 				}
 			});
 			holder.tvName.setText(getItem(position).getName());
-			bitmapUtils
-					.display(
-							holder.imgHeader,
-							"http://g.hiphotos.baidu.com/album/w%3D2048/sign=10e27d76adaf2eddd4f14ee9b92800e9/bd315c6034a85edfeb5afd5348540923dc5475ef.jpg");
+			int w = (getScreenW() - 3) / 2;
+			holder.imgHead.setLayoutParams(new FrameLayout.LayoutParams(w, w));
+			holder.imgHead.setScaleType(ScaleType.CENTER_INSIDE);
+			if (getItem(position).getIs_avatar().equals("true")) {
+				bitmapUtils.display(holder.imgHead,
+						getHeadUrl(1, 2, getItem(position).getUid()));
+			} else {
+				bitmapUtils.display(holder.imgHead,
+						getHeadUrl(2, 2, getItem(position).getUid()));
+			}
 			return convertView;
 		}
 
@@ -240,15 +291,59 @@ public class PcGuanzhuYhActivity extends SuperActivity {
 			TextView tvFy;
 			TextView tvName;
 			TextView tvGuanzhu;
+			ImageView imgHead;
 		}
 	}
 
 	public int temp = 0;
+
+	/**
+	 * 
+	 * Function:关注用户
+	 * 
+	 * @author ruhaly DateTime 2013-10-23 下午2:54:42
+	 * @param uid
+	 */
+	public void followUser(String uid) {
+		httpUtil = new HttpUtils();
+		sLogic.setDate(mHandler, httpUtil);
+		showProcessDialog(dismiss);
+		sLogic.sendFollowUserRequest(getUser().getRemarkToken(), uid);
+	}
 
 	public void unFollowUser(String uid) {
 		httpUtil = new HttpUtils();
 		sLogic.setDate(mHandler, httpUtil);
 		showProcessDialog(dismiss);
 		sLogic.sendUnFollowUserRequest(getUser().getRemarkToken(), uid);
+	}
+
+	@Override
+	public void onClick(View v) {
+
+	}
+
+	private void onLoad() {
+		if (actionType == 0)
+			gridviewYh.stopRefresh();
+		gridviewYh.stopLoadMore();
+	}
+
+	@Override
+	public void onRefresh() {
+		refreshYonghu(0);
+	}
+
+	@Override
+	public void onLoadMore() {
+		refreshYonghu(1);
+	}
+
+	@Override
+	public void onItemClick(PLA_AdapterView<?> parent, View view, int position,
+			long id) {
+		Intent intent = new Intent(getBaseContext(), PCenterActivity.class);
+		intent.putExtra("uid", adapterYh.getItem(position - 1).getUid());
+		startActivity(intent);
 	}
 }

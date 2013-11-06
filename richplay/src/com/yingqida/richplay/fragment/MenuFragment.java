@@ -25,6 +25,7 @@ import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.yingqida.richplay.R;
+import com.yingqida.richplay.activity.MenuActivity;
 import com.yingqida.richplay.activity.ModifyPWDActivity;
 import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.entity.Menu;
@@ -240,9 +241,7 @@ public class MenuFragment extends SuperFragment implements OnItemClickListener {
 
 	@OnClick(R.id.tvUpdate)
 	public void tvUpdateClick(View view) {
-		SuperFragment fragment = PageHomeFragment.getIns();
-		if (fragment != null)
-			switchFragment(fragment);
+		((MenuActivity) getActivity()).showUpdateVersionDialog();
 	}
 
 	@OnClick(R.id.tvClearCache)

@@ -26,7 +26,7 @@ public class PageHomeLogic extends SuperLogic implements HttpAction {
 	private HttpHandler<String> httpHanlder;
 
 	public int curPage = 1;
-	public String perPage = "50";
+	public String perPage = "10";
 	public int targetCurPage = 1;
 	// 0刷新；1加载更多
 	public int type = 0;

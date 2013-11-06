@@ -41,6 +41,7 @@
     <color name="pc_nick_color">#202020</color>
     <color name="pc_level_color">#6c6c6c</color>
     <color name="mi_white">#FFF0F0F0</color>
+    <color name="mi_white_trans">#5dF0F0F0</color>
     <color name="golden_yellow">#80a844</color>
     <color name="AppBackgroundColor">#FFC0E7FA</color>
     <color name="TextColorBlack">#FF000000</color>

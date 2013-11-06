@@ -2,28 +2,36 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_gray"
+    android:background="@color/Color_White"
     android:orientation="vertical" >
 
     <include layout="@layout/title_layout" />
 
-    <com.yingqida.richplay.widget.PullToRefreshView
-        android:id="@+id/pullToRefreshView"
+    <com.yingqida.richplay.pubuliu.XListView
+        android:id="@+id/listViewYs"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingTop="3dp" >
+        android:fastScrollEnabled="true"
+        android:scrollbars="vertical" />
 
-        <ListView
-            android:id="@+id/listViewYs"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:cacheColorHint="@color/cache_color_hint"
-            android:divider="@color/transparent"
-            android:dividerHeight="5dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp" >
-        </ListView>
-    </com.yingqida.richplay.widget.PullToRefreshView>
+    <!-- <com.yingqida.richplay.widget.PullToRefreshView -->
+    <!-- android:id="@+id/pullToRefreshView" -->
+    <!-- android:layout_width="match_parent" -->
+    <!-- android:layout_height="match_parent" -->
+    <!-- android:orientation="vertical" -->
+    <!-- android:paddingTop="3dp" > -->
+
+    <ListView
+        android:id="@+id/listViewYs2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:cacheColorHint="@color/cache_color_hint"
+        android:divider="@color/transparent"
+        android:dividerHeight="5dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:visibility="gone" >
+    </ListView>
+    <!-- </com.yingqida.richplay.widget.PullToRefreshView> -->
 
 </LinearLayout>

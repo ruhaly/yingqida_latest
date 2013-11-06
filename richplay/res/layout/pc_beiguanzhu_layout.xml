@@ -7,22 +7,19 @@
 
     <include layout="@layout/title_layout" />
 
-    <com.yingqida.richplay.widget.PullToRefreshView
-        android:id="@+id/pullToRefreshViewYh"
+    <!-- <com.yingqida.richplay.widget.PullToRefreshView -->
+    <!-- android:id="@+id/pullToRefreshViewYh" -->
+    <!-- android:layout_width="match_parent" -->
+    <!-- android:layout_height="match_parent" -->
+    <!-- android:orientation="vertical" -->
+    <!-- android:paddingTop="3dp" > -->
+
+    <com.yingqida.richplay.pubuliu.XListView
+        android:id="@+id/gridviewYh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingTop="3dp" >
-
-        <GridView
-            android:id="@+id/gridviewYh"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:horizontalSpacing="2dp"
-            android:listSelector="@color/transparent"
-            android:numColumns="2"
-            android:verticalSpacing="2dp" >
-        </GridView>
-    </com.yingqida.richplay.widget.PullToRefreshView>
+        android:listSelector="@color/transparent" >
+    </com.yingqida.richplay.pubuliu.XListView>
+    <!-- </com.yingqida.richplay.widget.PullToRefreshView> -->
 
 </LinearLayout>

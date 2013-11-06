@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import android.annotation.TargetApi;
 import android.os.Build;
 
+import com.yingqida.richplay.baseapi.Constant;
 import com.yingqida.richplay.baseapi.common.User;
 import com.yingqida.richplay.entity.Comment;
 import com.yingqida.richplay.entity.Yuansu;
@@ -56,11 +57,18 @@ public class JsonParse extends BaseJson {
 					} else {
 						y.setRemarkContent(tempjob.optString("text"));
 					}
-					y.getUser().setUid(job.optString("user_id"));
+					y.getUser().setUid(job.optString("uid"));
 					y.getUser().setName(job.optString("username"));
 					y.getUser().setComment_content(
 							job.optString("comment_content"));
 					y.getUser().setIs_avatar(job.optString("is_avatar"));
+					String is_follow_remark = job.optString("is_follow_remark");
+					if (is_follow_remark != null
+							&& is_follow_remark.equals("true")) {
+						y.setFollowState(Constant.HAS_FOLLOW);
+					} else {
+						y.setFollowState(Constant.UN_FOLLOW);
+					}
 					list.add(y);
 				}
 			}
@@ -85,6 +93,12 @@ public class JsonParse extends BaseJson {
 					user.setUid(job.optString("uid"));
 					user.setName(job.optString("username"));
 					user.setIs_avatar(job.optString("is_avatar"));
+					String is_follow_user = job.optString("is_follow_user");
+					if (is_follow_user != null && is_follow_user.equals("true")) {
+						user.setStateGuanzhu(Constant.HAS_FOLLOW);
+					} else {
+						user.setStateGuanzhu(Constant.UN_FOLLOW);
+					}
 					list.add(user);
 				}
 		} catch (JSONException e) {
@@ -94,7 +108,8 @@ public class JsonParse extends BaseJson {
 		return list;
 	}
 
-	public static List<Comment> parseYuansuCommentRes(String response) {
+	public static Yuansu parseYuansuCommentRes(String response) {
+		Yuansu ys = new Yuansu();
 		List<Comment> list = new ArrayList<Comment>();
 		if (null == response || response.isEmpty()) {
 			return null;
@@ -111,13 +126,23 @@ public class JsonParse extends BaseJson {
 					c.setContent(job.optString("comment_content"));
 					c.setHeaderUrl(job.optString("hurl"));
 					c.setTime(job.optString("create_time"));
+					c.setIs_avatar(job.optString("is_avatar"));
+					String is_follow_remark = job.optString("is_follow_remark");
+					ys.setId(job.optString("remark_id"));
+					if (is_follow_remark != null
+							&& is_follow_remark.equals("true")) {
+						ys.setFollowState(Constant.HAS_FOLLOW);
+					} else {
+						ys.setFollowState(Constant.UN_FOLLOW);
+					}
 					list.add(c);
 				}
+			ys.setCommentList(list);
 		} catch (JSONException e) {
 			list = null;
 			e.printStackTrace();
 		}
-		return list;
+		return ys;
 	}
 
 	public static List<Yuansu> parseFayanRes(String response) {
@@ -140,10 +165,17 @@ public class JsonParse extends BaseJson {
 					} else {
 						y.setRemarkContent(tempjob.optString("text"));
 					}
-					y.getUser().setUid(job.optString("user_id"));
+					y.getUser().setUid(job.optString("uid"));
 					y.getUser().setName(job.optString("username"));
 					y.getUser().setComment_content(
 							job.optString("comment_content"));
+					y.getUser().setIs_avatar(job.optString("is_avatar"));
+					String is_follow_remark = job.optString("is_follow_remark");
+					if (is_follow_remark.equals("true")) {
+						y.setFollowState(Constant.HAS_FOLLOW);
+					} else {
+						y.setFollowState(Constant.UN_FOLLOW);
+					}
 					list.add(y);
 				}
 			}
@@ -202,6 +234,12 @@ public class JsonParse extends BaseJson {
 					user.setUid(job.optString("uid"));
 					user.setName(job.optString("username"));
 					user.setIs_avatar(job.optString("is_avatar"));
+					String is_follow_user = job.optString("is_follow_user");
+					if (is_follow_user != null && is_follow_user.equals("true")) {
+						user.setStateGuanzhu(Constant.HAS_FOLLOW);
+					} else {
+						user.setStateGuanzhu(Constant.UN_FOLLOW);
+					}
 					list.add(user);
 				}
 		} catch (JSONException e) {

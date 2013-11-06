@@ -3,7 +3,7 @@
 
     <string name="app_name">Richplay</string>
     <string name="version">V1.0.1</string>
-    <string name="loading">正在加載，請稍後……</string>
+    <string name="loading">Loding...</string>
     <string name="no_sdcard_tip">未检測到SD卡,數據將緩存到手機內存中</string>
     <string name="app_running">richplay正在運行.......</string>
     <string name="takePhoto">拍</string>
@@ -41,7 +41,7 @@
     <string name="pull_to_refresh_footer_refreshing_label">加载中\u2026</string>
     <string name="xlistview_header_hint_normal">下拉刷新</string>
     <string name="xlistview_header_hint_ready">松開刷新數據</string>
-    <string name="xlistview_header_hint_loading">正在加載...</string>
+    <string name="xlistview_header_hint_loading">Loding...</string>
     <string name="xlistview_header_last_time">上次更新時間：</string>
     <string name="xlistview_footer_hint_normal">查看更多</string>
     <string name="xlistview_footer_hint_ready">松開載入更多</string>
@@ -235,6 +235,7 @@
     <string name="clear_cache">清除緩存</string>
     <string name="zhuxiao">注銷</string>
     <string name="is_clear_cache">是否清除緩存?</string>
+    <string name="load_latest_version">是否下載最新版本?</string>
     <string name="share_success">分享成功~</string>
     <string name="comment">評論</string>
     <string name="comment_yuansu_success">評論成功~</string>
@@ -251,5 +252,13 @@
     <string name="zip_code">郵編</string>
     <string name="phone">電話</string>
     <string name="upload_head_success">上傳成功</string>
-	<string name="update_userinfo_success">修改成功</string>
+    <string name="update_userinfo_success">修改成功</string>
+    <string name="isloading">正在下載</string>
+    <string name="loadingtip">下载提示</string>
+    <string name="current_progress">当前进度：</string>
+    <string name="shiptime">配送时间</string>
+    <string name="shiptime1">工作日，節假日均可送貨</string>
+    <string name="shiptime2">只有工作日送貨</string>
+    <string name="shiptime3">只有節假日送貨</string>
+
 </resources>

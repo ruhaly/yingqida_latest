@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.lidroid.xutils.BitmapUtils;
@@ -38,6 +40,9 @@ public class PersonFragment extends SuperFragment {
 
 	UserLogic uLogic;
 	private static PersonFragment ins;
+
+	@ViewInject(R.id.rgShiptime)
+	private RadioGroup rgShiptime;
 
 	@ViewInject(R.id.etUname)
 	private EditText etUname;
@@ -65,6 +70,9 @@ public class PersonFragment extends SuperFragment {
 
 	@ViewInject(R.id.etZipcode)
 	private EditText etZipcode;
+
+	@ViewInject(R.id.etPhone)
+	private EditText etPhone;
 
 	@ViewInject(R.id.btnConfirm)
 	private Button btnConfirm;
@@ -97,6 +105,14 @@ public class PersonFragment extends SuperFragment {
 		u.setRealname(etRealname.getText().toString());
 		u.setAddr(etAddr.getText().toString());
 		u.setZipCode(etZipcode.getText().toString());
+		u.setPhone(etPhone.getText().toString());
+		if (rgShiptime.getCheckedRadioButtonId() == R.id.shiptime1) {
+			u.setShipTime("1");
+		} else if (rgShiptime.getCheckedRadioButtonId() == R.id.shiptime2) {
+			u.setShipTime("2");
+		} else {
+			u.setShipTime("3");
+		}
 
 		httpUtil = new HttpUtils();
 		uLogic.setDate(fHandler, httpUtil);
@@ -114,7 +130,14 @@ public class PersonFragment extends SuperFragment {
 		etRealname.setText(uLogic.user.getRealname());
 		etAddr.setText(uLogic.user.getAddr());
 		etZipcode.setText(uLogic.user.getZipCode());
-
+		etPhone.setText(uLogic.user.getPhone());
+		if (uLogic.user.getShipTime().equals("1")) {
+			((RadioButton) rgShiptime.getChildAt(0)).setChecked(true);
+		} else if (uLogic.user.getShipTime().equals("2")) {
+			((RadioButton) rgShiptime.getChildAt(1)).setChecked(true);
+		} else {
+			((RadioButton) rgShiptime.getChildAt(2)).setChecked(true);
+		}
 		if (uLogic.user.getIs_avatar().equals("true")) {
 			bitmapUtilsHead.display(imgHead,
 					getHeadUrl(1, 2, getUser().getUid()));

@@ -1,6 +1,8 @@
 package com.yingqida.richplay.entity;
 
-import com.yingqida.richplay.baseapi.Constant;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.yingqida.richplay.baseapi.common.User;
 
 public class Yuansu {
@@ -23,6 +25,16 @@ public class Yuansu {
 	private String followState;
 
 	private String label;
+
+	public List<Comment> commentList = new ArrayList<Comment>();
+
+	public List<Comment> getCommentList() {
+		return commentList;
+	}
+
+	public void setCommentList(List<Comment> commentList) {
+		this.commentList = commentList;
+	}
 
 	public String getLabel() {
 		return label;

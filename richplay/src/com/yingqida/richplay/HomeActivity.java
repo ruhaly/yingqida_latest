@@ -22,8 +22,6 @@ import android.widget.TabHost;
 
 import com.lidroid.xutils.exception.HttpException;
 import com.yingqida.richplay.activity.PCenterActivity;
-import com.yingqida.richplay.activity.SearchActivity;
-import com.yingqida.richplay.activity.WallPicActivity;
 import com.yingqida.richplay.activity.common.TabSuperActivity;
 import com.yingqida.richplay.baseapi.AppLog;
 import com.yingqida.richplay.baseapi.Constant;
@@ -97,12 +95,8 @@ public class HomeActivity extends TabSuperActivity {
 
 		super.initLayout(paramBundle);
 		List<Integer> icons = new ArrayList<Integer>();
-		icons.add(R.drawable.tab_home_drawable);
-		icons.add(R.drawable.tab_search_drawable);
 		icons.add(R.drawable.tab_center_drawable);
 		List<Intent> acts = new ArrayList<Intent>();
-		acts.add(new Intent(this, WallPicActivity.class));
-		acts.add(new Intent(this, SearchActivity.class));
 		acts.add(new Intent(this, PCenterActivity.class));
 		String[] tabTags = getResources().getStringArray(R.array.home_tab_tag);
 		for (int i = 0; i < icons.size(); i++) {

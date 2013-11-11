@@ -22,8 +22,8 @@ import com.yingqida.richplay.packet.HttpAction;
  */
 public class HttpSenderUtils implements HttpAction {
 	
-	public static final String DEFALUT_HEAD_AREA = "hstatic.remark2";
-	public static final String DEFALUT_AREA = "hdev.remark2";
+	public static final String DEFALUT_HEAD_AREA = "static.richplay.com.tw";
+	public static final String DEFALUT_AREA = "test.richplay.com.tw";
 	public static final String DEFAULT_HOST = "http://" + DEFALUT_AREA
 			+ "/api/v1";
 	public static final String DEFAULT_TYPE = ".json";

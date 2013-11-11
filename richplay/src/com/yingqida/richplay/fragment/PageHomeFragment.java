@@ -77,7 +77,7 @@ public class PageHomeFragment extends SuperFragment implements
 			adapter = new Adapter();
 			listViewYs.setAdapter(adapter);
 			listViewYs.setXListViewListener(this);
-			listViewYs.setPullLoadEnable(true);
+			listViewYs.setPullLoadEnable(false);
 			listViewYs.setOnItemClickListener(this);
 			// pullToRefreshView
 			// .setOnHeaderRefreshListener(new
@@ -278,6 +278,7 @@ public class PageHomeFragment extends SuperFragment implements
 		public void onDismiss(DialogInterface dialog) {
 			// httpUtil.getHttpClient().getConnectionManager().shutdown();
 			logic.realseYuanSuRequest();
+			onLoad();
 		}
 	};
 

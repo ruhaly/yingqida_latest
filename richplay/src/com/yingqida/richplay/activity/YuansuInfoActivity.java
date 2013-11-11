@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.lidroid.xutils.BitmapUtils;
@@ -29,15 +28,16 @@ import com.yingqida.richplay.entity.Yuansu;
 import com.yingqida.richplay.logic.ShareAndFollowLogic;
 import com.yingqida.richplay.logic.SuperLogic;
 import com.yingqida.richplay.logic.YuansuCommentLogic;
-import com.yingqida.richplay.widget.PullToRefreshView;
+import com.yingqida.richplay.pubuliu.XListView;
+import com.yingqida.richplay.pubuliu.XListView.IXListViewListener;
 
 public class YuansuInfoActivity extends SuperActivity {
 
-	@ViewInject(R.id.pullToRefreshView)
-	private PullToRefreshView pullToRefreshView;
+	// @ViewInject(R.id.pullToRefreshView)
+	// private PullToRefreshView pullToRefreshView;
 
 	@ViewInject(R.id.listComm)
-	private ListView listComm;
+	private XListView listComm;
 
 	Adapter adapter;
 
@@ -117,23 +117,39 @@ public class YuansuInfoActivity extends SuperActivity {
 			}
 		});
 
-		pullToRefreshView.setEnablePullTorefresh(false);
-		pullToRefreshView
-				.setOnHeaderRefreshListener(new PullToRefreshView.OnHeaderRefreshListener() {
+		listComm.setXListViewListener(new IXListViewListener() {
 
-					@Override
-					public void onHeaderRefresh(PullToRefreshView view) {
-						requestYuansuComment(0);
-					}
-				});
-		pullToRefreshView
-				.setOnFooterRefreshListener(new PullToRefreshView.OnFooterRefreshListener() {
+			@Override
+			public void onRefresh() {
+				requestYuansuComment(0);
+			}
 
-					@Override
-					public void onFooterRefresh(PullToRefreshView view) {
-						requestYuansuComment(1);
-					}
-				});
+			@Override
+			public void onLoadMore() {
+				requestYuansuComment(1);
+			}
+		});
+		listComm.setPullLoadEnable(false);
+
+		// pullToRefreshView.setEnablePullTorefresh(false);
+		// pullToRefreshView
+		// .setOnHeaderRefreshListener(new
+		// PullToRefreshView.OnHeaderRefreshListener() {
+		//
+		// @Override
+		// public void onHeaderRefresh(PullToRefreshView view) {
+		// requestYuansuComment(0);
+		// }
+		// });
+		// pullToRefreshView
+		// .setOnFooterRefreshListener(new
+		// PullToRefreshView.OnFooterRefreshListener() {
+		//
+		// @Override
+		// public void onFooterRefresh(PullToRefreshView view) {
+		// requestYuansuComment(1);
+		// }
+		// });
 
 		bitmapUtilsHead = new BitmapUtils(getBaseContext());
 		bitmapUtilsHead.configDefaultLoadingImage(R.drawable.ic_launcher);
@@ -215,9 +231,11 @@ public class YuansuInfoActivity extends SuperActivity {
 
 	private void onLoad() {
 		if (actionType == 0) {
-			pullToRefreshView.onHeaderRefreshComplete();
+			listComm.stopRefresh();
+			// pullToRefreshView.onHeaderRefreshComplete();
 		} else {
-			pullToRefreshView.onFooterRefreshComplete();
+			listComm.stopLoadMore();
+			// pullToRefreshView.onFooterRefreshComplete();
 		}
 	}
 

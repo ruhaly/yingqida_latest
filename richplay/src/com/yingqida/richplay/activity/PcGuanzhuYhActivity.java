@@ -161,7 +161,7 @@ public class PcGuanzhuYhActivity extends SuperActivity implements
 					bitmapUtilsYh);
 			gridviewYh.setAdapter(adapterYh);
 			gridviewYh.setXListViewListener(this);
-			gridviewYh.setPullLoadEnable(true);
+			gridviewYh.setPullLoadEnable(false);
 			gridviewYh.setOnItemClickListener(this);
 			// gridviewYh
 			// .setOnItemClickListener(new AdapterView.OnItemClickListener() {

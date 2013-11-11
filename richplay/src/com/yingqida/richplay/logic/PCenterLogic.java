@@ -237,7 +237,8 @@ public class PCenterLogic extends SuperLogic implements HttpAction {
 	 * @author ruhaly DateTime 2013-10-28 上午11:17:36
 	 * @param remark_token
 	 * @param type
-	 * @param uid TODO
+	 * @param uid
+	 *            TODO
 	 */
 	public void sendGuanzhuYsRequest(String remark_token, int type, String uid) {
 		this.type = type;
@@ -407,8 +408,9 @@ public class PCenterLogic extends SuperLogic implements HttpAction {
 
 	}
 
-	public void stopReqeust() {
-		httpHanlder.stop();
+	public synchronized void stopReqeust() {
+		if (null != httpHanlder)
+			httpHanlder.stop();
 	}
 
 	public void sendCountRequest(String remark_token, String uid) {

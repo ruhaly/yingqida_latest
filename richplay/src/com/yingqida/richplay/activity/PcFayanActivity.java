@@ -75,7 +75,7 @@ public class PcFayanActivity extends SuperActivity implements
 			adapterFy = new Adapter();
 			listViewFy.setAdapter(adapterFy);
 			listViewFy.setXListViewListener(this);
-			listViewFy.setPullLoadEnable(true);
+			listViewFy.setPullLoadEnable(false);
 			listViewFy.setOnItemClickListener(this);
 			// listViewFy.setOnItemClickListener(this);
 			// pullToRefreshView

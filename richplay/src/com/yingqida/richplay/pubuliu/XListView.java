@@ -72,6 +72,11 @@ public class XListView extends MultiColumnListView implements OnScrollListener {
 		initWithContext(context);
 	}
 
+	public XListView(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		initWithContext(context);
+	}
+
 	public XListView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		initWithContext(context);
@@ -82,7 +87,7 @@ public class XListView extends MultiColumnListView implements OnScrollListener {
 		// XListView need the scroll event, and it will dispatch the event to
 		// user's listener (as a proxy).
 		super.setOnScrollListener(this);
-
+		setVerticalScrollBarEnabled(false);
 		// init header view
 		mHeaderView = new XListViewHeader(context);
 		mHeaderViewContent = (RelativeLayout) mHeaderView
@@ -104,11 +109,6 @@ public class XListView extends MultiColumnListView implements OnScrollListener {
 								.removeGlobalOnLayoutListener(this);
 					}
 				});
-	}
-
-	public XListView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		initWithContext(context);
 	}
 
 	@Override
@@ -143,8 +143,14 @@ public class XListView extends MultiColumnListView implements OnScrollListener {
 	public void setPullLoadEnable(boolean enable) {
 		mEnablePullLoad = enable;
 		if (!mEnablePullLoad) {
-			mFooterView.hide();
+			mFooterView.show();
 			mFooterView.setOnClickListener(null);
+			mFooterView.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					startLoadMore();
+				}
+			});
 		} else {
 			mPullLoading = false;
 			mFooterView.show();
@@ -301,7 +307,8 @@ public class XListView extends MultiColumnListView implements OnScrollListener {
 					}
 				}
 				resetHeaderHeight();
-			} else if (getLastVisiblePosition() == mTotalItemCount - 1) {
+			}
+			if (getLastVisiblePosition() == mTotalItemCount - 1) {
 				// invoke load more.
 				if (mEnablePullLoad
 						&& mFooterView.getBottomMargin() > PULL_LOAD_MORE_DELTA) {

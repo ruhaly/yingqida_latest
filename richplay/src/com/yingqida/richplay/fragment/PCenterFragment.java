@@ -94,6 +94,7 @@ public class PCenterFragment extends SuperFragment implements
 			adapterFy = new Adapter();
 			listViewFy.setAdapter(adapterFy);
 			listViewFy.setOnItemClickListener(this);
+			listViewFy.setPullLoadEnable(false);
 			// pullToRefreshView.setEnablePullTorefresh(true);
 			// pullToRefreshView
 			// .setOnHeaderRefreshListener(new

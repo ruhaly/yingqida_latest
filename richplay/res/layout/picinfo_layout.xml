@@ -5,20 +5,21 @@
     android:background="@color/Color_White"
     android:orientation="vertical" >
 
-    <com.yingqida.richplay.widget.PullToRefreshView
-        android:id="@+id/pullToRefreshView"
+    <!-- <com.yingqida.richplay.widget.PullToRefreshView -->
+    <!-- android:id="@+id/pullToRefreshView" -->
+    <!-- android:layout_width="match_parent" -->
+    <!-- android:layout_height="match_parent" -->
+    <!-- android:orientation="vertical" > -->
+
+    <com.yingqida.richplay.pubuliu.XListView
+        android:id="@+id/listComm"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical" >
-
-        <ListView
-            android:id="@+id/listComm"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:cacheColorHint="#00000000"
-            android:fillViewport="true"
-            android:listSelector="#00000000" >
-        </ListView>
-    </com.yingqida.richplay.widget.PullToRefreshView>
+        android:layout_weight="1"
+        android:cacheColorHint="#00000000"
+        android:fillViewport="true"
+        android:listSelector="#00000000" >
+    </com.yingqida.richplay.pubuliu.XListView>
+    <!-- </com.yingqida.richplay.widget.PullToRefreshView> -->
 
 </LinearLayout>

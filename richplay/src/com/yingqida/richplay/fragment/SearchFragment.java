@@ -175,7 +175,7 @@ public class SearchFragment extends SuperFragment {
 			adapterYs = new YsAdapter(yLogic.list, getActivity()
 					.getBaseContext());
 			listviewYs.setAdapter(adapterYs);
-			listviewYs.setPullLoadEnable(true);
+			listviewYs.setPullLoadEnable(false);
 			listviewYs.setXListViewListener(new XListView.IXListViewListener() {
 
 				@Override
@@ -261,7 +261,7 @@ public class SearchFragment extends SuperFragment {
 			adapterYh = new YhAdapter(uLogic.list, getActivity()
 					.getBaseContext(), bitmapUtilsYh);
 			gridviewYh.setAdapter(adapterYh);
-			gridviewYh.setPullLoadEnable(true);
+			gridviewYh.setPullLoadEnable(false);
 			gridviewYh.setXListViewListener(new XListView.IXListViewListener() {
 
 				@Override

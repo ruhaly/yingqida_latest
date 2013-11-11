@@ -71,7 +71,7 @@ public class PcGuanzhuYsActivity extends SuperActivity implements
 			adapterGuanzhuYs = new Adapter();
 			listViewFy.setAdapter(adapterGuanzhuYs);
 			listViewFy.setXListViewListener(this);
-			listViewFy.setPullLoadEnable(true);
+			listViewFy.setPullLoadEnable(false);
 			listViewFy.setOnItemClickListener(this);
 			// listViewFy.setOnItemClickListener(this);
 			// pullToRefreshView

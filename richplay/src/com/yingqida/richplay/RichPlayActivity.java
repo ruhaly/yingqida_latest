@@ -1,6 +1,5 @@
 package com.yingqida.richplay;
 
-
 import java.io.InputStream;
 
 import android.content.Context;
@@ -11,7 +10,9 @@ import android.os.Message;
 import android.widget.Toast;
 
 import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.view.annotation.ViewInject;
 import com.yingqida.richplay.activity.LoginActivity;
 import com.yingqida.richplay.activity.common.SuperActivity;
 import com.yingqida.richplay.baseapi.AppUtil;
@@ -23,12 +24,17 @@ import com.yingqida.richplay.baseapi.map.LocManager;
 import com.yingqida.richplay.logic.LoginLogic;
 import com.yingqida.richplay.logic.SuperLogic;
 import com.yingqida.richplay.service.RichPlayService;
+import com.yingqida.richplay.widget.gif.GifImageType;
+import com.yingqida.richplay.widget.gif.GifView;
 
 public class RichPlayActivity extends SuperActivity {
 
 	HttpUtils httpUtils;
 
 	LoginLogic logic;
+
+	@ViewInject(R.id.gifView)
+	GifView gifView;
 
 	@Override
 	public void initData() {
@@ -42,6 +48,12 @@ public class RichPlayActivity extends SuperActivity {
 	@Override
 	public void initLayout(Bundle paramBundle) {
 		setContentView(R.layout.main);
+		ViewUtils.inject(this);
+		gifView.setGifImage(R.drawable.start);
+		// 设置显示的大小，拉伸或者压缩
+		gifView.setLoopAnimation();
+		// 设置加载方式：先加载后显示、边加载边显示、只显示第一帧再显示
+		gifView.setGifImageType(GifImageType.COVER);
 		if (!AppUtil.isSdcardAviable()) {
 			runOnUiThread(new Runnable() {
 				@Override
@@ -66,7 +78,8 @@ public class RichPlayActivity extends SuperActivity {
 	}
 
 	@Override
-	public void handleHttpResponse(String response, int requestId, InputStream is) {
+	public void handleHttpResponse(String response, int requestId,
+			InputStream is) {
 
 	}
 
@@ -108,7 +121,7 @@ public class RichPlayActivity extends SuperActivity {
 							LoginActivity.class));
 					finish();
 				}
-			}, 2000);
+			}, 3000);
 
 			break;
 		}

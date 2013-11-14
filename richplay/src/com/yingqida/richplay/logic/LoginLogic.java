@@ -10,7 +10,7 @@ import android.graphics.BitmapFactory;
 
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.HttpHandler;
-import com.lidroid.xutils.http.client.RequestParams;
+import com.lidroid.xutils.http.RequestParams;
 import com.yingqida.richplay.RichPlayApplication;
 import com.yingqida.richplay.baseapi.common.GlobalVar;
 import com.yingqida.richplay.baseapi.common.User;

@@ -15,8 +15,8 @@ import android.os.Message;
 import android.widget.RemoteViews;
 
 import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.http.ResponseStream;
 import com.lidroid.xutils.http.client.HttpRequest.HttpMethod;
-import com.lidroid.xutils.http.client.ResponseStream;
 import com.yingqida.richplay.R;
 import com.yingqida.richplay.util.ImageTools;
 

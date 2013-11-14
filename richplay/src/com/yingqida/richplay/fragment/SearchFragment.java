@@ -369,12 +369,14 @@ public class SearchFragment extends SuperFragment {
 	DialogInterface.OnDismissListener dismiss = new DialogInterface.OnDismissListener() {
 		@Override
 		public void onDismiss(DialogInterface dialog) {
+			onLoad();
 			yLogic.stop();
 		}
 	};
 	DialogInterface.OnDismissListener udismiss = new DialogInterface.OnDismissListener() {
 		@Override
 		public void onDismiss(DialogInterface dialog) {
+			onLoad();
 			uLogic.stop();
 		}
 	};

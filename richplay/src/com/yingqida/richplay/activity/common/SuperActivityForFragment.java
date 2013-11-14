@@ -347,7 +347,7 @@ public abstract class SuperActivityForFragment extends
 	}
 
 	public void showProcessDialog(DialogInterface.OnDismissListener dismiss) {
-		showProgressDialog("", getString(R.string.loading), true, dismiss);
+		showProgressDialog("", getString(R.string.loading), false, dismiss);
 	}
 
 	/**

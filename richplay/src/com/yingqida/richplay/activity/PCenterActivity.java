@@ -128,7 +128,7 @@ public class PCenterActivity extends SuperActivity implements
 			adapterFy = new Adapter();
 			listViewFy.setAdapter(adapterFy);
 			listViewFy.setXListViewListener(this);
-			listViewFy.setPullLoadEnable(true);
+			listViewFy.setPullLoadEnable(false);
 			listViewFy.setOnItemClickListener(this);
 			// pullToRefreshView.setEnablePullTorefresh(true);
 			// pullToRefreshView
@@ -477,11 +477,11 @@ public class PCenterActivity extends SuperActivity implements
 			long id) {
 		startActivity(new Intent(getBaseContext(), YuansuInfoActivity.class)
 				.putExtra("content",
-						adapterFy.getItem(position - 1).getRemarkContent())
-				.putExtra("remarkId", adapterFy.getItem(position - 1).getId())
-				.putExtra("label", adapterFy.getItem(position - 1).getLabel())
+						adapterFy.getItem(position - 2).getRemarkContent())
+				.putExtra("remarkId", adapterFy.getItem(position - 2).getId())
+				.putExtra("label", adapterFy.getItem(position - 2).getLabel())
 				.putExtra("followstate",
-						adapterFy.getItem(position - 1).getFollowState()));
+						adapterFy.getItem(position - 2).getFollowState()));
 
 	}
 }

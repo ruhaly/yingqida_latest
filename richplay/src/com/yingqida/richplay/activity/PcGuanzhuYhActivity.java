@@ -110,7 +110,8 @@ public class PcGuanzhuYhActivity extends SuperActivity implements
 	DialogInterface.OnDismissListener dismiss = new DialogInterface.OnDismissListener() {
 		@Override
 		public void onDismiss(DialogInterface dialog) {
-			httpUtil.getHttpClient().getConnectionManager().shutdown();
+			onLoad();
+			pcLogic.stopReqeust();
 		}
 	};
 

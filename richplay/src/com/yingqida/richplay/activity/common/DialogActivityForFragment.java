@@ -148,7 +148,7 @@ public class DialogActivityForFragment extends NotificationActivityForFragment {
 		dismissProgress();
 
 		progressDialog = ProgressDialog.show(this, title, msg);
-		progressDialog.setCancelable(isCancelable);
+		progressDialog.setCanceledOnTouchOutside(isCancelable);
 		if (null != dismiss) {
 			progressDialog.setOnDismissListener(dismiss);
 		}

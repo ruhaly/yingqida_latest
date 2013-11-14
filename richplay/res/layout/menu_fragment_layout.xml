@@ -70,8 +70,8 @@
 
             <ImageView
                 android:id="@+id/imgHead"
-                android:layout_width="26dp"
-                android:layout_height="26dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:src="@drawable/com_facebook_profile_picture_blank_square" />
 
             <TextView

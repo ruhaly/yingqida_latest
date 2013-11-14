@@ -6,7 +6,9 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +20,12 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.lidroid.xutils.BitmapUtils;
+import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.lidroid.xutils.view.annotation.event.OnClick;
@@ -29,6 +34,8 @@ import com.yingqida.richplay.activity.MenuActivity;
 import com.yingqida.richplay.activity.ModifyPWDActivity;
 import com.yingqida.richplay.activity.common.SuperActivityForFragment;
 import com.yingqida.richplay.entity.Menu;
+import com.yingqida.richplay.logic.SuperLogic;
+import com.yingqida.richplay.logic.UserLogic;
 
 public class MenuFragment extends SuperFragment implements OnItemClickListener {
 
@@ -45,16 +52,28 @@ public class MenuFragment extends SuperFragment implements OnItemClickListener {
 	@ViewInject(R.id.tvName)
 	private TextView tvName;
 
+	@ViewInject(R.id.imgHead)
+	private ImageView imgHead;
+
 	@ViewInject(R.id.btnToggle)
 	private Button btnToggle;
+	private BitmapUtils bitmapUtilsHead;
 
 	@Override
 	public void updateView() {
-
+		tvName.setText(uLogic.user.getName());
+		if (uLogic.user.getIs_avatar().equals("true")) {
+			bitmapUtilsHead.display(imgHead,
+					getHeadUrl(1, 2, getUser().getUid()));
+		} else {
+			bitmapUtilsHead.display(imgHead,
+					getHeadUrl(2, 2, getUser().getUid()));
+		}
 	}
 
 	@Override
 	public void initData() {
+		uLogic = UserLogic.getInstance();
 		initMenus();
 	}
 
@@ -85,6 +104,10 @@ public class MenuFragment extends SuperFragment implements OnItemClickListener {
 		if (convertView == null)
 			convertView = inflater.inflate(R.layout.menu_fragment_layout, null);
 		ViewUtils.inject(this, convertView);
+		bitmapUtilsHead = new BitmapUtils(getActivity());
+		bitmapUtilsHead.configDefaultLoadingImage(R.drawable.ic_launcher);
+		bitmapUtilsHead.configDefaultLoadFailedImage(R.drawable.ic_launcher);
+		bitmapUtilsHead.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
 		listViewMenu.setOnItemClickListener(this);
 		if (null == adapter) {
 			adapter = new Adapter();
@@ -126,6 +149,12 @@ public class MenuFragment extends SuperFragment implements OnItemClickListener {
 			}
 		});
 		tvName.setText(getUser().getName());
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				getUserInfo();
+			}
+		}).start();
 		return convertView;
 	}
 
@@ -258,5 +287,29 @@ public class MenuFragment extends SuperFragment implements OnItemClickListener {
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 
+	}
+
+	// 异步获取个人信息
+	private UserLogic uLogic;
+	private HttpUtils httpUtil;
+
+	public void getUserInfo() {
+		httpUtil = new HttpUtils();
+		uLogic.setDate(fHandler, httpUtil);
+		uLogic.sendGetUserInfoRequest(getUser().getRemarkToken(), getUser()
+				.getUid());
+	}
+
+	@Override
+	public void handleMsg(Message msg) {
+		switch (msg.what) {
+		case SuperLogic.USER_INFO_SUCCESS_MSGWHAT: {
+			updateView();
+			break;
+		}
+		default:
+			break;
+		}
+		super.handleMsg(msg);
 	}
 }

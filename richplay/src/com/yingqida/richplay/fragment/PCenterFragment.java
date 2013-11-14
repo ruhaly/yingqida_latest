@@ -477,11 +477,11 @@ public class PCenterFragment extends SuperFragment implements
 		startActivity(new Intent(getActivity().getBaseContext(),
 				YuansuInfoActivity.class)
 				.putExtra("content",
-						adapterFy.getItem(position - 1).getRemarkContent())
-				.putExtra("remarkId", adapterFy.getItem(position - 1).getId())
-				.putExtra("label", adapterFy.getItem(position - 1).getLabel())
+						adapterFy.getItem(position - 2).getRemarkContent())
+				.putExtra("remarkId", adapterFy.getItem(position - 2).getId())
+				.putExtra("label", adapterFy.getItem(position - 2).getLabel())
 				.putExtra("followstate",
-						adapterFy.getItem(position - 1).getFollowState()));
+						adapterFy.getItem(position - 2).getFollowState()));
 
 	}
 

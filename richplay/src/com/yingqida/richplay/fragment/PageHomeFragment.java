@@ -33,6 +33,7 @@ import com.yingqida.richplay.logic.ShareAndFollowLogic;
 import com.yingqida.richplay.logic.SuperLogic;
 import com.yingqida.richplay.pubuliu.XListView;
 import com.yingqida.richplay.pubuliu.XListView.IXListViewListener;
+import com.yingqida.richplay.util.ThreadPoolUtils;
 
 public class PageHomeFragment extends SuperFragment implements
 		IXListViewListener, OnItemClickListener {
@@ -293,8 +294,13 @@ public class PageHomeFragment extends SuperFragment implements
 		httpUtil = new HttpUtils();
 		logic.setDate(fHandler, httpUtil);
 		((SuperActivityForFragment) getActivity()).showProcessDialog(dismiss);
-		logic.sendPageHomeYuanSuRequest(getUser().getUid(), getUser()
-				.getRemarkToken(), type);
+		ThreadPoolUtils.execute(new Runnable() {
+			@Override
+			public void run() {
+				logic.sendPageHomeYuanSuRequest(getUser().getUid(), getUser()
+						.getRemarkToken(), actionType);
+			}
+		});
 	}
 
 	public int actionType = 0;

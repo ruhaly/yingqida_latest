@@ -82,7 +82,6 @@ public class YuansuInfoActivity extends SuperActivity {
 		followstate = getIntent().getExtras().getString("followstate");
 		headerView = LayoutInflater.from(getBaseContext()).inflate(
 				R.layout.yuansu_top_layout, null);
-
 		listComm.addHeaderView(headerView);
 		text_name = (TextView) headerView.findViewById(R.id.text_name);
 		text_msg = (TextView) headerView.findViewById(R.id.text_msg);
@@ -255,6 +254,7 @@ public class YuansuInfoActivity extends SuperActivity {
 		public void onDismiss(DialogInterface dialog) {
 			// httpUtil.getHttpClient().getConnectionManager().shutdown();
 			sLogic.stopReqeust();
+			onLoad();
 		}
 	};
 
@@ -323,6 +323,8 @@ public class YuansuInfoActivity extends SuperActivity {
 						.configDefaultLoadFailedImage(R.drawable.list_item_bg);
 				bitmapUtilsContent
 						.configDefaultBitmapConfig(Bitmap.Config.RGB_565);
+				bitmapUtilsContent.configDefaultBitmapMaxSize(getScreenW(),
+						getScreenH());
 			}
 			bitmapUtilsContent.display(imgContent, content);
 		} else {
@@ -344,6 +346,7 @@ public class YuansuInfoActivity extends SuperActivity {
 		public void onDismiss(DialogInterface dialog) {
 			// httpUtil.getHttpClient().getConnectionManager().shutdown();
 			logic.stopReqeust();
+			onLoad();
 		}
 	};
 

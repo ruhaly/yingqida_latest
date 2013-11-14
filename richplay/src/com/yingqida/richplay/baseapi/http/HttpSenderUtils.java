@@ -3,11 +3,11 @@ package com.yingqida.richplay.baseapi.http;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.HttpHandler;
-import com.lidroid.xutils.http.RequestCallBack;
+import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.http.ResponseInfo;
+import com.lidroid.xutils.http.ResponseStream;
+import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest.HttpMethod;
-import com.lidroid.xutils.http.client.RequestParams;
-import com.lidroid.xutils.http.client.ResponseStream;
 import com.yingqida.richplay.logic.SuperLogic;
 import com.yingqida.richplay.packet.HttpAction;
 
@@ -21,9 +21,11 @@ import com.yingqida.richplay.packet.HttpAction;
  * @version 1.0
  */
 public class HttpSenderUtils implements HttpAction {
-	
-	public static final String DEFALUT_HEAD_AREA = "static.richplay.com.tw";
-	public static final String DEFALUT_AREA = "test.richplay.com.tw";
+
+	public static final String DEFALUT_HEAD_AREA = "hstatic.remark2";// "static.richplay.com.tw";//
+																	// "static.remark2";//
+	public static final String DEFALUT_AREA = "hdev.remark2";// "www.richplay.com.tw";//
+																// "dev.remark2";//
 	public static final String DEFAULT_HOST = "http://" + DEFALUT_AREA
 			+ "/api/v1";
 	public static final String DEFAULT_TYPE = ".json";
